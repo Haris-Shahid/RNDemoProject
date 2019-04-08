@@ -1,21 +1,22 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { View } from 'react-native';
 
-export default class App extends React.Component {
+import Routers from './src/router';
+
+class App extends React.Component {
+  componentWillMount() {
+    console.disableYellowBox = true
+  }
+
   render() {
     return (
-      <View style={styles.container}>
-        <Text>Open up App.js to start hello app!</Text>
-      </View>
+      // <Provider store={store}>
+        // <View style={{ flex: 1 }}>
+          <Routers />
+        // </View>
+      // </Provider>
     );
   }
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default App;
