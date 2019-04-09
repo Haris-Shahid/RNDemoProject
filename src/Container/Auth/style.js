@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { verticalScale, scale, moderateScale } from '../../Components/scalingFunction';
+import { verticalScale, scale, moderateScale } from '../../Constants/scalingFunction';
 
 export const styles = StyleSheet.create({
     container: {
@@ -29,7 +29,8 @@ export const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         width: verticalScale(100),
-        height: verticalScale(100)
+        height: verticalScale(100),
+        overflow: 'hidden'
     },
     profileIcon: {
         color: 'rgba(0,0,0,0.5)',
@@ -115,5 +116,10 @@ export const styles = StyleSheet.create({
     signUp: {
         color: '#fff',
         marginLeft: scale(5)
+    },
+    errorTxt: {
+        fontSize: moderateScale(20), 
+        color: '#ff0000', 
+        marginTop : verticalScale(10)
     }
 })

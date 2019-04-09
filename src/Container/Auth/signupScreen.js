@@ -1,17 +1,19 @@
 import React, { Component } from 'react';
-import { View, Text, StatusBar, Image, TouchableOpacity } from 'react-native';
+import { View, Text, StatusBar, Image, TouchableOpacity, Alert } from 'react-native';
 import { Font } from 'expo';
 import { Content, Item, Input, Button } from 'native-base';
 import { Ionicons } from '@expo/vector-icons';
 import { styles } from './style';
 import { ImagePicker } from 'expo';
+import Loader from '../../Components/activityIndicator';
+import * as firebase from 'firebase';
 
 class SignUpScreen extends Component {
     constructor() {
         super();
         this.state = {
             fontLoaded: false,
-            image: null,
+            profileImage: null,
             gender: [
                 {
                     name: 'Male',
@@ -21,11 +23,19 @@ class SignUpScreen extends Component {
                     name: 'Female',
                     status: false
                 }
-            ]
+            ],
+            firstName: '',
+            lastName: '',
+            email: '',
+            password: '',
+            retypePassword: '',
+            genderSelected: 'Male',
+            validation: null,
+            loading: false,
         }
     }
     static navigationOptions = {
-        header: { visible:false } 
+        header: { visible: false }
     }
     async componentDidMount() {
         await Font.loadAsync({
@@ -40,9 +50,27 @@ class SignUpScreen extends Component {
         let result = await ImagePicker.launchImageLibraryAsync({
             allowsEditing: true,
             aspect: [4, 4],
+            base64: true
         });
         if (!result.cancelled) {
-            this.setState({ image: result.uri });
+            this.setState({ profileImage: result.uri })
+            let base64Img = `data:image/jpg;base64,${result.base64}`;
+            let apiUrl= 'https://api.cloudinary.com/v1_1/doe7h15vw/image/upload';
+            let data = {
+                "file": base64Img,
+                "upload_preset": "erxp1q1m",
+              }
+              fetch(apiUrl, {
+                body: JSON.stringify(data),
+                headers: {
+                  'content-type': 'application/json'
+                },
+                method: 'POST',
+              }).then(async r => {
+                  let data = await r.json()
+                  console.log(data.secure_url)
+                  return data.secure_url
+              }).catch(err=>console.log(err))
         }
     }
 
@@ -59,6 +87,27 @@ class SignUpScreen extends Component {
         }
     }
 
+    handleInput(type, value) {
+        this.setState({
+            [type]: value
+        })
+    }
+
+    formSubmit() {
+        this.setState({ loading: true })
+        const { firstName, lastName, email, password, retypePassword, genderSelected, profileImage } = this.state;
+        var validation = `${
+            !firstName ? 'Please enter your First Name' :
+                !lastName ? 'Please enter your Last Name' :
+                    !email ? 'Please enter your email' :
+                        email.indexOf('@') == -1 || email.indexOf('.com') == -1 ? 'Please enter valid email id' :
+                            !password ? 'Please enter password' :
+                                password.length < 8 ? 'Enter password must contain at least 8 characters' :
+                                    !retypePassword ? 'Please enter Retype password to confirm your password' :
+                                        retypePassword !== password ? "Your password doesn't match" : null}`
+        this.setState({ validation, loading: false })
+    }
+
     render() {
         return (
             <View style={styles.container}>
@@ -67,37 +116,38 @@ class SignUpScreen extends Component {
                 <View style={styles.childContainer} >
                     <Content>
                         <View style={styles.logoContainer} >
-                            {
-                                this.state.image === null ?
-                                    <TouchableOpacity onPress={() => this._pickImage()} style={styles.profileIconCont} >
-                                        <Ionicons name='ios-person' style={styles.profileIcon} />
-                                        <Ionicons name='ios-add-circle' style={styles.profileIconAdd} />
-                                    </TouchableOpacity> :
-                                    <View style={[styles.profileIconCont, { overflow: 'hidden' }]} >
-                                        <Image source={{ uri: this.state.image }} style={{ width: '100%', height: '100%' }} />
-                                    </View>
-                            }
+                            <TouchableOpacity onPress={() => this._pickImage()} >
+                                <View style={styles.profileIconCont} >
+                                    {
+                                        this.state.profileImage === null ?
+                                            <Ionicons name='ios-person' style={styles.profileIcon} />
+                                            :
+                                            <Image source={{ uri: this.state.profileImage }} style={{ width: '100%', height: '100%' }} />
+                                    }
+                                </View>
+                                <Ionicons name='ios-add-circle' style={styles.profileIconAdd} />
+                            </TouchableOpacity>
                         </View>
                         <View style={styles.formContainer} >
                             <Item style={styles.inputCont} >
                                 <Ionicons style={styles.inputIcon} name='ios-person' />
-                                <Input placeholder='First Name' placeholderTextColor='rgba(100, 100, 100, 0.5)' style={styles.inputField} />
+                                <Input onChangeText={(text) => this.handleInput('firstName', text)} placeholder='First Name' placeholderTextColor='rgba(100, 100, 100, 0.5)' style={styles.inputField} />
                             </Item>
                             <Item style={styles.inputCont} >
                                 <Ionicons style={styles.inputIcon} name='ios-person' />
-                                <Input placeholder='Last Name' placeholderTextColor='rgba(100, 100, 100, 0.5)' style={styles.inputField} />
+                                <Input onChangeText={(text) => this.handleInput('lastName', text)} placeholder='Last Name' placeholderTextColor='rgba(100, 100, 100, 0.5)' style={styles.inputField} />
                             </Item>
                             <Item style={styles.inputCont} >
                                 <Ionicons style={styles.inputIcon} name='ios-mail' />
-                                <Input placeholder='Email' placeholderTextColor='rgba(100, 100, 100, 0.5)' style={styles.inputField} />
+                                <Input onChangeText={(text) => this.handleInput('email', text)} placeholder='Email' placeholderTextColor='rgba(100, 100, 100, 0.5)' style={styles.inputField} />
                             </Item>
                             <Item style={styles.inputCont} >
                                 <Ionicons style={styles.inputIcon} name='md-lock' />
-                                <Input placeholder='Password' secureTextEntry={true} placeholderTextColor='rgba(100, 100, 100, 0.5)' style={styles.inputField} />
+                                <Input onChangeText={(text) => this.handleInput('password', text)} placeholder='Password' secureTextEntry={true} placeholderTextColor='rgba(100, 100, 100, 0.5)' style={styles.inputField} />
                             </Item>
                             <Item style={styles.inputCont} >
                                 <Ionicons style={styles.inputIcon} name='md-lock' />
-                                <Input placeholder='Retype Password' secureTextEntry={true} placeholderTextColor='rgba(100, 100, 100, 0.5)' style={styles.inputField} />
+                                <Input onChangeText={(text) => this.handleInput('retypePassword', text)} placeholder='Retype Password' secureTextEntry={true} placeholderTextColor='rgba(100, 100, 100, 0.5)' style={styles.inputField} />
                             </Item>
                             <View style={styles.radioBtnCont} >
                                 <View style={styles.radioBtnChildCont} >
@@ -113,7 +163,8 @@ class SignUpScreen extends Component {
                                     <Text style={styles.radioTxt} >Female</Text>
                                 </View>
                             </View>
-                            <Button style={styles.btn} block >
+                            {this.state.validation === null && <Text style={styles.errorTxt} >{this.state.validation}</Text>}
+                            <Button onPress={() => this.formSubmit()} style={styles.btn} block >
                                 <Text style={styles.btnTxt} >SIGN UP</Text>
                             </Button>
                             <View style={[styles.orTxt, styles.signUpText]} >
@@ -124,6 +175,7 @@ class SignUpScreen extends Component {
                             </View>
                         </View>
                     </Content>
+                    {this.state.loading && <Loader />}
                 </View>
             </View>
         )
