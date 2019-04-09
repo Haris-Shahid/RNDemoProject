@@ -54,23 +54,6 @@ class SignUpScreen extends Component {
         });
         if (!result.cancelled) {
             this.setState({ profileImage: result.uri })
-            let base64Img = `data:image/jpg;base64,${result.base64}`;
-            let apiUrl= 'https://api.cloudinary.com/v1_1/doe7h15vw/image/upload';
-            let data = {
-                "file": base64Img,
-                "upload_preset": "erxp1q1m",
-              }
-              fetch(apiUrl, {
-                body: JSON.stringify(data),
-                headers: {
-                  'content-type': 'application/json'
-                },
-                method: 'POST',
-              }).then(async r => {
-                  let data = await r.json()
-                  console.log(data.secure_url)
-                  return data.secure_url
-              }).catch(err=>console.log(err))
         }
     }
 
@@ -79,11 +62,11 @@ class SignUpScreen extends Component {
         if (g === "male") {
             gender[0].status = true;
             gender[1].status = false;
-            this.setState({ gender })
+            this.setState({ gender, genderSelected: gender[0].name })
         } else {
             gender[0].status = false;
             gender[1].status = true;
-            this.setState({ gender })
+            this.setState({ gender, genderSelected: gender[1].name })
         }
     }
 
@@ -93,7 +76,7 @@ class SignUpScreen extends Component {
         })
     }
 
-    formSubmit() {
+    async formSubmit() {
         this.setState({ loading: true })
         const { firstName, lastName, email, password, retypePassword, genderSelected, profileImage } = this.state;
         var validation = `${
@@ -105,9 +88,73 @@ class SignUpScreen extends Component {
                                 password.length < 8 ? 'Enter password must contain at least 8 characters' :
                                     !retypePassword ? 'Please enter Retype password to confirm your password' :
                                         retypePassword !== password ? "Your password doesn't match" : null}`
-        this.setState({ validation, loading: false })
-    }
+        if (validation === null || validation === "null") {
+            if (this.state.profileImage) {
+                this.setState({ validation: null })
+               let profileimage = await this.uploadImageAsync(this.state.profileImage)
+                let UserData = {
+                    firstName, lastName, email, password, profileImage: profileimage, gender: genderSelected
+                }
+                firebase.auth()
+                    .createUserWithEmailAndPassword(email, password)
+                    .then(({ user }) => {
+                        UserData.uid = user.uid;
+                        firebase.database().ref('/').child(`user/${user.uid}`).set(UserData)
+                            .then(() => {
+                                this.setState({ validation: null, loading: false })
+                                Alert.alert('Signup Successful')
+                            })
+                    })
+                    .catch((error) => {
+                        let message = error.message;
+                        this.setState({ validation: message, loading: false })
+                    });
+            } else {
+                let UserData = {
+                    firstName, lastName, email, password, profileImage, gender: genderSelected
+                }
+                firebase.auth()
+                    .createUserWithEmailAndPassword(email, password)
+                    .then(({ user }) => {
+                        UserData.uid = user.uid;
+                        firebase.database().ref('/').child(`user/${user.uid}`).set(UserData)
+                            .then(() => {
+                                this.setState({ validation: null, loading: false })
+                                Alert.alert('Signup Successful')
+                            })
+                    })
+                    .catch((error) => {
+                        let message = error.message;
+                        this.setState({ validation: message, loading: false })
+                    });
 
+            }
+        } else {
+            this.setState({ validation, loading: false })
+        }
+    }
+    async uploadImageAsync(uri) {
+        const blob = await new Promise((resolve, reject) => {
+            const xhr = new XMLHttpRequest();
+            xhr.onload = function () {
+                resolve(xhr.response);
+            };
+            xhr.onerror = function (e) {
+                console.log(e);
+                reject(new TypeError('Network request failed'));
+            };
+            xhr.responseType = 'blob';
+            xhr.open('GET', uri, true);
+            xhr.send(null);
+        });
+        const ref = firebase.storage().ref("images/" + this.state.firstName)
+        const snapshot = await ref.put(blob);
+        blob.close();
+        return await snapshot.ref.getDownloadURL();
+    }
+    // async upLoadImageToDatabase(URI) {
+    //     let uploadUrl = await ; 
+    // }
     render() {
         return (
             <View style={styles.container}>
@@ -163,7 +210,7 @@ class SignUpScreen extends Component {
                                     <Text style={styles.radioTxt} >Female</Text>
                                 </View>
                             </View>
-                            {this.state.validation === null && <Text style={styles.errorTxt} >{this.state.validation}</Text>}
+                            {(this.state.validation !== null || this.state.validation !== 'null') && <Text style={styles.errorTxt} >{this.state.validation}</Text>}
                             <Button onPress={() => this.formSubmit()} style={styles.btn} block >
                                 <Text style={styles.btnTxt} >SIGN UP</Text>
                             </Button>
