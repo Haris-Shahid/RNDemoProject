@@ -1,19 +1,22 @@
 import React, { Component } from 'react';
-import { View, Text, StatusBar, Image, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, StatusBar, Image, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
 import { Font } from 'expo';
 import { Content, Item, Input, Button } from 'native-base';
 import { Ionicons } from '@expo/vector-icons';
 import { styles } from './style';
-import { ImagePicker } from 'expo';
+import { connect } from "react-redux"
 import Loader from '../../Components/activityIndicator';
-import * as firebase from 'firebase';
+import { scale } from '../../Constants/scalingFunction';
+import { MainMiddleware } from '../../Store/Middlewares';
 
 class SignUpScreen extends Component {
+    static navigationOptions = {
+        header: { visible: false }
+    }
     constructor() {
         super();
         this.state = {
             fontLoaded: false,
-            profileImage: null,
             gender: [
                 {
                     name: 'Male',
@@ -34,9 +37,6 @@ class SignUpScreen extends Component {
             loading: false,
         }
     }
-    static navigationOptions = {
-        header: { visible: false }
-    }
     async componentDidMount() {
         await Font.loadAsync({
             'rentuck': require('../../../assets/fonts/Rentuck.ttf'),
@@ -46,15 +46,11 @@ class SignUpScreen extends Component {
         })
     }
 
-    async _pickImage() {
-        let result = await ImagePicker.launchImageLibraryAsync({
-            allowsEditing: true,
-            aspect: [4, 4],
-            base64: true
-        });
-        if (!result.cancelled) {
-            this.setState({ profileImage: result.uri })
-        }
+    componentWillReceiveProps(nextProps) {
+        this.setState({
+            validation: nextProps.validation
+        })
+       nextProps.route && this.props.navigation.goBack();
     }
 
     handleRadio(g) {
@@ -76,9 +72,8 @@ class SignUpScreen extends Component {
         })
     }
 
-    async formSubmit() {
-        this.setState({ loading: true })
-        const { firstName, lastName, email, password, retypePassword, genderSelected, profileImage } = this.state;
+    formSubmit() {
+        const { firstName, lastName, email, password, retypePassword, genderSelected } = this.state;
         var validation = `${
             !firstName ? 'Please enter your First Name' :
                 !lastName ? 'Please enter your Last Name' :
@@ -89,72 +84,17 @@ class SignUpScreen extends Component {
                                     !retypePassword ? 'Please enter Retype password to confirm your password' :
                                         retypePassword !== password ? "Your password doesn't match" : null}`
         if (validation === null || validation === "null") {
-            if (this.state.profileImage) {
-                this.setState({ validation: null })
-               let profileimage = await this.uploadImageAsync(this.state.profileImage)
-                let UserData = {
-                    firstName, lastName, email, password, profileImage: profileimage, gender: genderSelected
-                }
-                firebase.auth()
-                    .createUserWithEmailAndPassword(email, password)
-                    .then(({ user }) => {
-                        UserData.uid = user.uid;
-                        firebase.database().ref('/').child(`user/${user.uid}`).set(UserData)
-                            .then(() => {
-                                this.setState({ validation: null, loading: false })
-                                Alert.alert('Signup Successful')
-                            })
-                    })
-                    .catch((error) => {
-                        let message = error.message;
-                        this.setState({ validation: message, loading: false })
-                    });
-            } else {
-                let UserData = {
-                    firstName, lastName, email, password, profileImage, gender: genderSelected
-                }
-                firebase.auth()
-                    .createUserWithEmailAndPassword(email, password)
-                    .then(({ user }) => {
-                        UserData.uid = user.uid;
-                        firebase.database().ref('/').child(`user/${user.uid}`).set(UserData)
-                            .then(() => {
-                                this.setState({ validation: null, loading: false })
-                                Alert.alert('Signup Successful')
-                            })
-                    })
-                    .catch((error) => {
-                        let message = error.message;
-                        this.setState({ validation: message, loading: false })
-                    });
-
-            }
+            this.setState({ validation: null })
+            let UserData = { firstName, lastName, email, password, profileImage: this.props.profileImage, gender: genderSelected }
+            this.props.signUp(UserData)
+            this.setState({
+                validation: null,
+            })
         } else {
-            this.setState({ validation, loading: false })
+            this.setState({ validation })
         }
     }
-    async uploadImageAsync(uri) {
-        const blob = await new Promise((resolve, reject) => {
-            const xhr = new XMLHttpRequest();
-            xhr.onload = function () {
-                resolve(xhr.response);
-            };
-            xhr.onerror = function (e) {
-                console.log(e);
-                reject(new TypeError('Network request failed'));
-            };
-            xhr.responseType = 'blob';
-            xhr.open('GET', uri, true);
-            xhr.send(null);
-        });
-        const ref = firebase.storage().ref("images/" + this.state.firstName)
-        const snapshot = await ref.put(blob);
-        blob.close();
-        return await snapshot.ref.getDownloadURL();
-    }
-    // async upLoadImageToDatabase(URI) {
-    //     let uploadUrl = await ; 
-    // }
+
     render() {
         return (
             <View style={styles.container}>
@@ -163,13 +103,15 @@ class SignUpScreen extends Component {
                 <View style={styles.childContainer} >
                     <Content>
                         <View style={styles.logoContainer} >
-                            <TouchableOpacity onPress={() => this._pickImage()} >
+                            <TouchableOpacity onPress={() => this.props.UploadImage()} >
                                 <View style={styles.profileIconCont} >
                                     {
-                                        this.state.profileImage === null ?
-                                            <Ionicons name='ios-person' style={styles.profileIcon} />
-                                            :
-                                            <Image source={{ uri: this.state.profileImage }} style={{ width: '100%', height: '100%' }} />
+                                        this.props.profileImageLoading ?
+                                            <ActivityIndicator animating={true} size={scale(25)} color="rgba(0,0,0,0.5)" /> :
+                                            this.props.profileImage === "" ?
+                                                <Ionicons name='ios-person' style={styles.profileIcon} />
+                                                :
+                                                <Image source={{ uri: this.props.profileImage }} style={{ width: '100%', height: '100%' }} />
                                     }
                                 </View>
                                 <Ionicons name='ios-add-circle' style={styles.profileIconAdd} />
@@ -222,11 +164,27 @@ class SignUpScreen extends Component {
                             </View>
                         </View>
                     </Content>
-                    {this.state.loading && <Loader />}
+                    {this.props.isLoading && <Loader />}
                 </View>
             </View>
         )
     }
 }
 
-export default SignUpScreen;
+const mapStateToProps = (state) => {
+    return {
+        isLoading: state.AuthReducer.isLoading,
+        profileImage: state.AuthReducer.profileImage,
+        profileImageLoading: state.AuthReducer.profileImageLoading,
+        validation: state.AuthReducer.validation,
+        route: state.AuthReducer.route,
+    };
+}
+const mapDispatchToProps = (dispatch) => {
+    return {
+        signUp: (data) => { dispatch(MainMiddleware.SignUpMiddleware(data)) },
+        UploadImage: (uri) => { dispatch(MainMiddleware.UploadImage(uri)) }
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(SignUpScreen);

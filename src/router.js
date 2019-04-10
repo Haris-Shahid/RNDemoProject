@@ -10,7 +10,7 @@ import SignUpScreen from './Container/Auth/signupScreen';
 
 const Screens = createStackNavigator({
     home: {
-         screen: SignUpScreen
+         screen: LoginScreen
     },
     signUpScreen: { 
         screen: SignUpScreen
