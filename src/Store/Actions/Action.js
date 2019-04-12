@@ -1,4 +1,4 @@
-import { AUTH_START, REGISTER_SUCCESSFULL, AUTH_FAILED, IMAGE_UPLOADED, IMAGE_UPLOADING, IMAGE_UPLOADING_FAILED, LOGIN_SUCCESSFULL } from '../constant'
+import { AUTH_START, REGISTER_SUCCESSFULL, AUTH_FAILED, IMAGE_UPLOADED, IMAGE_UPLOADING, IMAGE_UPLOADING_FAILED, LOGIN_SUCCESSFULL, RESET_ALL_STATE, FB_USER_LOGIN } from '../constant'
 
 
 export default class Actions {
@@ -43,6 +43,18 @@ export default class Actions {
     static loginSuccessfully(user) {
         return {
             type: LOGIN_SUCCESSFULL,
+            user
+        }
+    }
+    static resetAllState() {
+        return {
+            type: RESET_ALL_STATE
+        }
+    }
+
+    static loginSuccessfullyFB(user){
+        return{
+            type: FB_USER_LOGIN,
             user
         }
     }

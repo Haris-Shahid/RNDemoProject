@@ -36,11 +36,11 @@ export default class MainMiddleware {
         }
     }
 
-    static SignUpMiddleware(data) {
+    static SignUpMiddleware(data, password) {
         return (dispatch) => {
             dispatch(Actions.authStart())
             firebase.auth()
-                .createUserWithEmailAndPassword(data.email, data.password)
+                .createUserWithEmailAndPassword(data.email, password)
                 .then(({ user }) => {
                     data.uid = user.uid;
                     firebase.database().ref('/').child(`user/${user.uid}`).set(data)
@@ -69,6 +69,31 @@ export default class MainMiddleware {
                 let message = error.message;
                 dispatch(Actions.authfailed(message))
             });
+        }
+    }
+    
+    static LoginWithFBMiddleware(token){
+        return (dispatch) => {
+            const credential = firebase.auth.FacebookAuthProvider.credential(token);
+            firebase.auth().signInWithCredential(credential)
+            .then((user) => {
+                console.log(user, '//////////////////////////')
+                dispatch(Actions.loginSuccessfullyFB(user))
+            })
+            .catch((error) => {
+                let message = error.message;
+                dispatch(Actions.authfailed(message))
+            })
+        }
+    }
+
+    static checkAuth(){
+        return (dispatch) => {
+            firebase.auth().onAuthStateChanged((user) => {
+                if(user) {
+                    console.log(user, 'login user ////////////////')
+                }
+            })
         }
     }
 

@@ -1,12 +1,9 @@
-import { AUTH_START, REGISTER_SUCCESSFULL, AUTH_FAILED, IMAGE_UPLOADED, IMAGE_UPLOADING, IMAGE_UPLOADING_FAILED, LOGIN_SUCCESSFULL } from '../constant';
+import { AUTH_START, REGISTER_SUCCESSFULL, AUTH_FAILED, IMAGE_UPLOADED, IMAGE_UPLOADING, IMAGE_UPLOADING_FAILED, LOGIN_SUCCESSFULL, RESET_ALL_STATE, FB_USER_LOGIN } from '../constant';
 
 const initialState = {
-    firstName: '',
-    lastName: '',
+    name: '',
     profileImage: '',
     email: '',
-    password: '',
-    genderSelected: 'Male',
     isLoading: false,
     profileImageLoading: false,
     validation: null,
@@ -30,12 +27,18 @@ export default function AuthReducer(state = initialState, action) {
 
         case LOGIN_SUCCESSFULL:
             return state = { ...state, ...action.user, isLoading: false, validation: null, route: true }
-            
+
         case AUTH_FAILED:
             return state = { ...state, isLoading: false, validation: action.error }
 
         case AUTH_START:
             return state = { ...state, isLoading: true }
+
+        case FB_USER_LOGIN:
+            return state = { ...state, name: action.user.displayName, email: action.user.email, profileImage: action.user.photoURL, uid: action.user.uid, route: true }
+
+        case RESET_ALL_STATE:
+            return state = { ...state, isLoading: false, validation: null, route: false, profileImageLoading: false, name: '', email: '', profileImage: '' }
 
         default:
             return state;
