@@ -13,3 +13,5 @@ export const FB_USER_LOGIN = "FB_USER_LOGIN";
 
 export const RESET_ALL_STATE = "RESET_ALL_STATE";
 export const FORGET_PASSWORD = "FORGET_PASSWORD";
+export const SIGN_OUT = "SIGN_OUT";
+export const RECOVER_DATA = "RECOVER_DATA";

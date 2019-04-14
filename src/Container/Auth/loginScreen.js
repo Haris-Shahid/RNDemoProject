@@ -42,7 +42,6 @@ class LoginScreen extends Component {
         this.setState({
             validation: nextProps.validation
         })
-        // nextProps.route && this.props.navigation.navigate('homeScreen');
     }
 
     formSubmit() {
@@ -54,50 +53,20 @@ class LoginScreen extends Component {
                     !password ? 'Please enter password' :
                         password.length < 8 ? 'Enter password must contain at least 8 characters' : null}`
         if (validation === null || validation === "null") {
-            this.setState({ validation: null })
             let UserData = { email, password }
-            this.props.logIn(UserData)
-            this.setState({
-                validation: null,
-            })
+            this.setState({ validation: null })
+            this.props.logIn(UserData, this.props.navigation)
         } else {
             this.setState({ validation })
         }
     }
-
-    // async loginWithFacebook() {
-    //     const { type, token } = await Facebook.logInWithReadPermissionsAsync(
-    //         '367448257053758',
-    //         { permissions: ['public_profile'] },
-    //     );
-
-    //     if (type == 'success') {
-    //         const response = await fetch(
-    //             `https://graph.facebook.com/me?access_token=${token}&fields=id,name,birthday,picture.type(large)`
-    //           );
-    //           const { picture, name, birthday } = await response.json();
-    //           console.log(picture, name, birthday)
-    //           fetch(picture.url).then((res)=>console.log(res)).catch((err) => console.log(err))
-    //         this.props.loginWithFB(token);
-    //     }
-    // }
 
     async loginWithFacebook() {
         const { type, token } = await Expo.Facebook.logInWithReadPermissionsAsync('367448257053758', {
             permissions: ['public_profile'],
         });
         if (type === 'success') {
-            const response = await fetch(
-                `https://graph.facebook.com/me?access_token=${token}&fields=id,name,picture.type(large)`);
-
-            // Alert.alert(
-            //     'Logged in!',
-            //     `Hi ${(await response.json()).name}!`,
-            // );
-            const userInfo = await response.json();
-            console.log(userInfo, '//////')
-            this.setState({ userInfo })
-            // this.props.navigation.navigate('homeScreen', {userInfo: userInfo});
+            this.props.loginWithFB(token, this.props.navigation)
         }
     }
 
@@ -120,7 +89,7 @@ class LoginScreen extends Component {
                             <Item style={styles.inputCont} >
                                 <Ionicons style={styles.inputIcon} name='md-lock' />
                                 <Input ref='Password' selectionColor='#bb0a1e' onSubmitEditing={() => this.formSubmit()} returnKeyType="done" onChangeText={(text) => this.handleInput('password', text)} placeholder='Password' secureTextEntry={this.state.passStatus} placeholderTextColor='rgba(0, 0, 0, 0.5)' style={styles.inputField} />
-                                <TouchableOpacity onPress={() => this.setState({passStatus: !this.state.passStatus})} >
+                                <TouchableOpacity onPress={() => this.setState({ passStatus: !this.state.passStatus })} >
                                     <Ionicons style={styles.inputIcon} name={this.state.passStatus ? 'md-eye' : 'md-eye-off'} />
                                 </TouchableOpacity>
                             </Item>
@@ -144,9 +113,6 @@ class LoginScreen extends Component {
                                 <Text style={styles.signUp} >SIGN UP</Text>
                             </TouchableOpacity>
                         </View>
-                        {/* {this.state.userInfo !== null && <View>
-                            <Image source={{uri: this.state.userInfo.picture.data.url}} style={{width: 100, height: 100, borderRadius: 50}} />
-                        </View>} */}
                     </Content>
                     {this.props.isLoading && <Loader />}
                 </View>
@@ -159,13 +125,12 @@ const mapStateToProps = (state) => {
     return {
         isLoading: state.AuthReducer.isLoading,
         validation: state.AuthReducer.validation,
-        route: state.AuthReducer.route,
     };
 }
 const mapDispatchToProps = (dispatch) => {
     return {
-        logIn: (data) => { dispatch(AuthMiddleware.LogInMiddleware(data)) },
-        loginWithFB: (data) => { dispatch(AuthMiddleware.LoginWithFBMiddleware(data)) },
+        logIn: (data, nav) => { dispatch(AuthMiddleware.LogInMiddleware(data, nav)) },
+        loginWithFB: (data, nav) => { dispatch(AuthMiddleware.LoginWithFBMiddleware(data, nav)) },
         checkAuth: () => { dispatch(AuthMiddleware.checkAuth()) },
         reset: () => dispatch(AuthActions.resetAllState()),
     }

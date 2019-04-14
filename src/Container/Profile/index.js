@@ -5,7 +5,7 @@ import { Header, Left, Right, Icon, Body } from 'native-base';
 import { Ionicons } from '@expo/vector-icons';
 import { verticalScale, scale, moderateScale } from '../../Constants/scalingFunction';
 
-class Dashboard extends Component {
+class Profile extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -15,11 +15,11 @@ class Dashboard extends Component {
         }
     }
 
-    static navigationOptions = {
-        drawerIcon: ({ tintColor }) => (
-            <Icon name='md-home' style={{ color: tintColor, fontSize: 24 }} />
-        )
-    }
+static navigationOptions = {
+    drawerIcon: ({tintColor}) => (
+        <Icon name='md-person' style={{color: tintColor, fontSize: 24}} />
+    )
+}
 
     render() {
         return (
@@ -28,23 +28,19 @@ class Dashboard extends Component {
                 <Header style={{ backgroundColor: "#bb0a1e" }} >
                     <Left>
                         <TouchableOpacity onPress={() => this.props.navigation.openDrawer()} >
-                            <Icon name='md-menu' style={{ color: '#fff' }} />
+                            <Icon name='md-menu' style={{color: '#fff'}} />
                         </TouchableOpacity>
                     </Left>
                     <Body>
-                        <Text style={styles.headerTxt} >{this.props.name}</Text>
+                        <Text style={styles.headerTxt} >Hello</Text>
                     </Body>
                     <Right>
                         <View style={styles.profileIconCont} >
-                            {
-                                this.props.profileImage == '' || !this.props.profileImage ?
-                                    <Ionicons name='ios-person' style={styles.profileIcon} /> :
-                                    <Image source={{ uri: this.props.profileImage }} style={{ width: '100%', height: '100%' }} />
-                            }
+                            <Ionicons name='ios-person' style={styles.profileIcon} />
                         </View>
                     </Right>
                 </Header>
-                <Text>Dashboard</Text>
+                <Text>Profile</Text>
                 {/* <Image source={{uri: this.state.imageUrl}} style={{width: 150, height: 150, borderRadius: 50, marginVertical: 20}} />
                 <Text>
                     {this.state.name}
@@ -69,7 +65,7 @@ const styles = StyleSheet.create({
         fontSize: moderateScale(18)
     },
     headerTxt: {
-        color: '#fff',
+        color: '#fff', 
         fontSize: 20
     },
 })
@@ -77,9 +73,9 @@ const styles = StyleSheet.create({
 const mapStateToProps = (state) => {
     return {
         isLoading: state.AuthReducer.isLoading,
-        profileImage: state.AuthReducer.profileImage,
-        name: state.AuthReducer.name
+        validation: state.AuthReducer.validation,
+        route: state.AuthReducer.route,
     };
 }
 
-export default connect(mapStateToProps, {})(Dashboard);
+export default connect(mapStateToProps, {})(Profile);

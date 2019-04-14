@@ -8,7 +8,9 @@ import {
     LOGIN_SUCCESSFULL,
     RESET_ALL_STATE,
     FB_USER_LOGIN,
-    FORGET_PASSWORD
+    FORGET_PASSWORD,
+    SIGN_OUT,
+    RECOVER_DATA
 } from '../constant'
 
 
@@ -72,6 +74,17 @@ export default class AuthActions {
     static fgPasswrod() {
         return {
             type: FORGET_PASSWORD,
+        }
+    }
+    static signOut() {
+        return {
+            type: SIGN_OUT
+        }
+    }
+    static recoverUserData(user){
+        return {
+            type: RECOVER_DATA,
+            user
         }
     }
 }

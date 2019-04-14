@@ -49,9 +49,9 @@ class SignUpScreen extends Component {
                                 !retypePassword ? 'Please enter Retype password to confirm your password' :
                                     retypePassword !== password ? "Your password doesn't match" : null}`
         if (validation === null || validation === "null") {
+            this.setState({ validation: null })
             let UserData = { name, email, profileImage: this.props.profileImage }
             this.props.signUp(UserData, password, this.props.navigation)
-            this.setState({ validation: null })
         } else {
             this.setState({ validation })
         }

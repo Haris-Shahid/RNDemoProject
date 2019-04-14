@@ -1,7 +1,7 @@
 import AuthActions from '../Actions/AuthActions';
 import * as firebase from 'firebase';
 import { ImagePicker } from 'expo';
-import { Alert, Icon } from 'react-native';
+import { AsyncStorage } from 'react-native';
 
 export default class AuthMiddleware {
 
@@ -56,14 +56,16 @@ export default class AuthMiddleware {
         }
     }
 
-    static LogInMiddleware(data) {
+    static LogInMiddleware(data, nav) {
         return (dispatch) => {
             dispatch(AuthActions.authStart())
             firebase.auth()
                 .signInWithEmailAndPassword(data.email, data.password)
                 .then(({ user }) => {
                     firebase.database().ref('/').child(`user/${user.uid}`).once('value', (snap) => {
+                        AsyncStorage.setItem('userToken', JSON.stringify({ user: snap.val() }))
                         dispatch(AuthActions.loginSuccessfully(snap.val()))
+                        nav.navigate('homeScreen')
                     })
                 })
                 .catch((error) => {
@@ -73,13 +75,21 @@ export default class AuthMiddleware {
         }
     }
 
-    static LoginWithFBMiddleware(token) {
+    static LoginWithFBMiddleware(token, nav) {
         return (dispatch) => {
+            dispatch(AuthActions.authStart())
             const credential = firebase.auth.FacebookAuthProvider.credential(token);
             firebase.auth().signInWithCredential(credential)
-                .then((user) => {
-                    console.log(user, '//////////////////////////')
-                    dispatch(AuthActions.loginSuccessfullyFB(user))
+                .then(async (user) => {
+                    let userData = {
+                        name: user.displayName,
+                        email: user.email,
+                        profileImage: user.photoURL,
+                        uid: user.uid
+                    }
+                    await AsyncStorage.setItem('userToken', JSON.stringify({ user: userData }))
+                    dispatch(AuthActions.loginSuccessfullyFB(userData))
+                    nav.navigate('homeScreen')
                 })
                 .catch((error) => {
                     let message = error.message;
@@ -100,14 +110,14 @@ export default class AuthMiddleware {
         }
     }
 
-    static checkAuth() {
+    static SignOutMiddleware(nav) {
         return (dispatch) => {
-            firebase.auth().onAuthStateChanged((user) => {
-                if (user) {
-                    console.log(user, 'login user ////////////////')
-                }
+            firebase.auth().signOut().then(async () => {
+                await AsyncStorage.clear();
+                dispatch(AuthActions.signOut())
+                nav.navigate('AuthLoading')
             })
+                .catch((e) => alert(e))
         }
     }
-
 }

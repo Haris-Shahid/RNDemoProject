@@ -1,4 +1,4 @@
-import { AUTH_START, REGISTER_SUCCESSFULL, AUTH_FAILED, IMAGE_UPLOADED, IMAGE_UPLOADING, IMAGE_UPLOADING_FAILED, LOGIN_SUCCESSFULL, RESET_ALL_STATE, FB_USER_LOGIN, FORGET_PASSWORD } from '../constant';
+import { AUTH_START, REGISTER_SUCCESSFULL, AUTH_FAILED, IMAGE_UPLOADED, IMAGE_UPLOADING, IMAGE_UPLOADING_FAILED, LOGIN_SUCCESSFULL, RESET_ALL_STATE, FB_USER_LOGIN, FORGET_PASSWORD, SIGN_OUT, RECOVER_DATA } from '../constant';
 
 const initialState = {
     name: '',
@@ -35,13 +35,19 @@ export default function AuthReducer(state = initialState, action) {
             return state = { ...state, isLoading: true }
 
         case FB_USER_LOGIN:
-            return state = { ...state, name: action.user.displayName, email: action.user.email, profileImage: action.user.photoURL, uid: action.user.uid, }
+            return state = { ...state, ...action.user, isLoading: false, validation: null }
 
         case RESET_ALL_STATE:
             return state = { ...state, isLoading: false, validation: null, profileImageLoading: false, name: '', email: '', profileImage: '', navigateRoute: false }
 
         case FORGET_PASSWORD:
             return state = { ...state, isLoading: false, validation: null, navigateRoute: true }
+
+        case SIGN_OUT:
+        return state = { ...state, isLoading: false, validation: null, navigateRoute: false, name: '', email: '', profileImage: '' }
+        
+        case RECOVER_DATA:
+        return state = { ...state, isLoading: false, validation: null, navigateRoute: false, name: action.user.name, email: action.user.email, profileImage: action.user.profileImage, uid: action.user.uid }
 
         default:
             return state;
