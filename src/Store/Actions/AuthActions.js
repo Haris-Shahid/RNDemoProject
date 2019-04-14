@@ -1,13 +1,14 @@
-import { 
-    IMAGE_UPLOADING, 
-    IMAGE_UPLOADED, 
-    IMAGE_UPLOADING_FAILED, 
-    AUTH_START, 
-    REGISTER_SUCCESSFULL, 
-    AUTH_FAILED, 
-    LOGIN_SUCCESSFULL, 
-    RESET_ALL_STATE, 
-    FB_USER_LOGIN 
+import {
+    IMAGE_UPLOADING,
+    IMAGE_UPLOADED,
+    IMAGE_UPLOADING_FAILED,
+    AUTH_START,
+    REGISTER_SUCCESSFULL,
+    AUTH_FAILED,
+    LOGIN_SUCCESSFULL,
+    RESET_ALL_STATE,
+    FB_USER_LOGIN,
+    FORGET_PASSWORD
 } from '../constant'
 
 
@@ -62,10 +63,15 @@ export default class AuthActions {
         }
     }
 
-    static loginSuccessfullyFB(user){
-        return{
+    static loginSuccessfullyFB(user) {
+        return {
             type: FB_USER_LOGIN,
             user
+        }
+    }
+    static fgPasswrod() {
+        return {
+            type: FORGET_PASSWORD,
         }
     }
 }

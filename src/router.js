@@ -6,6 +6,7 @@ import { createStackNavigator, createAppContainer, createSwitchNavigator } from 
 
 import LoginScreen from './Container/Auth/loginScreen';
 import SignUpScreen from './Container/Auth/signupScreen';
+import ForgetPassword from './Container/Auth/forgetPassword';
 import Dashboard from './Container/Dashboard';
 
 const AuthScreen = createStackNavigator({
@@ -14,6 +15,9 @@ const AuthScreen = createStackNavigator({
     },
     signUpScreen: {
         screen: SignUpScreen
+    },
+    ForgetPassword: {
+        screen: ForgetPassword
     },
 }, {
         headerMode: 'none'

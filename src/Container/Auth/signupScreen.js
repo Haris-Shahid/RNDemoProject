@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StatusBar, Image, TouchableOpacity, Dimensions, ActivityIndicator } from 'react-native';
+import { View, Text, StatusBar, Image, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { Content, Item, Input, Button } from 'native-base';
 import { Ionicons } from '@expo/vector-icons';
 import { styles } from './style';
@@ -115,7 +115,7 @@ class SignUpScreen extends Component {
                     </Content>
                     {this.props.isLoading && <Loader />}
                 </View>
-                <CustomModal visible={this.props.navigateRoute} handleModal={() => this.handleModal()} />
+                <CustomModal title='Registration Completed Successfully' visible={this.props.navigateRoute} handleModal={() => this.handleModal()} />
             </View>
         )
     }

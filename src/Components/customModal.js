@@ -4,11 +4,11 @@ import Modal from "react-native-modal";
 import { verticalScale, scale, moderateScale } from '../Constants/scalingFunction';
 import { Ionicons } from '@expo/vector-icons';
 
-export default CustomModal = ({ visible, handleModal }) => (
+export default CustomModal = ({ visible, handleModal, title }) => (
     <Modal style={styles.modalCont} isVisible={visible}>
         <View style={styles.modal}>
             <Ionicons name="md-checkmark-circle-outline" style={styles.successIcon} />
-            <Text style={styles.modalTitle} >Registration Completed Successfully</Text>
+            <Text style={styles.modalTitle} >{title}</Text>
             <TouchableOpacity style={styles.modalBtn} onPress={() => handleModal()}>
                 <Text style={{ color: '#fff', fontSize: 20, }} >OK</Text>
             </TouchableOpacity>
@@ -37,7 +37,8 @@ const styles = StyleSheet.create({
         fontSize: moderateScale(22),
         fontWeight: 'bold',
         textAlign: 'center',
-        marginVertical: verticalScale(10)
+        marginVertical: verticalScale(10),
+        marginHorizontal: scale(10)
     },
     modalBtn: {
         backgroundColor: '#bb0a1e',

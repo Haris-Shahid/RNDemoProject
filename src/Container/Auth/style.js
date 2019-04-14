@@ -103,10 +103,29 @@ export const styles = StyleSheet.create({
         marginLeft: scale(5)
     },
     errorTxt: {
-        fontSize: moderateScale(17), 
+        fontSize: moderateScale(17),
         width: '90%',
         textAlign: 'center',
-        color: '#bb0a1e', 
-        marginTop : verticalScale(10)
+        color: '#bb0a1e',
+        marginTop: verticalScale(10)
+    },
+    fgpasswordTitle: {
+        color: '#000',
+        fontSize: moderateScale(25),
+        textAlign: 'center'
+    },
+    fgpassInst: {
+        color: 'rgba(0,0,0,0.5)',
+        fontSize: moderateScale(18),
+        marginHorizontal: scale(10),
+        textAlign: 'center'
+    },
+    forgotPCont: {
+        width: '90%',
+        alignSelf: 'center'
+    },
+    forgotPText: {
+        textAlign: 'right',
+        fontSize: moderateScale(18)
     }
 })

@@ -88,6 +88,18 @@ export default class AuthMiddleware {
         }
     }
 
+    static forgetPassword(email) {
+        return (dispatch) => {
+            dispatch(AuthActions.authStart())
+            firebase.auth().sendPasswordResetEmail(email)
+                .then(() => {
+                    dispatch(AuthActions.fgPasswrod())
+                }).catch((e) => {
+                    dispatch(AuthActions.authfailed(e.message))
+                })
+        }
+    }
+
     static checkAuth() {
         return (dispatch) => {
             firebase.auth().onAuthStateChanged((user) => {

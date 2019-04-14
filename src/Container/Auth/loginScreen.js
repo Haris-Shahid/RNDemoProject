@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StatusBar, Image, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, StatusBar, Image, TouchableOpacity } from 'react-native';
 import { Font, Facebook } from 'expo';
 import { Content, Item, Input, Button } from 'native-base';
 import { Ionicons } from '@expo/vector-icons';
@@ -17,12 +17,9 @@ class LoginScreen extends Component {
             email: 'harisshahid00@gmail.com',
             password: 'superheroes',
             validation: null,
-            userInfo: null
+            userInfo: null,
+            passStatus: true,
         }
-    }
-
-    componentDidMount() {
-        this.props.checkAuth();
     }
 
     async componentDidMount() {
@@ -99,7 +96,7 @@ class LoginScreen extends Component {
             // );
             const userInfo = await response.json();
             console.log(userInfo, '//////')
-            this.setState({userInfo})
+            this.setState({ userInfo })
             // this.props.navigation.navigate('homeScreen', {userInfo: userInfo});
         }
     }
@@ -122,8 +119,14 @@ class LoginScreen extends Component {
                             </Item>
                             <Item style={styles.inputCont} >
                                 <Ionicons style={styles.inputIcon} name='md-lock' />
-                                <Input ref='Password' selectionColor='#bb0a1e' onSubmitEditing={() => this.formSubmit()} returnKeyType="done" onChangeText={(text) => this.handleInput('password', text)} placeholder='Password' secureTextEntry={true} placeholderTextColor='rgba(0, 0, 0, 0.5)' style={styles.inputField} />
+                                <Input ref='Password' selectionColor='#bb0a1e' onSubmitEditing={() => this.formSubmit()} returnKeyType="done" onChangeText={(text) => this.handleInput('password', text)} placeholder='Password' secureTextEntry={this.state.passStatus} placeholderTextColor='rgba(0, 0, 0, 0.5)' style={styles.inputField} />
+                                <TouchableOpacity onPress={() => this.setState({passStatus: !this.state.passStatus})} >
+                                    <Ionicons style={styles.inputIcon} name={this.state.passStatus ? 'md-eye' : 'md-eye-off'} />
+                                </TouchableOpacity>
                             </Item>
+                            <TouchableOpacity onPress={() => this.props.navigation.navigate('ForgetPassword')} style={styles.forgotPCont} >
+                                <Text style={styles.forgotPText} >Forgot Password?</Text>
+                            </TouchableOpacity>
                             {(this.state.validation !== null || this.state.validation !== 'null') && <Text style={styles.errorTxt} >{this.state.validation}</Text>}
                             <Button onPress={() => this.formSubmit()} style={styles.btn} block >
                                 <Text style={styles.btnTxt} >LOG IN</Text>
