@@ -1,23 +1,19 @@
 import React, { Component } from 'react';
-import { View, Text, StatusBar, Image, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
-import { Font } from 'expo';
+import { View, Text, StatusBar, Image, TouchableOpacity, Dimensions, ActivityIndicator } from 'react-native';
 import { Content, Item, Input, Button } from 'native-base';
 import { Ionicons } from '@expo/vector-icons';
 import { styles } from './style';
 import { connect } from "react-redux"
 import Loader from '../../Components/activityIndicator';
 import { scale } from '../../Constants/scalingFunction';
-import { MainMiddleware } from '../../Store/Middlewares';
-import Actions from '../../Store/Actions/Action';
+import { AuthMiddleware } from '../../Store/Middlewares';
+import AuthActions from '../../Store/Actions/AuthActions';
+import CustomModal from '../../Components/customModal';
 
 class SignUpScreen extends Component {
-    static navigationOptions = {
-        header: { visible: false }
-    }
     constructor() {
         super();
         this.state = {
-            fontLoaded: false,
             name: '',
             email: '',
             password: '',
@@ -26,21 +22,14 @@ class SignUpScreen extends Component {
             loading: false,
         }
     }
-    async componentDidMount() {
+    componentDidMount() {
         this.props.reset();
-        await Font.loadAsync({
-            'rentuck': require('../../../assets/fonts/Rentuck.ttf'),
-        });
-        this.setState({
-            fontLoaded: true
-        })
     }
 
     componentWillReceiveProps(nextProps) {
         this.setState({
             validation: nextProps.validation
         })
-        nextProps.route && this.props.navigation.goBack();
     }
 
     handleInput(type, value) {
@@ -60,15 +49,17 @@ class SignUpScreen extends Component {
                                 !retypePassword ? 'Please enter Retype password to confirm your password' :
                                     retypePassword !== password ? "Your password doesn't match" : null}`
         if (validation === null || validation === "null") {
-            this.setState({ validation: null })
             let UserData = { name, email, profileImage: this.props.profileImage }
-            this.props.signUp(UserData, password)
-            this.setState({
-                validation: null,
-            })
+            this.props.signUp(UserData, password, this.props.navigation)
+            this.setState({ validation: null })
         } else {
             this.setState({ validation })
         }
+    }
+
+    async handleModal() {
+        await this.props.reset();
+        this.props.navigation.goBack();
     }
 
     render() {
@@ -96,11 +87,11 @@ class SignUpScreen extends Component {
                         <View style={styles.formContainer} >
                             <Item style={styles.inputCont} >
                                 <Ionicons style={styles.inputIcon} name='ios-person' />
-                                <Input ref="1" selectionColor='#bb0a1e' onSubmitEditing={() => this.refs.email._root.focus() } returnKeyType="next" onChangeText={(text) => this.handleInput('name', text)} placeholder='Your Name' placeholderTextColor='rgba(100, 100, 100, 0.5)' style={styles.inputField} />
+                                <Input ref="1" selectionColor='#bb0a1e' onSubmitEditing={() => this.refs.email._root.focus()} returnKeyType="next" onChangeText={(text) => this.handleInput('name', text)} placeholder='Your Name' placeholderTextColor='rgba(100, 100, 100, 0.5)' style={styles.inputField} />
                             </Item>
                             <Item style={styles.inputCont} >
                                 <Ionicons style={styles.inputIcon} name='ios-mail' />
-                                <Input ref='email' selectionColor='#bb0a1e' keyboardType="email-address" onSubmitEditing={() => this.refs.password._root.focus() } returnKeyType='next' autoCapitalize="none" autoCorrect={false} onChangeText={(text) => this.handleInput('email', text)} placeholder='Email' placeholderTextColor='rgba(100, 100, 100, 0.5)' style={styles.inputField} />
+                                <Input ref='email' selectionColor='#bb0a1e' keyboardType="email-address" onSubmitEditing={() => this.refs.password._root.focus()} returnKeyType='next' autoCapitalize="none" autoCorrect={false} onChangeText={(text) => this.handleInput('email', text)} placeholder='Email' placeholderTextColor='rgba(100, 100, 100, 0.5)' style={styles.inputField} />
                             </Item>
                             <Item style={styles.inputCont} >
                                 <Ionicons style={styles.inputIcon} name='md-lock' />
@@ -108,7 +99,7 @@ class SignUpScreen extends Component {
                             </Item>
                             <Item style={styles.inputCont} >
                                 <Ionicons style={styles.inputIcon} name='md-lock' />
-                                <Input ref='resetPassword' selectionColor='#bb0a1e' onSubmitEditing={() => this.formSubmit() } returnKeyType='done' onChangeText={(text) => this.handleInput('retypePassword', text)} placeholder='Retype Password' secureTextEntry={true} placeholderTextColor='rgba(100, 100, 100, 0.5)' style={styles.inputField} />
+                                <Input ref='resetPassword' selectionColor='#bb0a1e' onSubmitEditing={() => this.formSubmit()} returnKeyType='done' onChangeText={(text) => this.handleInput('retypePassword', text)} placeholder='Retype Password' secureTextEntry={true} placeholderTextColor='rgba(100, 100, 100, 0.5)' style={styles.inputField} />
                             </Item>
                             {(this.state.validation !== null || this.state.validation !== 'null') && <Text style={styles.errorTxt} >{this.state.validation}</Text>}
                             <Button onPress={() => this.formSubmit()} style={styles.btn} block >
@@ -124,26 +115,26 @@ class SignUpScreen extends Component {
                     </Content>
                     {this.props.isLoading && <Loader />}
                 </View>
+                <CustomModal visible={this.props.navigateRoute} handleModal={() => this.handleModal()} />
             </View>
         )
     }
 }
 
 const mapStateToProps = (state) => {
-    console.log(state)
     return {
         isLoading: state.AuthReducer.isLoading,
         profileImage: state.AuthReducer.profileImage,
         profileImageLoading: state.AuthReducer.profileImageLoading,
         validation: state.AuthReducer.validation,
-        route: state.AuthReducer.route,
+        navigateRoute: state.AuthReducer.navigateRoute,
     };
 }
 const mapDispatchToProps = (dispatch) => {
     return {
-        signUp: (data, p) => { dispatch(MainMiddleware.SignUpMiddleware(data, p)) },
-        UploadImage: (uri) => { dispatch(MainMiddleware.UploadImage(uri)) },
-        reset: () => dispatch(Actions.resetAllState()),
+        signUp: (data, p, nav) => { dispatch(AuthMiddleware.SignUpMiddleware(data, p, nav)) },
+        UploadImage: (uri) => { dispatch(AuthMiddleware.UploadImage(uri)) },
+        reset: () => dispatch(AuthActions.resetAllState()),
     }
 }
 

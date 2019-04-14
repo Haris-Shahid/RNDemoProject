@@ -1,6 +1,6 @@
     
-import MainMiddleware from "./mainMiddleware";
+import AuthMiddleware from "./authMiddleware";
 
 export {
-    MainMiddleware,
+    AuthMiddleware,
 }

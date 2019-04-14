@@ -8,7 +8,6 @@ import LoginScreen from './Container/Auth/loginScreen';
 import SignUpScreen from './Container/Auth/signupScreen';
 import Dashboard from './Container/Dashboard';
 
-
 const AuthScreen = createStackNavigator({
     loginScreen: {
         screen: LoginScreen

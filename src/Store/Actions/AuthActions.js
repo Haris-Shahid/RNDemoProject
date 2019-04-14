@@ -1,18 +1,28 @@
-import { AUTH_START, REGISTER_SUCCESSFULL, AUTH_FAILED, IMAGE_UPLOADED, IMAGE_UPLOADING, IMAGE_UPLOADING_FAILED, LOGIN_SUCCESSFULL, RESET_ALL_STATE, FB_USER_LOGIN } from '../constant'
+import { 
+    IMAGE_UPLOADING, 
+    IMAGE_UPLOADED, 
+    IMAGE_UPLOADING_FAILED, 
+    AUTH_START, 
+    REGISTER_SUCCESSFULL, 
+    AUTH_FAILED, 
+    LOGIN_SUCCESSFULL, 
+    RESET_ALL_STATE, 
+    FB_USER_LOGIN 
+} from '../constant'
 
 
-export default class Actions {
+export default class AuthActions {
+
+    static imageUploading() {
+        return {
+            type: IMAGE_UPLOADING
+        }
+    }
 
     static imageUploaded(url) {
         return {
             type: IMAGE_UPLOADED,
             url
-        }
-    }
-
-    static imageUploading() {
-        return {
-            type: IMAGE_UPLOADING
         }
     }
 

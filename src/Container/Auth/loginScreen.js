@@ -6,8 +6,8 @@ import { Ionicons } from '@expo/vector-icons';
 import { styles } from './style';
 import { connect } from "react-redux"
 import Loader from '../../Components/activityIndicator';
-import { MainMiddleware } from '../../Store/Middlewares';
-import Actions from '../../Store/Actions/Action';
+import { AuthMiddleware } from '../../Store/Middlewares';
+import AuthActions from '../../Store/Actions/AuthActions';
 
 class LoginScreen extends Component {
     constructor() {
@@ -23,10 +23,6 @@ class LoginScreen extends Component {
 
     componentDidMount() {
         this.props.checkAuth();
-    }
-
-    static navigationOptions = {
-        header: { visible: false }
     }
 
     async componentDidMount() {
@@ -49,7 +45,7 @@ class LoginScreen extends Component {
         this.setState({
             validation: nextProps.validation
         })
-        nextProps.route && this.props.navigation.navigate('homeScreen');
+        // nextProps.route && this.props.navigation.navigate('homeScreen');
     }
 
     formSubmit() {
@@ -145,9 +141,9 @@ class LoginScreen extends Component {
                                 <Text style={styles.signUp} >SIGN UP</Text>
                             </TouchableOpacity>
                         </View>
-                        {this.state.userInfo !== null && <View>
+                        {/* {this.state.userInfo !== null && <View>
                             <Image source={{uri: this.state.userInfo.picture.data.url}} style={{width: 100, height: 100, borderRadius: 50}} />
-                        </View>}
+                        </View>} */}
                     </Content>
                     {this.props.isLoading && <Loader />}
                 </View>
@@ -165,10 +161,10 @@ const mapStateToProps = (state) => {
 }
 const mapDispatchToProps = (dispatch) => {
     return {
-        logIn: (data) => { dispatch(MainMiddleware.LogInMiddleware(data)) },
-        loginWithFB: (data) => { dispatch(MainMiddleware.LoginWithFBMiddleware(data)) },
-        checkAuth: () => { dispatch(MainMiddleware.checkAuth()) },
-        reset: () => dispatch(Actions.resetAllState()),
+        logIn: (data) => { dispatch(AuthMiddleware.LogInMiddleware(data)) },
+        loginWithFB: (data) => { dispatch(AuthMiddleware.LoginWithFBMiddleware(data)) },
+        checkAuth: () => { dispatch(AuthMiddleware.checkAuth()) },
+        reset: () => dispatch(AuthActions.resetAllState()),
     }
 }
 

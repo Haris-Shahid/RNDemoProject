@@ -1,12 +1,13 @@
-import Actions from '../Actions/Action';
+import AuthActions from '../Actions/AuthActions';
 import * as firebase from 'firebase';
 import { ImagePicker } from 'expo';
+import { Alert, Icon } from 'react-native';
 
-export default class MainMiddleware {
+export default class AuthMiddleware {
 
     static UploadImage() {
         return async (dispatch) => {
-            dispatch(Actions.imageUploading())
+            dispatch(AuthActions.imageUploading())
             let result = await ImagePicker.launchImageLibraryAsync({
                 allowsEditing: true,
                 aspect: [4, 4],
@@ -29,68 +30,68 @@ export default class MainMiddleware {
                 const snapshot = await ref.put(blob);
                 blob.close();
                 let url = await snapshot.ref.getDownloadURL();
-                dispatch(Actions.imageUploaded(url))
+                dispatch(AuthActions.imageUploaded(url))
             } else {
-                dispatch(Actions.imageUploadingFailed())
+                dispatch(AuthActions.imageUploadingFailed())
             }
         }
     }
 
     static SignUpMiddleware(data, password) {
         return (dispatch) => {
-            dispatch(Actions.authStart())
+            dispatch(AuthActions.authStart())
             firebase.auth()
                 .createUserWithEmailAndPassword(data.email, password)
                 .then(({ user }) => {
                     data.uid = user.uid;
                     firebase.database().ref('/').child(`user/${user.uid}`).set(data)
                         .then(() => {
-                            dispatch(Actions.registerSuccessfull(data))
+                            dispatch(AuthActions.registerSuccessfull(data))
                         })
                 })
                 .catch((error) => {
                     let message = error.message;
-                    dispatch(Actions.authfailed(message))
+                    dispatch(AuthActions.authfailed(message))
                 })
         }
     }
 
-    static LogInMiddleware(data){
+    static LogInMiddleware(data) {
         return (dispatch) => {
-            dispatch(Actions.authStart())
+            dispatch(AuthActions.authStart())
             firebase.auth()
-            .signInWithEmailAndPassword(data.email, data.password)
-            .then(({user}) => {
-                firebase.database().ref('/').child(`user/${user.uid}`).once('value', (snap) => {
-                    dispatch(Actions.loginSuccessfully(snap.val()))
+                .signInWithEmailAndPassword(data.email, data.password)
+                .then(({ user }) => {
+                    firebase.database().ref('/').child(`user/${user.uid}`).once('value', (snap) => {
+                        dispatch(AuthActions.loginSuccessfully(snap.val()))
+                    })
                 })
-            })
-            .catch((error) => {
-                let message = error.message;
-                dispatch(Actions.authfailed(message))
-            });
+                .catch((error) => {
+                    let message = error.message;
+                    dispatch(AuthActions.authfailed(message))
+                });
         }
     }
-    
-    static LoginWithFBMiddleware(token){
+
+    static LoginWithFBMiddleware(token) {
         return (dispatch) => {
             const credential = firebase.auth.FacebookAuthProvider.credential(token);
             firebase.auth().signInWithCredential(credential)
-            .then((user) => {
-                console.log(user, '//////////////////////////')
-                dispatch(Actions.loginSuccessfullyFB(user))
-            })
-            .catch((error) => {
-                let message = error.message;
-                dispatch(Actions.authfailed(message))
-            })
+                .then((user) => {
+                    console.log(user, '//////////////////////////')
+                    dispatch(AuthActions.loginSuccessfullyFB(user))
+                })
+                .catch((error) => {
+                    let message = error.message;
+                    dispatch(AuthActions.authfailed(message))
+                })
         }
     }
 
-    static checkAuth(){
+    static checkAuth() {
         return (dispatch) => {
             firebase.auth().onAuthStateChanged((user) => {
-                if(user) {
+                if (user) {
                     console.log(user, 'login user ////////////////')
                 }
             })
