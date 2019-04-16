@@ -12,20 +12,23 @@ class CustomDrawerComponent extends Component {
     }
 
     render() {
+        const { items, ...rest } = this.props;
+        const filteredItems = this.props.bloodDonor ? items.filter(item => item.key !== "Become a Donor") : items;
         return (
             <SafeAreaView style={{ flex: 1 }} >
                 <View style={styles.userProfileCont} >
                     <View style={styles.profileIconCont} >
-                    {
-                        this.props.profileImage == '' || !this.props.profileImage ? 
-                        <Ionicons name='ios-person' style={styles.profileIcon} /> :
-                        <Image source={{ uri: this.props.profileImage }} style={{ width: '100%', height: '100%' }} />
-                    }
+                        {
+                            this.props.profileImage == '' || !this.props.profileImage ?
+                                <Ionicons name='ios-person' style={styles.profileIcon} /> :
+                                <Image source={{ uri: this.props.profileImage }} style={{ width: '100%', height: '100%' }} />
+                        }
                     </View>
                     <Text style={styles.userName} >{this.props.name}</Text>
                 </View>
                 <ScrollView>
-                    <DrawerItems {...this.props} />
+                    <DrawerItems items={filteredItems} {...rest} />
+                    {this.props.bloodDonor && <Text style={styles.bdTxt} >You are a Blood Donor</Text>}
                     <View style={styles.logoutCont} >
                         <TouchableOpacity onPress={() => this.props.signOut(this.props.navigation)} style={styles.logoutBtn} >
                             <Text style={styles.logoutTxt} >Logout</Text>
@@ -43,6 +46,7 @@ const mapStateToProps = (state) => {
         name: state.AuthReducer.name,
         profileImage: state.AuthReducer.profileImage,
         validation: state.AuthReducer.validation,
+        bloodDonor: state.DonorReducer.bloodDonor
     };
 }
 const mapDispatchToProps = (dispatch) => {
@@ -91,6 +95,12 @@ const styles = StyleSheet.create({
     logoutTxt: {
         fontSize: moderateScale(18),
         color: '#bb0a1e'
+    },
+    bdTxt: {
+        fontSize: moderateScale(16),
+        color: '#bb0a1e',
+        marginHorizontal: scale(20),
+        marginBottom: verticalScale(10)
     }
 })
 

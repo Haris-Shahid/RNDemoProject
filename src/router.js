@@ -11,6 +11,7 @@ import Dashboard from './Container/Dashboard';
 import Inbox from './Container/Inbox';
 import Notifications from './Container/Notifications';
 import Profile from './Container/Profile';
+import DonorForm from './Container/DonorForm';
 import CustomDrawerComponent from './Components/customDrawerComponent';
 import AuthLoader from './Components/authLoader';
 
@@ -32,7 +33,8 @@ const AppDrawNavigator = createDrawerNavigator({
     Home: Dashboard,
     Inbox: Inbox,
     Notifications: Notifications,
-    Profile: Profile
+    Profile: Profile,
+    'Become a Donor' : DonorForm
 },{
     contentComponent: CustomDrawerComponent,
     drawerWidth: Dimensions.get('window').width - 100,

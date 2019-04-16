@@ -15,3 +15,7 @@ export const RESET_ALL_STATE = "RESET_ALL_STATE";
 export const FORGET_PASSWORD = "FORGET_PASSWORD";
 export const SIGN_OUT = "SIGN_OUT";
 export const RECOVER_DATA = "RECOVER_DATA";
+
+export const GET_ALL_DONORS = 'GET_ALL_DONORS';
+export const IS_LOADING_USER = 'IS_LOADING_USER';
+export const DONOR_FORM_SUBMIT = 'DONOR_FORM_SUBMIT';

@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
-import { View, Text, Image, StatusBar, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Image, Text, StatusBar, StyleSheet, TouchableOpacity, ScrollView, Dimensions } from 'react-native';
 import { connect } from "react-redux"
-import { Header, Left, Right, Icon, Body } from 'native-base';
+import * as nb from 'native-base';
+import CustomHeader from '../../Components/header';
 import { Ionicons } from '@expo/vector-icons';
-import { verticalScale, scale, moderateScale } from '../../Constants/scalingFunction';
+import { styles } from './style';
+import { DonorMiddleware } from '../../Store/Middlewares';
+import Loader from '../../Components/activityIndicator';
 
 class Dashboard extends Component {
     constructor(props) {
@@ -11,75 +14,155 @@ class Dashboard extends Component {
         this.state = {
             name: '',
             imageUrl: '',
+            selected: 'all',
+            filterdDonors: [],
+        }
+    }
+
+    async componentDidMount() {
+        await this.props.GetDonors(this.props.uid);
+        const { selected } = this.state;
+        if (selected === 'all') {
+            this.setState({
+                filterdDonors: this.props.userList
+            })
 
         }
     }
 
-    static navigationOptions = {
-        drawerIcon: ({ tintColor }) => (
-            <Icon name='md-home' style={{ color: tintColor, fontSize: 24 }} />
-        )
+    componentWillReceiveProps(nextProps) {
+        this.setState({
+            filterdDonors: nextProps.userList
+        })
     }
 
+    static navigationOptions = {
+        drawerIcon: ({ tintColor }) => (
+            <nb.Icon name='md-home' style={{ color: tintColor, fontSize: 24 }} />
+        )
+    }
+    onValueChange(value) {
+        const { userList } = this.props;
+        if (value === 'all') {
+            this.setState({ filterdDonors: userList, selected: 'all' });
+        } else {
+            let filterdDonors = [];
+            userList.map((v, i) => {
+                if (v.group === value) {
+                    filterdDonors.push(v);
+                }
+            })
+            this.setState({ filterdDonors, selected: value })
+
+        }
+    };
     render() {
         return (
             <View style={{ flex: 1 }} >
                 <StatusBar hidden={true} />
-                <Header style={{ backgroundColor: "#bb0a1e" }} >
-                    <Left>
-                        <TouchableOpacity onPress={() => this.props.navigation.openDrawer()} >
-                            <Icon name='md-menu' style={{ color: '#fff' }} />
-                        </TouchableOpacity>
-                    </Left>
-                    <Body>
-                        <Text style={styles.headerTxt} >{this.props.name}</Text>
-                    </Body>
-                    <Right>
-                        <View style={styles.profileIconCont} >
-                            {
-                                this.props.profileImage == '' || !this.props.profileImage ?
-                                    <Ionicons name='ios-person' style={styles.profileIcon} /> :
-                                    <Image source={{ uri: this.props.profileImage }} style={{ width: '100%', height: '100%' }} />
-                            }
-                        </View>
-                    </Right>
-                </Header>
-                <Text>Dashboard</Text>
-                {/* <Image source={{uri: this.state.imageUrl}} style={{width: 150, height: 150, borderRadius: 50, marginVertical: 20}} />
-                <Text>
-                    {this.state.name}
-                </Text> */}
+                <CustomHeader name={this.props.name} profileImage={this.props.profileImage} menuIcon={() => this.props.navigation.openDrawer()} />
+                <nb.Content>
+                    <View style={styles.formCont} >
+                        <Text style={styles.formTitle} >Seacrh donor by their blood group</Text>
+                        <nb.Form style={styles.form} >
+                            <nb.Picker style={{ color: '#bb0a1e' }} onValueChange={value => this.onValueChange(value)} selectedValue={this.state.selected}>
+                                <nb.Item color='#bb0a1e' label="All" value="all" />
+                                <nb.Item color='#bb0a1e' label="A+" value="A+" />
+                                <nb.Item color='#bb0a1e' label="AB+" value="AB+" />
+                                <nb.Item color='#bb0a1e' label="B+" value="B+" />
+                                <nb.Item color='#bb0a1e' label="O+" value="O+" />
+                                <nb.Item color='#bb0a1e' label="A-" value="A-" />
+                                <nb.Item color='#bb0a1e' label="AB-" value="AB-" />
+                                <nb.Item color='#bb0a1e' label="B-" value="B-" />
+                                <nb.Item color='#bb0a1e' label="O-" value="O-" />
+                            </nb.Picker>
+                        </nb.Form>
+                        <nb.Card style={styles.mainCardCont} >
+                            <nb.CardItem header>
+                                <nb.Text>List of Donors</nb.Text>
+                            </nb.CardItem>
+                            <nb.CardItem>
+                                <ScrollView style={{ height: Dimensions.get('window').height - 290 }} >
+                                    {this.state.filterdDonors.length !== 0 ?
+                                        this.state.filterdDonors.map((d, i) => {
+                                            if (this.props.uid === d.uid) {
+                                                return (
+                                                    <nb.Card key={i} >
+                                                        <nb.CardItem style={{ flexDirection: 'row' }} >
+                                                            <View style={{ flex: 1 }} >
+                                                                <View style={styles.profileIconCont} >
+                                                                    {
+                                                                        d.profileImage == '' || !d.profileImage ?
+                                                                            <Ionicons name='ios-person' style={styles.profileIcon} /> :
+                                                                            <Image source={{ uri: d.profileImage }} style={styles.userProfile} />
+                                                                    }
+                                                                </View>
+                                                            </View>
+                                                            <View style={styles.userName} >
+                                                                <Text>{d.name}</Text>
+                                                            </View>
+                                                        </nb.CardItem>
+                                                    </nb.Card>
+                                                )
+                                            }
+                                            return (
+                                                <nb.Card key={i} >
+                                                    <nb.CardItem style={{ flexDirection: 'row' }} >
+                                                        <View style={{ flex: 1 }} >
+                                                            <View style={styles.profileIconCont} >
+                                                                {
+                                                                    d.profileImage == '' || !d.profileImage ?
+                                                                        <Ionicons name='ios-person' style={styles.profileIcon} /> :
+                                                                        <Image source={{ uri: d.profileImage }} style={styles.userProfile} />
+                                                                }
+                                                            </View>
+                                                        </View>
+                                                        <View style={styles.userName} >
+                                                            <Text>{d.name}</Text>
+                                                        </View>
+                                                        <View style={styles.acBtnCont}>
+                                                            <TouchableOpacity style={styles.btn} >
+                                                                <Text style={styles.btnTxt} >ACCEPT</Text>
+                                                            </TouchableOpacity>
+                                                        </View>
+                                                    </nb.CardItem>
+                                                </nb.Card>
+                                            )
+                                        })
+                                        :
+                                        <nb.Card>
+                                            <nb.CardItem>
+                                                <nb.Text>There is no donor available in the list right now.</nb.Text>
+                                            </nb.CardItem>
+                                        </nb.Card>
+                                    }
+                                </ScrollView>
+                            </nb.CardItem>
+                        </nb.Card>
+                    </View>
+
+                </nb.Content>
+
+                {this.props.isLoading && <Loader />}
             </View>
         )
     }
 }
 
-const styles = StyleSheet.create({
-    profileIconCont: {
-        backgroundColor: 'rgba(255,255,255,0.5)',
-        borderRadius: 50,
-        justifyContent: 'center',
-        alignItems: 'center',
-        width: verticalScale(30),
-        height: verticalScale(30),
-        overflow: 'hidden'
-    },
-    profileIcon: {
-        color: 'rgba(255,255,255,0.8)',
-        fontSize: moderateScale(18)
-    },
-    headerTxt: {
-        color: '#fff',
-        fontSize: 20
-    },
-})
-
 const mapStateToProps = (state) => {
     return {
-        isLoading: state.AuthReducer.isLoading,
+        isLoading: state.DonorReducer.isLoading,
+        userList: state.DonorReducer.userList,
         profileImage: state.AuthReducer.profileImage,
-        name: state.AuthReducer.name
+        name: state.AuthReducer.name,
+        uid: state.AuthReducer.uid
     };
 }
 
-export default connect(mapStateToProps, {})(Dashboard);
+const mapDispatchToProps = (dispatch) => {
+    return {
+        GetDonors: (uid) => dispatch(DonorMiddleware.GetDonors(uid))
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);

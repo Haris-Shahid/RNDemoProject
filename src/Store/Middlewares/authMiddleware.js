@@ -76,20 +76,27 @@ export default class AuthMiddleware {
     }
 
     static LoginWithFBMiddleware(token, nav) {
-        return (dispatch) => {
+        return async (dispatch) => {
             dispatch(AuthActions.authStart())
             const credential = firebase.auth.FacebookAuthProvider.credential(token);
             firebase.auth().signInWithCredential(credential)
                 .then(async (user) => {
-                    let userData = {
-                        name: user.displayName,
-                        email: user.email,
-                        profileImage: user.photoURL,
-                        uid: user.uid
-                    }
-                    await AsyncStorage.setItem('userToken', JSON.stringify({ user: userData }))
-                    dispatch(AuthActions.loginSuccessfullyFB(userData))
-                    nav.navigate('homeScreen')
+                    const response = await fetch(`https://graph.facebook.com/me?access_token=${token}&fields=id,name,birthday,picture.type(large)`);
+                    const js = await response.json();
+                    firebase.database().ref('/').child(`user/${user.uid}/`).once('value', async (snap) => {
+                        let userData = {
+                            name: js.name,
+                            email: user.email,
+                            profileImage: js.picture.data.url,
+                            uid: user.uid
+                        }
+                        if (snap.val() === null) {
+                            firebase.database().ref(`/user/${user.uid}/`).set(userData)
+                        }
+                        await AsyncStorage.setItem('userToken', JSON.stringify({ user: userData }))
+                        dispatch(AuthActions.loginSuccessfullyFB(userData))
+                        nav.navigate('homeScreen')
+                    })
                 })
                 .catch((error) => {
                     let message = error.message;

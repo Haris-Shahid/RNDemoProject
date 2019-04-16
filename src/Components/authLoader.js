@@ -12,8 +12,10 @@ class AuthLoader extends React.Component {
 
     async loadApp() {
         const userToken = await AsyncStorage.getItem('userToken')
-        let userData = JSON.parse(userToken);
-        this.props.recoverUserData(userData.user);
+        if (userToken) {
+            let userData = JSON.parse(userToken);
+            this.props.recoverUserData(userData.user);
+        }
         this.props.navigation.navigate(userToken ? 'homeScreen' : 'Auth')
     }
 
@@ -46,4 +48,4 @@ const mapStateToProps = (state) => {
     return state;
 }
 
-export default connect(mapStateToProps,mapDispatchToProps)(AuthLoader);
+export default connect(mapStateToProps, mapDispatchToProps)(AuthLoader);
