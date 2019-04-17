@@ -19,6 +19,10 @@ class Dashboard extends Component {
         }
     }
 
+    static navigationOptions = {
+        header: null
+    }
+
     async componentDidMount() {
         await this.props.GetDonors(this.props.uid);
         const { selected } = this.state;
@@ -106,27 +110,29 @@ class Dashboard extends Component {
                                                 )
                                             }
                                             return (
-                                                <nb.Card key={i} >
-                                                    <nb.CardItem style={{ flexDirection: 'row' }} >
-                                                        <View style={{ flex: 1 }} >
-                                                            <View style={styles.profileIconCont} >
-                                                                {
-                                                                    d.profileImage == '' || !d.profileImage ?
-                                                                        <Ionicons name='ios-person' style={styles.profileIcon} /> :
-                                                                        <Image source={{ uri: d.profileImage }} style={styles.userProfile} />
-                                                                }
+                                                <TouchableOpacity onPress={() => this.props.navigation.navigate('donorScreen', {donor: d, userUid: this.props.uid})} key={i} >
+                                                    <nb.Card>
+                                                        <nb.CardItem style={{ flexDirection: 'row' }} >
+                                                            <View style={{ flex: 1 }} >
+                                                                <View style={styles.profileIconCont} >
+                                                                    {
+                                                                        d.profileImage == '' || !d.profileImage ?
+                                                                            <Ionicons name='ios-person' style={styles.profileIcon} /> :
+                                                                            <Image source={{ uri: d.profileImage }} style={styles.userProfile} />
+                                                                    }
+                                                                </View>
                                                             </View>
-                                                        </View>
-                                                        <View style={styles.userName} >
-                                                            <Text>{d.name}</Text>
-                                                        </View>
-                                                        <View style={styles.acBtnCont}>
-                                                            <TouchableOpacity style={styles.btn} >
-                                                                <Text style={styles.btnTxt} >ACCEPT</Text>
-                                                            </TouchableOpacity>
-                                                        </View>
-                                                    </nb.CardItem>
-                                                </nb.Card>
+                                                            <View style={styles.userName} >
+                                                                <Text>{d.name}</Text>
+                                                            </View>
+                                                            <View style={styles.acBtnCont}>
+                                                                <TouchableOpacity style={styles.btn} >
+                                                                    <Text style={styles.btnTxt} >ACCEPT</Text>
+                                                                </TouchableOpacity>
+                                                            </View>
+                                                        </nb.CardItem>
+                                                    </nb.Card>
+                                                </TouchableOpacity>
                                             )
                                         })
                                         :

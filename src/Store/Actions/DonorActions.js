@@ -2,6 +2,7 @@ import {
     GET_ALL_DONORS,
     IS_LOADING_USER,
     DONOR_FORM_SUBMIT,
+    ACCEPTED_DONOR
 } from '../constant'
 
 
@@ -21,6 +22,13 @@ export default class DonorActions {
         return{
             type: DONOR_FORM_SUBMIT,
             formData
+        }
+    }
+
+    static AcceptedDonor(AcceptedDonor){
+        return{
+            type: ACCEPTED_DONOR,
+            AcceptedDonor
         }
     }
 }

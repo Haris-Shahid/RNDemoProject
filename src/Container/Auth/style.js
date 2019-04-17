@@ -18,10 +18,9 @@ export const styles = StyleSheet.create({
         width: '100%',
     },
     logoContainer: {
-        height: verticalScale(170),
+        height: verticalScale(150),
         width: '100%',
         justifyContent: 'center',
-        paddingTop: verticalScale(50),
         alignItems: 'center'
     },
     profileIconCont: {

@@ -30,9 +30,6 @@ class DonorForm extends Component {
             isDonated: false,
         }
     }
-    // static navigationOptions = this.props.bloodDonor &&  {
-    //     drawerLabel: () => null
-    // }
 
 handleRadio(g) {
     const { gender } = this.state;
@@ -70,7 +67,7 @@ render() {
             <Content>
                 <Card style={{ width: '90%', alignSelf: 'center' }} >
                     <CardItem style={{ justifyContent: 'center' }} >
-                        <View style={styles.logoContainer} >
+                        <View>
                             <View style={styles.profileIconCont} >
                                 {
                                     this.props.profileImage === "" ?

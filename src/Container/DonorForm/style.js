@@ -23,21 +23,6 @@ export const styles = StyleSheet.create({
         color: 'rgba(255,255,255,0.5)',
         fontSize: moderateScale(50)
     },
-    addIconCont: {
-        position: 'absolute',
-        width: verticalScale(25),
-        height: verticalScale(25),
-        backgroundColor: '#bb0a1e',
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderRadius: 50,
-        bottom: 0,
-        right: moderateScale(4)
-    },
-    addIcon: {
-        color: '#fff',
-        fontSize: moderateScale(20),
-    },
     radioBtn: {
         color: '#bb0a1e',
         fontSize: moderateScale(25)

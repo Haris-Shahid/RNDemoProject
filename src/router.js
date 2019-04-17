@@ -14,6 +14,7 @@ import Profile from './Container/Profile';
 import DonorForm from './Container/DonorForm';
 import CustomDrawerComponent from './Components/customDrawerComponent';
 import AuthLoader from './Components/authLoader';
+import DonorScreen from './Container/DonorScreen';
 
 const AuthScreen = createStackNavigator({
     loginScreen: {
@@ -40,17 +41,16 @@ const AppDrawNavigator = createDrawerNavigator({
     drawerWidth: Dimensions.get('window').width - 100,
     contentOptions: {
         activeTintColor: '#bb0a1e'
-    }
+    },
 }
 )
 
 const HomeScreen = createStackNavigator({
-    dashboard: {
-        screen: AppDrawNavigator
-    }
-}, {
-        headerMode: 'none'
-    })
+    dashboard: AppDrawNavigator,
+    donorScreen: DonorScreen
+},{
+     headerMode: 'none'
+})
 
 const Screens = createSwitchNavigator({
     AuthLoading: { screen: AuthLoader },
