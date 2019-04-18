@@ -25,10 +25,10 @@ export default class DonorActions {
         }
     }
 
-    static AcceptedDonor(AcceptedDonor){
+    static AcceptedDonor(){
         return{
             type: ACCEPTED_DONOR,
-            AcceptedDonor
+            
         }
     }
 }

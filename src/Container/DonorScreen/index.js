@@ -4,10 +4,11 @@ import { Header, Left, Icon, Body, Row, Button, } from 'native-base';
 import { styles } from './style';
 import { Ionicons } from '@expo/vector-icons';
 import { connect } from 'react-redux';
-import { DonorMiddleware } from '../../Store/Middlewares/donorMiddleware';
+import { DonorMiddleware } from '../../Store/Middlewares';
+import Loader from '../../Components/activityIndicator';
 
 const DonorScreen = (props) => {
-    const { address, city, contact, gender, group, name, profileImage, uid } = props.navigation.getParam("donor")
+    const { address, city, contact, gender, group, name, profileImage, uid, mobToken } = props.navigation.getParam("donor")
     return (
         <View style={{ flex: 1 }} >
             <Header style={{ backgroundColor: "#bb0a1e" }} >
@@ -52,17 +53,24 @@ const DonorScreen = (props) => {
                         <Text style={styles.tab1} >Address:</Text>
                         <Text style={styles.tab2} >{address}</Text>
                     </View>
-                    <Button block rounded style={styles.btn} onPress={() => props.handleAcceptBtnDetails(uid, props.navigation.getParam("userUid"), props.navigation ) } >
+                    <Button block rounded style={styles.btn} onPress={() => props.handleAcceptBtnDetails(props.navigation.getParam("userUid"), props.navigation,props.navigation.getParam("donor")) } >
                         <Text style={styles.btnTxt} >Accept Donor</Text>
                     </Button>
                 </View>
             </View>
+            {props.isLoading && <Loader />}
         </View>
     )
 }
 const mapDispatchToProps = (dispatch) => {
     return{
-        handleAcceptBtnDetails: (uid, userUid, nav) => dispatch(handleAcceptBtnDetails(uid, userUid, nav))
+        handleAcceptBtnDetails: (userUid, nav,udetail ) => dispatch(DonorMiddleware.handleAcceptBtnDetails(userUid, nav, udetail))
     }
 }
-export default connect({}, mapDispatchToProps)(DonorScreen);
+
+const mapStateToProps = ( state ) => {
+    return {
+        isLoading: state.DonorReducer.isLoading,
+    }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(DonorScreen);

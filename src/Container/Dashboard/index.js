@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Image, Text, StatusBar, StyleSheet, TouchableOpacity, ScrollView, Dimensions } from 'react-native';
+import { View, Image, Text, StatusBar, TouchableOpacity, ScrollView, Dimensions } from 'react-native';
 import { connect } from "react-redux"
 import * as nb from 'native-base';
 import CustomHeader from '../../Components/header';
@@ -7,6 +7,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { styles } from './style';
 import { DonorMiddleware } from '../../Store/Middlewares';
 import Loader from '../../Components/activityIndicator';
+import { Notifications } from 'expo';
 
 class Dashboard extends Component {
     constructor(props) {
@@ -16,11 +17,8 @@ class Dashboard extends Component {
             imageUrl: '',
             selected: 'all',
             filterdDonors: [],
+            requestSendTo: []
         }
-    }
-
-    static navigationOptions = {
-        header: null
     }
 
     async componentDidMount() {
@@ -32,12 +30,25 @@ class Dashboard extends Component {
             })
 
         }
+        Notifications.addListener((n) => this._handleNotification(n))
     }
-
+    _handleNotification(n) {
+        if (n.origin === "selected") {
+            console.log(n, '////////////////////////////////////////')
+            this.props.navigation.navigate('Notifications');
+        }
+    }
     componentWillReceiveProps(nextProps) {
         this.setState({
             filterdDonors: nextProps.userList
         })
+        if (nextProps.userList) {
+            nextProps.userList.map((v, i) => {
+                if (v.requestSendTo) {
+                    this.setState({ requestSendTo: v.requestSendTo })
+                }
+            })
+        }
     }
 
     static navigationOptions = {
@@ -61,6 +72,7 @@ class Dashboard extends Component {
         }
     };
     render() {
+        console.log(this.state.requestSendTo, '///////////////////////')
         return (
             <View style={{ flex: 1 }} >
                 <StatusBar hidden={true} />
@@ -110,7 +122,7 @@ class Dashboard extends Component {
                                                 )
                                             }
                                             return (
-                                                <TouchableOpacity onPress={() => this.props.navigation.navigate('donorScreen', {donor: d, userUid: this.props.uid})} key={i} >
+                                                <TouchableOpacity onPress={() => this.props.navigation.navigate('donorScreen', { donor: d, userUid: this.props.uid })} key={i} >
                                                     <nb.Card>
                                                         <nb.CardItem style={{ flexDirection: 'row' }} >
                                                             <View style={{ flex: 1 }} >
@@ -126,9 +138,24 @@ class Dashboard extends Component {
                                                                 <Text>{d.name}</Text>
                                                             </View>
                                                             <View style={styles.acBtnCont}>
-                                                                <TouchableOpacity style={styles.btn} >
-                                                                    <Text style={styles.btnTxt} >ACCEPT</Text>
-                                                                </TouchableOpacity>
+                                                                {
+                                                                    this.state.requestSendTo.length !== 0 ?
+                                                                      this.state.requestSendTo.map(v => {
+                                                                            console.log(d.uid === v.uid, '//////////////////')
+                                                                            if (d.uid === v.uid) {
+                                                                               return <TouchableOpacity key={v.uid} style={[styles.btn, { backgroundColor: '#f1c232' }]} >
+                                                                                    <Text style={[styles.btnTxt]} >Pending</Text>
+                                                                                </TouchableOpacity>
+                                                                            } else {
+                                                                               return <TouchableOpacity key={v.uid} style={styles.btn} >
+                                                                                    <Text style={styles.btnTxt} >ACCEPT</Text>
+                                                                                </TouchableOpacity>
+                                                                            }
+                                                                        }) :
+                                                                        <TouchableOpacity style={styles.btn} >
+                                                                            <Text style={styles.btnTxt} >ACCEPT</Text>
+                                                                        </TouchableOpacity>
+                                                                }
                                                             </View>
                                                         </nb.CardItem>
                                                     </nb.Card>
@@ -161,13 +188,14 @@ const mapStateToProps = (state) => {
         userList: state.DonorReducer.userList,
         profileImage: state.AuthReducer.profileImage,
         name: state.AuthReducer.name,
-        uid: state.AuthReducer.uid
+        uid: state.AuthReducer.uid,
+        rqsendTo: state.AuthReducer.requestSendTo
     };
 }
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        GetDonors: (uid) => dispatch(DonorMiddleware.GetDonors(uid))
+        GetDonors: (uid) => dispatch(DonorMiddleware.GetDonors(uid)),
     }
 }
 

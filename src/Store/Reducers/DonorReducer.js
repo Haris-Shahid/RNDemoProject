@@ -9,7 +9,7 @@ const initialState = {
     city: '',
     address: '',
     bloodDonor: false,
-    AcceptedDonor: []
+    acceptedDonor: []
 }
 
 export default function DonorReducer(state = initialState, action) {
@@ -25,7 +25,7 @@ export default function DonorReducer(state = initialState, action) {
             return state = { ...state, ...action.formData, isLoading: false }
 
         case ACCEPTED_DONOR:
-            return state = { ...state, AcceptedDonor: action.AcceptedDonor, isLoading: false }
+            return state = { ...state, isLoading: false }
 
         default:
             return state;
