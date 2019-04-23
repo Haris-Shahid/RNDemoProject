@@ -22,7 +22,7 @@ class AuthLoader extends React.Component {
     render() {
         return (
             <View style={styles.container} >
-                <ActivityIndicator animating={true} size={scale(50)} color="#bb0a1e" />
+                <ActivityIndicator animating={true} size='large' color="#bb0a1e" />
             </View >
         )
     }

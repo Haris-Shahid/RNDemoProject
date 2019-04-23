@@ -74,7 +74,7 @@ class SignUpScreen extends Component {
                                 <View style={styles.profileIconCont} >
                                     {
                                         this.props.profileImageLoading ?
-                                            <ActivityIndicator animating={true} size={scale(25)} color="rgba(255,255,255,0.5)" /> :
+                                            <ActivityIndicator animating={true} size='small' color="rgba(255,255,255,0.5)" /> :
                                             this.props.profileImage === "" ?
                                                 <Ionicons name='ios-person' style={styles.profileIcon} />
                                                 :

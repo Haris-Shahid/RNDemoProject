@@ -1,6 +1,6 @@
 import React from 'react'
 import { View, Image, Text, TouchableOpacity } from 'react-native';
-import { Header, Left, Icon, Body, Row, Button, } from 'native-base';
+import { Header, Left, Icon, Body, Button, } from 'native-base';
 import { styles } from './style';
 import { Ionicons } from '@expo/vector-icons';
 import { connect } from 'react-redux';
@@ -8,7 +8,9 @@ import { DonorMiddleware } from '../../Store/Middlewares';
 import Loader from '../../Components/activityIndicator';
 
 const DonorScreen = (props) => {
-    const { address, city, contact, gender, group, name, profileImage, uid, mobToken } = props.navigation.getParam("donor")
+    const donor = props.navigation.getParam("donor");
+    const userUid = props.navigation.getParam("userUid");
+    let requestSendTo = props.navigation.getParam('requestSendTo');
     return (
         <View style={{ flex: 1 }} >
             <Header style={{ backgroundColor: "#bb0a1e" }} >
@@ -25,37 +27,52 @@ const DonorScreen = (props) => {
                 <View style={styles.logoContainer} >
                     <View style={styles.profileIconCont} >
                         {
-                            profileImage === "" ?
+                            donor.profileImage === "" ?
                                 <Ionicons name='ios-person' style={styles.profileIcon} /> :
-                                <Image source={{ uri: profileImage }} style={styles.profileImage} />
+                                <Image source={{ uri: donor.profileImage }} style={styles.profileImage} />
                         }
                     </View>
                 </View>
-                <Text style={styles.donorNameTxt} >{name}</Text>
+                <Text style={styles.donorNameTxt} >{donor.name}</Text>
                 <View style={styles.detailsCont}>
                     <View style={styles.tabCont} >
                         <Text style={styles.tab1} >Blood Group:</Text>
-                        <Text style={styles.bloodGroupTxt} >{group}</Text>
+                        <Text style={styles.bloodGroupTxt} >{donor.group}</Text>
                     </View>
                     <View style={styles.tabCont} >
                         <Text style={styles.tab1} >Contact Number</Text>
-                        <Text style={styles.tab2} >{contact}</Text>
+                        <Text style={styles.tab2} >{donor.contact}</Text>
                     </View>
                     <View style={styles.tabCont} >
                         <Text style={styles.tab1} >Gender:</Text>
-                        <Text style={styles.tab2} >{gender}</Text>
+                        <Text style={styles.tab2} >{donor.gender}</Text>
                     </View>
                     <View style={styles.tabCont} >
                         <Text style={styles.tab1} >City:</Text>
-                        <Text style={styles.tab2} >{city}</Text>
+                        <Text style={styles.tab2} >{donor.city}</Text>
                     </View>
                     <View style={styles.tabCont} >
                         <Text style={styles.tab1} >Address:</Text>
-                        <Text style={styles.tab2} >{address}</Text>
+                        <Text style={styles.tab2} >{donor.address}</Text>
                     </View>
-                    <Button block rounded style={styles.btn} onPress={() => props.handleAcceptBtnDetails(props.navigation.getParam("userUid"), props.navigation,props.navigation.getParam("donor")) } >
-                        <Text style={styles.btnTxt} >Accept Donor</Text>
-                    </Button>
+                    {
+                        requestSendTo.length !== 0 ?
+                            requestSendTo.map(v => (
+                                v.uid === donor.uid && v.pendingStatus === false ?
+                                    <Button key={v.uid} block rounded style={[styles.btn, { backgroundColor: '#f1c232' }]} >
+                                        <Text style={styles.btnTxt} >Pending Request</Text>
+                                    </Button> : v.uid === donor.uid && v.pendingStatus === true ?
+                                        <Button key={v.uid} block rounded style={[styles.btn, { backgroundColor: '#5bb85d' }]} >
+                                            <Text style={styles.btnTxt} >Request Accepted</Text>
+                                        </Button> :
+                                        <Button key={v.uid} block rounded style={styles.btn} onPress={() => props.handleAcceptBtnDetails(userUid, props.navigation, donor)} >
+                                            <Text style={styles.btnTxt} >Request For Blood</Text>
+                                        </Button>
+                            )) :
+                            <Button block rounded style={styles.btn} onPress={() => props.handleAcceptBtnDetails(userUid, props.navigation, donor)} >
+                                <Text style={styles.btnTxt} >Request For Blood</Text>
+                            </Button>
+                    }
                 </View>
             </View>
             {props.isLoading && <Loader />}
@@ -63,12 +80,12 @@ const DonorScreen = (props) => {
     )
 }
 const mapDispatchToProps = (dispatch) => {
-    return{
-        handleAcceptBtnDetails: (userUid, nav,udetail ) => dispatch(DonorMiddleware.handleAcceptBtnDetails(userUid, nav, udetail))
+    return {
+        handleAcceptBtnDetails: (userUid, nav, udetail) => dispatch(DonorMiddleware.handleAcceptBtnDetails(userUid, nav, udetail))
     }
 }
 
-const mapStateToProps = ( state ) => {
+const mapStateToProps = (state) => {
     return {
         isLoading: state.DonorReducer.isLoading,
     }

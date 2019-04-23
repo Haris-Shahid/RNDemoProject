@@ -8,6 +8,7 @@ import { styles } from './style';
 import { DonorMiddleware } from '../../Store/Middlewares';
 import Loader from '../../Components/activityIndicator';
 import { Notifications } from 'expo';
+import Badge from './badge';
 
 class Dashboard extends Component {
     constructor(props) {
@@ -44,7 +45,7 @@ class Dashboard extends Component {
         })
         if (nextProps.userList) {
             nextProps.userList.map((v, i) => {
-                if (v.requestSendTo) {
+                if (v.requestSendTo && v.uid === this.props.uid) {
                     this.setState({ requestSendTo: v.requestSendTo })
                 }
             })
@@ -72,7 +73,6 @@ class Dashboard extends Component {
         }
     };
     render() {
-        console.log(this.state.requestSendTo, '///////////////////////')
         return (
             <View style={{ flex: 1 }} >
                 <StatusBar hidden={true} />
@@ -122,7 +122,7 @@ class Dashboard extends Component {
                                                 )
                                             }
                                             return (
-                                                <TouchableOpacity onPress={() => this.props.navigation.navigate('donorScreen', { donor: d, userUid: this.props.uid })} key={i} >
+                                                <TouchableOpacity onPress={() => this.props.navigation.navigate('donorScreen', { donor: d, userUid: this.props.uid, requestSendTo: this.state.requestSendTo })} key={i} >
                                                     <nb.Card>
                                                         <nb.CardItem style={{ flexDirection: 'row' }} >
                                                             <View style={{ flex: 1 }} >
@@ -137,26 +137,7 @@ class Dashboard extends Component {
                                                             <View style={styles.userName} >
                                                                 <Text>{d.name}</Text>
                                                             </View>
-                                                            <View style={styles.acBtnCont}>
-                                                                {
-                                                                    this.state.requestSendTo.length !== 0 ?
-                                                                      this.state.requestSendTo.map(v => {
-                                                                            console.log(d.uid === v.uid, '//////////////////')
-                                                                            if (d.uid === v.uid) {
-                                                                               return <TouchableOpacity key={v.uid} style={[styles.btn, { backgroundColor: '#f1c232' }]} >
-                                                                                    <Text style={[styles.btnTxt]} >Pending</Text>
-                                                                                </TouchableOpacity>
-                                                                            } else {
-                                                                               return <TouchableOpacity key={v.uid} style={styles.btn} >
-                                                                                    <Text style={styles.btnTxt} >ACCEPT</Text>
-                                                                                </TouchableOpacity>
-                                                                            }
-                                                                        }) :
-                                                                        <TouchableOpacity style={styles.btn} >
-                                                                            <Text style={styles.btnTxt} >ACCEPT</Text>
-                                                                        </TouchableOpacity>
-                                                                }
-                                                            </View>
+                                                            <Badge uid={d.uid} requestSendTo={this.state.requestSendTo} />
                                                         </nb.CardItem>
                                                     </nb.Card>
                                                 </TouchableOpacity>

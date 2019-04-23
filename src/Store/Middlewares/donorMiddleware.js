@@ -36,24 +36,6 @@ export default class DonorMiddleware {
     static handleAcceptBtnDetails(userUid, nav, udetail) {
         return (dispatch) => {
             dispatch(DonorActions.isLoadingUser())
-            // firebase.database().ref(`/user/${userUid}`).once('value', (snap) => {
-            //     if (snap.val().acceptedDonor === null || !snap.val().acceptedDonor) {
-            //         let AcceptedDonor = [];
-            //         AcceptedDonor.push(udetail.uid)
-            //         firebase.database().ref(`/user/${userUid}`).update({ acceptedDonor: AcceptedDonor })
-            //         dispatch(DonorActions.AcceptedDonor(AcceptedDonor))
-            //     } else {
-            //         let AcceptedDonors = [...snap.val().acceptedDonor];
-            //         var flag = false;
-            //         for (var i = 0; i < AcceptedDonors.length; i++) {
-            //             if (udetail.uid === AcceptedDonors[i]) {
-            //                 flag = true;
-            //             }
-            //         }
-            //         if (!flag) {
-            //             AcceptedDonors.push(udetail.uid)
-            //         }
-            //         firebase.database().ref(`/user/${userUid}/acceptedDonor`).set(AcceptedDonors)
             let response = fetch('https://exp.host/--/api/v2/push/send', {
                 method: 'POST',
                 headers: {
@@ -64,7 +46,13 @@ export default class DonorMiddleware {
                     to: udetail.mobToken,
                     sound: 'default',
                     title: 'Request for a Blood',
-                    body: `${udetail.name} need your help`
+                    body: `${udetail.name} need your help`,
+                    data: {
+                        from: udetail.uid,
+                        to: userUid,
+                        message: `${udetail.name} need your help`,
+                        userDetail: udetail
+                    }
                 })
             })
             response.then(() => {
