@@ -5,15 +5,15 @@ import * as nb from 'native-base';
 import { Ionicons } from '@expo/vector-icons';
 import { verticalScale, scale, moderateScale } from '../../Constants/scalingFunction';
 import CustomHeader from '../../Components/header';
+import { styles } from './style';
+import { PushNotificationMiddleware } from '../../Store/Middlewares';
 
 const { height } = Dimensions.get('window')
 class Notifications extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            name: '',
-            imageUrl: '',
-
+            notifications: []
         }
     }
 
@@ -23,125 +23,74 @@ class Notifications extends Component {
         )
     }
 
+    componentDidMount() {
+        if (this.props.navigation.getParam("userDetail")) {
+            this.props.getNotification(this.props.navigation.getParam("userDetail").to);
+        } else {
+            this.props.getNotification(this.props.uid)
+        }
+    }
+
+    handleCancelNotification(v){
+        v.requestSendTo.map(a => {
+            if(a.uid === this.props.uid){
+                console.log(a, '///////////')
+            }
+        } )
+    }
+
     render() {
         return (
             <View style={{ flex: 1 }} >
                 <StatusBar hidden={true} />
                 <CustomHeader name='Notifications' profileImage={this.props.profileImage} menuIcon={() => this.props.navigation.openDrawer()} />
                 <View style={{ flex: 1 }} >
-                    <nb.Card style={styles.mainCardCont} >
-                        <nb.CardItem>
-                            <View style={{ flex: 1 }} >
-                                <View style={styles.profileIconCont} >
-                                    {
-                                        this.props.profileImage == '' || !this.props.profileImage ?
-                                            <Ionicons name='ios-person' style={styles.profileIcon} /> :
-                                            <Image source={{ uri: this.props.profileImage }} style={styles.profileImage} />
-                                    }
-                                </View>
-                            </View>
-                            <View style={{ flex: 3.5 }} >
-                                <Text style={{ fontWeight: 'bold' }} >Harisb</Text>
-                                <Text>hhhhhhhhhhhhh</Text>
-                            </View>
-                            <TouchableOpacity style={styles.chatIconCont} >
-                                <Ionicons name='ios-chatbubbles' color='#bb0a1e' style={{ fontSize: moderateScale(25) }} />
-                            </TouchableOpacity>
-                        </nb.CardItem>
-                        <nb.CardItem>
-                            <nb.Button style={styles.cBtn} >
-                                <Text style={{ color: '#bb0a1e' }} >Cancel</Text>
-                            </nb.Button>
-                            <nb.Button style={styles.aBtn} >
-                                <Text style={{ color: '#fff' }} >Accept</Text>
-                            </nb.Button>
-                        </nb.CardItem>
-                    </nb.Card>
-                    <nb.Card style={styles.mainCardCont} >
-                        <nb.CardItem>
-                            <View style={{ flex: 1 }} >
-                                <View style={styles.profileIconCont} >
-                                    {
-                                        this.props.profileImage == '' || !this.props.profileImage ?
-                                            <Ionicons name='ios-person' style={styles.profileIcon} /> :
-                                            <Image source={{ uri: this.props.profileImage }} style={styles.profileImage} />
-                                    }
-                                </View>
-                            </View>
-                            <View style={{ flex: 3.5 }} >
-                                <Text style={{ fontWeight: 'bold' }} >Harisb</Text>
-                                <Text>hhhhhhhhhhhhh</Text>
-                            </View>
-                            <TouchableOpacity style={styles.chatIconCont} >
-                                <Ionicons name='ios-chatbubbles' color='#bb0a1e' style={{ fontSize: moderateScale(25) }} />
-                            </TouchableOpacity>
-                        </nb.CardItem>
-                        <nb.CardItem>
-                            <nb.Button style={styles.cBtn} >
-                                <Text style={{ color: '#bb0a1e' }} >Cancel</Text>
-                            </nb.Button>
-                            <nb.Button style={styles.aBtn} >
-                                <Text style={{ color: '#fff' }} >Accept</Text>
-                            </nb.Button>
-                        </nb.CardItem>
-                    </nb.Card>
+                    <nb.Content>
+                        {
+                            this.props.notifications.length !== 0 ?
+                                this.props.notifications.map(v => {
+                                    return (
+                                        <nb.Card key={v.uid} style={styles.mainCardCont} >
+                                            <nb.CardItem>
+                                                <View style={{ flex: 1 }} >
+                                                    <View style={styles.profileIconCont} >
+                                                        {
+                                                            v.profileImage == '' || !v.profileImage ?
+                                                                <Ionicons name='ios-person' style={styles.profileIcon} /> :
+                                                                <Image source={{ uri: v.profileImage }} style={styles.profileImage} />
+                                                        }
+                                                    </View>
+                                                </View>
+                                                <View style={{ flex: 4 }} >
+                                                    <Text style={{ fontWeight: 'bold' }} >{v.name}</Text>
+                                                    <nb.Text note >Need Your Blood...</nb.Text>
+                                                </View>
+                                            </nb.CardItem>
+                                            <nb.CardItem>
+                                                <nb.Button style={{ width: '100%', backgroundColor: '#bb0a1e' }} block rounded >
+                                                    <Ionicons name='ios-chatbubbles' color='#fff' style={{ fontSize: moderateScale(25) }} />
+                                                    <Text style={{ color: '#fff', marginLeft: 15 }} >Contact Him</Text>
+                                                </nb.Button>
+                                            </nb.CardItem>
+                                            <nb.CardItem>
+                                                <nb.Button style={styles.cBtn} onPress={() => this.handleCancelNotification(v)} >
+                                                    <Text style={{ color: '#bb0a1e' }} >Cancel</Text>
+                                                </nb.Button>
+                                                <nb.Button style={styles.aBtn} >
+                                                    <Text style={{ color: '#fff' }} >Accept</Text>
+                                                </nb.Button>
+                                            </nb.CardItem>
+                                        </nb.Card>
+                                    )
+                                }) :
+                                <nb.Text style={{ textAlign: 'center', marginVertical: verticalScale(20), marginHorizontal: scale(10) }} note >There is no notification yet.</nb.Text>
+                        }
+                    </nb.Content>
                 </View>
             </View>
         )
     }
 }
-
-const styles = StyleSheet.create({
-    profileIconCont: {
-        backgroundColor: 'rgba(0,0,0,0.5)',
-        borderRadius: 50,
-        justifyContent: 'center',
-        alignItems: 'center',
-        width: verticalScale(40),
-        height: verticalScale(40),
-        overflow: 'hidden'
-    },
-    profileIcon: {
-        color: 'rgba(255,255,255,0.8)',
-        fontSize: moderateScale(20)
-    },
-    headerTxt: {
-        color: '#fff',
-        fontSize: 20
-    },
-    profileImage: {
-        width: '100%',
-        height: '100%',
-        borderRadius: 50
-    },
-    mainCardCont: {
-        width: '90%',
-        alignSelf: 'center'
-    },
-    cBtn: {
-        width: '50%',
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderWidth: 1,
-        borderColor: '#bb0a1e',
-        backgroundColor: 'transparent',
-        borderTopLeftRadius: scale(10),
-        borderBottomLeftRadius: scale(10)
-    },
-    aBtn: {
-        width: '50%',
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#bb0a1e',
-        borderTopRightRadius: scale(10),
-        borderBottomRightRadius: scale(10)
-    },
-    chatIconCont: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center'
-    }
-})
 
 const mapStateToProps = (state) => {
     return {
@@ -150,13 +99,14 @@ const mapStateToProps = (state) => {
         profileImage: state.AuthReducer.profileImage,
         name: state.AuthReducer.name,
         uid: state.AuthReducer.uid,
-        rqsendTo: state.AuthReducer.requestSendTo
+        notifications: state.notificationReducer.notifications,
     };
 }
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        GetDonors: (uid) => dispatch(DonorMiddleware.GetDonors(uid)),
+        getNotification: (uid) => dispatch(PushNotificationMiddleware.getNotification(uid)),
+        cancelNotification: (uid) => dispatch(PushNotificationMiddleware.cancelNotification(uid)),
     }
 }
 

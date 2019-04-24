@@ -9,6 +9,7 @@ import { DonorMiddleware } from '../../Store/Middlewares';
 import Loader from '../../Components/activityIndicator';
 import { Notifications } from 'expo';
 import Badge from './badge';
+import { PushNotificationMiddleware } from '../../Store/Middlewares';
 
 class Dashboard extends Component {
     constructor(props) {
@@ -24,6 +25,7 @@ class Dashboard extends Component {
 
     async componentDidMount() {
         await this.props.GetDonors(this.props.uid);
+        this.props.getNotification(this.props.uid)
         const { selected } = this.state;
         if (selected === 'all') {
             this.setState({
@@ -35,8 +37,7 @@ class Dashboard extends Component {
     }
     _handleNotification(n) {
         if (n.origin === "selected") {
-            console.log(n, '////////////////////////////////////////')
-            this.props.navigation.navigate('Notifications');
+            this.props.navigation.navigate('Notifications', { userDetail: n.data });
         }
     }
     componentWillReceiveProps(nextProps) {
@@ -177,6 +178,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         GetDonors: (uid) => dispatch(DonorMiddleware.GetDonors(uid)),
+        getNotification: (uid) => dispatch(PushNotificationMiddleware.getNotification(uid)),
     }
 }
 

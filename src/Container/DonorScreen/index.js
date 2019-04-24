@@ -65,11 +65,11 @@ const DonorScreen = (props) => {
                                         <Button key={v.uid} block rounded style={[styles.btn, { backgroundColor: '#5bb85d' }]} >
                                             <Text style={styles.btnTxt} >Request Accepted</Text>
                                         </Button> :
-                                        <Button key={v.uid} block rounded style={styles.btn} onPress={() => props.handleAcceptBtnDetails(userUid, props.navigation, donor)} >
+                                        <Button key={v.uid} block rounded style={styles.btn} onPress={() => props.handleAcceptBtnDetails(userUid, props.navigation, donor, props.name)} >
                                             <Text style={styles.btnTxt} >Request For Blood</Text>
                                         </Button>
                             )) :
-                            <Button block rounded style={styles.btn} onPress={() => props.handleAcceptBtnDetails(userUid, props.navigation, donor)} >
+                            <Button block rounded style={styles.btn} onPress={() => props.handleAcceptBtnDetails(userUid, props.navigation, donor, props.name)} >
                                 <Text style={styles.btnTxt} >Request For Blood</Text>
                             </Button>
                     }
@@ -81,12 +81,13 @@ const DonorScreen = (props) => {
 }
 const mapDispatchToProps = (dispatch) => {
     return {
-        handleAcceptBtnDetails: (userUid, nav, udetail) => dispatch(DonorMiddleware.handleAcceptBtnDetails(userUid, nav, udetail))
+        handleAcceptBtnDetails: (userUid, nav, udetail, name) => dispatch(DonorMiddleware.handleAcceptBtnDetails(userUid, nav, udetail, name))
     }
 }
 
 const mapStateToProps = (state) => {
     return {
+        name: state.AuthReducer.name,
         isLoading: state.DonorReducer.isLoading,
     }
 }

@@ -14,8 +14,8 @@ class LoginScreen extends Component {
         super();
         this.state = {
             fontLoaded: false,
-            email: 'harisshahid00@gmail.com',
-            password: 'superheroes',
+            email: '',
+            password: '',
             validation: null,
             userInfo: null,
             passStatus: true,

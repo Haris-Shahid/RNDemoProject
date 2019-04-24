@@ -33,7 +33,7 @@ export default class DonorMiddleware {
             });
         }
     }
-    static handleAcceptBtnDetails(userUid, nav, udetail) {
+    static handleAcceptBtnDetails(userUid, nav, udetail, name) {
         return (dispatch) => {
             dispatch(DonorActions.isLoadingUser())
             let response = fetch('https://exp.host/--/api/v2/push/send', {
@@ -46,11 +46,11 @@ export default class DonorMiddleware {
                     to: udetail.mobToken,
                     sound: 'default',
                     title: 'Request for a Blood',
-                    body: `${udetail.name} need your help`,
+                    body: `${name} need your help`,
                     data: {
-                        from: udetail.uid,
-                        to: userUid,
-                        message: `${udetail.name} need your help`,
+                        from: userUid,
+                        to: udetail.uid,
+                        message: `${name} need your help`,
                         userDetail: udetail
                     }
                 })
@@ -58,13 +58,11 @@ export default class DonorMiddleware {
             response.then(() => {
                 firebase.database().ref(`/user/${udetail.uid}`).once('value', (snap) => {
                     if (snap.val().notificationDetails === null || !snap.val().notificationDetails) {
-                        let notificationDetails = {
-                            from: [{ accept: false, uid: userUid, status: 'PENDING' }]
-                        }
-                        firebase.database().ref(`/user/${userUid}`).update({ requestSendTo: [{uid: udetail.uid, pendingStatus: false}] });
+                        let notificationDetails = [{ accept: false, uid: userUid, status: 'PENDING' }]
+                        firebase.database().ref(`/user/${userUid}`).update({ requestSendTo: [{ uid: udetail.uid, pendingStatus: false }] });
                         firebase.database().ref(`/user/${udetail.uid}`).update({ notificationDetails });
                     } else {
-                        firebase.database().ref(`/user/${udetail.uid}/notificationDetails/from`).once('value', (snap) => {
+                        firebase.database().ref(`/user/${udetail.uid}/notificationDetails`).once('value', (snap) => {
                             var flag = false;
                             let nList = [...snap.val()];
                             nList.map((list) => {
@@ -77,7 +75,7 @@ export default class DonorMiddleware {
                             }
                             firebase.database().ref(`/user/${userUid}`).once('value', (snap) => {
                                 if (snap.val().requestSendTo === null || !snap.val().requestSendTo) {
-                                    firebase.database().ref(`/user/${userUid}`).update({ requestSendTo: [{uid: udetail.uid, pendingStatus: false}] });
+                                    firebase.database().ref(`/user/${userUid}`).update({ requestSendTo: [{ uid: udetail.uid, pendingStatus: false }] });
                                 } else {
                                     firebase.database().ref(`/user/${userUid}/requestSendTo`).once('value', (snap) => {
                                         var flag1 = false;
@@ -88,14 +86,14 @@ export default class DonorMiddleware {
                                             }
                                         })
                                         if (!flag1) {
-                                            nList1.push({uid: udetail.uid, pendingStatus: false})
+                                            nList1.push({ uid: udetail.uid, pendingStatus: false })
                                         }
                                         firebase.database().ref(`/user/${userUid}/requestSendTo`).set(nList1);
                                     })
                                 }
                             })
 
-                            firebase.database().ref(`/user/${udetail.uid}/notificationDetails/from`).set(nList)
+                            firebase.database().ref(`/user/${udetail.uid}/notificationDetails`).set(nList)
                         })
 
                     }
