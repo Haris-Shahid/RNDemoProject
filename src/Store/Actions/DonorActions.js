@@ -2,7 +2,8 @@ import {
     GET_ALL_DONORS,
     IS_LOADING_USER,
     DONOR_FORM_SUBMIT,
-    ACCEPTED_DONOR
+    REQUEST_SEND,
+    EMPTY_DONOR_LIST
 } from '../constant'
 
 
@@ -25,10 +26,15 @@ export default class DonorActions {
         }
     }
 
-    static AcceptedDonor(){
+    static RequestSend(){
         return{
-            type: ACCEPTED_DONOR,
-            
+            type: REQUEST_SEND,
+        }
+    }
+
+    static emptyDonorList(){
+        return{
+            type : EMPTY_DONOR_LIST
         }
     }
 }

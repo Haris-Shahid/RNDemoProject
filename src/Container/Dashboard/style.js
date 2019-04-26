@@ -50,7 +50,6 @@ export const styles = StyleSheet.create({
         justifyContent: 'center'
     },
     btn: {
-        backgroundColor: '#bb0a1e',
         height: verticalScale(30),
         borderRadius: 10,
         justifyContent: 'center',

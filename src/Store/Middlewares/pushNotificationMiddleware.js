@@ -1,6 +1,7 @@
 import * as firebase from 'firebase';
 import { Permissions, Notifications } from 'expo';
-import { GET_NOTIFICATIONS } from '../constant';
+import { GET_NOTIFICATIONS, UPDATE_NOTIFICATIONS } from '../constant';
+import DonorActions from '../Actions/DonorActions';
 
 export default class PushNotificationMiddleware {
     static PushNotificationPermission(uid) {
@@ -21,14 +22,79 @@ export default class PushNotificationMiddleware {
         }
     }
 
-    static getNotification(uid){
+    static handleAcceptBtnDetails(nav, donor, authUser) {
+        return (dispatch) => {
+            dispatch(DonorActions.isLoadingUser())
+                firebase.database().ref(`/user/${authUser.uid}`).once('value', (snap) => {
+                    if (snap.val().donorsRequestList === null || !snap.val().donorsRequestList ) {
+                        let donorsRequestList = [{ accept: false, donorUid: donor.uid, cancel: false }]
+                        firebase.database().ref(`/user/${authUser.uid}`).update({ donorsRequestList });
+                        firebase.database().ref(`/user/${donor.uid}`).update({ requestList: [{ requestUserUid: authUser.uid }] });
+                    } else {
+                        let donorsRequestList = snap.val().donorsRequestList;
+                        var donorflag = false;
+                        donorsRequestList.map(d => {
+                            if(d.donorUid  ===  donor.uid ){
+                                donorflag = true;
+                            }
+                        })
+                        if(!donorflag){
+                            donorsRequestList.push({ accept: false, donorUid: donor.uid, cancel: false  })
+                        }
+                        firebase.database().ref(`/user/${authUser.uid}/donorsRequestList`).set(donorsRequestList);
+                        firebase.database().ref(`/user/${donor.uid}`).once('value', ( snap ) => {
+                            if(snap.val().requestList === null || !snap.val().requestList ){
+                                firebase.database().ref(`/user/${donor.uid}`).update({ requestList: [{ requestUserUid: authUser.uid }] });
+                            }else{
+                                let requestList = snap.val().requestList;
+                                var requestflag = false;
+                                requestList.map(r => {
+                                    if(r.requestUserUid === authUser.uid ){
+                                        requestflag = true;
+                                    }
+                                })
+                                if(!requestflag){
+                                    requestList.push({ requestUserUid: authUser.uid })
+                                }
+                                firebase.database().ref(`/user/${donor.uid}/requestList`).set(requestList);
+                            }
+                        })
+                    }
+                    let response = fetch('https://exp.host/--/api/v2/push/send', {
+                        method: 'POST',
+                        headers: {
+                            Accept: 'application/json',
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            to: donor.mobToken,
+                            sound: 'default',
+                            title: 'Request for a Blood',
+                            body: `${authUser.name} need your help`,
+                            data: {
+                                from: authUser.uid,
+                                to: donor.uid,
+                                message: `Need your Blood...`,
+                                requestSenderDetails: snap.val()
+                            }
+                        })
+                    })
+                    response.then(() => {         
+                        dispatch(DonorActions.RequestSend())
+                        nav.goBack()
+                    }).catch((e) => alert(e))    
+                })
+        }
+    }
+
+    static getNotification(uid) {
         return dispatch => {
-            firebase.database().ref(`/user/${uid}/`).on('value' , snap => {
+            firebase.database().ref(`/user/${uid}/`).on('value', snap => {
                 let notifications = [];
-                if(snap.val().notificationDetails){
+                if (snap.val().notificationDetails) {
                     snap.val().notificationDetails.map(v => {
                         firebase.database().ref(`/user/${v.uid}/`).on('value', snap => {
-                           notifications.push(snap.val())
+                            notifications.push(snap.val())
                         })
                     })
                     dispatch({
@@ -36,6 +102,44 @@ export default class PushNotificationMiddleware {
                         notifications: notifications
                     })
                 }
+            })
+        }
+    }
+
+    static cancelNotification(d, uid, notificate) {
+        return dispatch => {
+            let notificationArray = notificate
+            notificationArray.map((v, i) => {
+                if (d.uid === v.uid) {
+                    notificationArray.splice(i, 1)
+                }
+            })
+            firebase.database().ref(`/user/${uid}/`).on('value', snap => {
+                let notification = snap.val().notificationDetails;
+                if (notification) {
+                    notification.map((v, i) => {
+                        if (v.uid === d.uid) {
+                            notification.splice(i, 1)
+                        }
+                    })
+                    firebase.database().ref(`/user/${uid}/notificationDetails`).set(notification)
+                }
+                firebase.database().ref(`/user/${d.uid}/`).on('value', snap => {
+                    let donorNotification = snap.val().requestSendTo;
+                    if (donorNotification) {
+                        donorNotification.map((v, i) => {
+                            if (v.uid === uid) {
+                                donorNotification.splice(i, 1)
+                            }
+                        })
+                        firebase.database().ref(`/user/${d.uid}/requestSendTo`).set(donorNotification)
+                    }
+                })
+            })
+            console.log(notificationArray, '//////////////////////')
+            dispatch({
+                type: UPDATE_NOTIFICATIONS,
+                notifications: notificationArray
             })
         }
     }

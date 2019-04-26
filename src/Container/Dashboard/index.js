@@ -19,13 +19,13 @@ class Dashboard extends Component {
             imageUrl: '',
             selected: 'all',
             filterdDonors: [],
-            requestSendTo: []
+            donorsRequestList: []
         }
     }
 
     async componentDidMount() {
         await this.props.GetDonors(this.props.uid);
-        this.props.getNotification(this.props.uid)
+        // this.props.getNotification(this.props.uid)
         const { selected } = this.state;
         if (selected === 'all') {
             this.setState({
@@ -42,15 +42,18 @@ class Dashboard extends Component {
     }
     componentWillReceiveProps(nextProps) {
         this.setState({
-            filterdDonors: nextProps.userList
+            filterdDonors: nextProps.userList,
         })
-        if (nextProps.userList) {
-            nextProps.userList.map((v, i) => {
-                if (v.requestSendTo && v.uid === this.props.uid) {
-                    this.setState({ requestSendTo: v.requestSendTo })
-                }
-            })
+        if (nextProps.donorsRequestList) {
+            this.setState({ donorsRequestList: nextProps.donorsRequestList })
+            //     // nextProps.userList.map((v, i) => {
+            //     //     if (v.requestSendTo && v.uid === this.props.uid) {
+            //     //         this.setState({ requestSendTo: v.requestSendTo })
         }
+        //     // })
+        // }
+        // console.log(nextProps.rqsendTo, 'rqsendto')
+        // this.props.GetDonors(this.props.uid)
     }
 
     static navigationOptions = {
@@ -123,7 +126,7 @@ class Dashboard extends Component {
                                                 )
                                             }
                                             return (
-                                                <TouchableOpacity onPress={() => this.props.navigation.navigate('donorScreen', { donor: d, userUid: this.props.uid, requestSendTo: this.state.requestSendTo })} key={i} >
+                                                <TouchableOpacity onPress={() => this.props.navigation.navigate('donorScreen', { donor: d })} key={i} >
                                                     <nb.Card>
                                                         <nb.CardItem style={{ flexDirection: 'row' }} >
                                                             <View style={{ flex: 1 }} >
@@ -138,7 +141,7 @@ class Dashboard extends Component {
                                                             <View style={styles.userName} >
                                                                 <Text>{d.name}</Text>
                                                             </View>
-                                                            <Badge uid={d.uid} requestSendTo={this.state.requestSendTo} />
+                                                            <Badge donorUid={d.uid} donorsRequestList={this.state.donorsRequestList} />
                                                         </nb.CardItem>
                                                     </nb.Card>
                                                 </TouchableOpacity>
@@ -165,20 +168,21 @@ class Dashboard extends Component {
 }
 
 const mapStateToProps = (state) => {
+    // console.log(state.DonorReducer, '//////////////////////')
     return {
         isLoading: state.DonorReducer.isLoading,
         userList: state.DonorReducer.userList,
         profileImage: state.AuthReducer.profileImage,
         name: state.AuthReducer.name,
         uid: state.AuthReducer.uid,
-        rqsendTo: state.AuthReducer.requestSendTo
+        donorsRequestList: state.DonorReducer.donorsRequestList,
     };
 }
 
 const mapDispatchToProps = (dispatch) => {
     return {
         GetDonors: (uid) => dispatch(DonorMiddleware.GetDonors(uid)),
-        getNotification: (uid) => dispatch(PushNotificationMiddleware.getNotification(uid)),
+        // getNotification: (uid) => dispatch(PushNotificationMiddleware.getNotification(uid)),
     }
 }
 

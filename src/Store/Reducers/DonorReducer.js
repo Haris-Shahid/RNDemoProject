@@ -1,4 +1,4 @@
-import { GET_ALL_DONORS, IS_LOADING_USER, DONOR_FORM_SUBMIT, ACCEPTED_DONOR } from '../constant';
+import { GET_ALL_DONORS, IS_LOADING_USER, DONOR_FORM_SUBMIT, REQUEST_SEND, EMPTY_DONOR_LIST } from '../constant';
 
 const initialState = {
     userList: [],
@@ -9,7 +9,7 @@ const initialState = {
     city: '',
     address: '',
     bloodDonor: false,
-    acceptedDonor: []
+    donorsRequestList: []
 }
 
 export default function DonorReducer(state = initialState, action) {
@@ -24,8 +24,11 @@ export default function DonorReducer(state = initialState, action) {
         case DONOR_FORM_SUBMIT:
             return state = { ...state, ...action.formData, isLoading: false }
 
-        case ACCEPTED_DONOR:
+        case REQUEST_SEND:
             return state = { ...state, isLoading: false }
+
+        case EMPTY_DONOR_LIST:
+            return state = { ...state, donorsRequestList: [] }
 
         default:
             return state;

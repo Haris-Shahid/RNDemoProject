@@ -31,14 +31,6 @@ class Notifications extends Component {
         }
     }
 
-    handleCancelNotification(v){
-        v.requestSendTo.map(a => {
-            if(a.uid === this.props.uid){
-                console.log(a, '///////////')
-            }
-        } )
-    }
-
     render() {
         return (
             <View style={{ flex: 1 }} >
@@ -73,7 +65,7 @@ class Notifications extends Component {
                                                 </nb.Button>
                                             </nb.CardItem>
                                             <nb.CardItem>
-                                                <nb.Button style={styles.cBtn} onPress={() => this.handleCancelNotification(v)} >
+                                                <nb.Button style={styles.cBtn} onPress={() => this.props.cancelNotification(v, this.props.uid, this.props.notifications)} >
                                                     <Text style={{ color: '#bb0a1e' }} >Cancel</Text>
                                                 </nb.Button>
                                                 <nb.Button style={styles.aBtn} >
@@ -106,7 +98,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         getNotification: (uid) => dispatch(PushNotificationMiddleware.getNotification(uid)),
-        cancelNotification: (uid) => dispatch(PushNotificationMiddleware.cancelNotification(uid)),
+        cancelNotification: (d, uid, notification) => dispatch(PushNotificationMiddleware.cancelNotification(d, uid, notification)),
     }
 }
 

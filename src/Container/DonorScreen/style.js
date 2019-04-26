@@ -63,7 +63,7 @@ export const styles = StyleSheet.create({
         backgroundColor: '#bb0a1e',
         marginTop: verticalScale(10),
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
     },
     btnTxt: {
         color: '#fff',

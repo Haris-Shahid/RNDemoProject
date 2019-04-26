@@ -1,29 +1,27 @@
-import React, { Component } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import React from 'react';
+import { View, Text } from 'react-native';
 import { styles } from './style';
 
-const Badge = ({ requestSendTo, uid }) => {
+const Badge = ({ donorsRequestList, donorUid }) => {
+    var pendingStatus;
+    if (donorsRequestList.length !== 0) {
+        donorsRequestList.forEach(e => {
+            if (e.donorUid === donorUid) {
+                if (e.accept) {
+                    pendingStatus = true
+                } else {
+                    pendingStatus = false
+                }
+            }
+        })
+    } else {
+        pendingStatus = undefined
+    }
     return (
         <View style={styles.acBtnCont}>
-            {
-                requestSendTo.length !== 0 ?
-                    (requestSendTo.map(v => (
-                        uid === v.uid && v.pendingStatus === false ?
-                            <TouchableOpacity key={v.uid} style={[styles.btn, { backgroundColor: '#f1c232' }]} >
-                                <Text style={[styles.btnTxt]} >PENDING</Text>
-                            </TouchableOpacity> :
-                            uid === v.uid && v.pendingStatus === true ?
-                                <TouchableOpacity key={v.uid} style={[styles.btn, { backgroundColor: '#5bb85d' }]} >
-                                    <Text style={styles.btnTxt} >ACCEPTED</Text>
-                                </TouchableOpacity> :
-                                <TouchableOpacity key={v.uid} style={styles.btn} >
-                                    <Text style={styles.btnTxt} >REQUEST</Text>
-                                </TouchableOpacity>
-                    ))) :
-                    <TouchableOpacity style={styles.btn} >
-                        <Text style={styles.btnTxt} >REQUEST</Text>
-                    </TouchableOpacity>
-            }
+            <View style={[styles.btn, { backgroundColor: pendingStatus ? '#5bb85d' : pendingStatus === undefined ? '#bb0a1e' : '#f1c232' }]} >
+                <Text style={[styles.btnTxt]} >{pendingStatus ? 'ACCEPTED' : pendingStatus === undefined ? 'REQUEST' : 'PENDING'}</Text>
+            </View>
         </View>
     )
 }
