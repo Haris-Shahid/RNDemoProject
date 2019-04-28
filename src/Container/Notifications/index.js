@@ -23,14 +23,6 @@ class Notifications extends Component {
         )
     }
 
-    componentDidMount() {
-        if (this.props.navigation.getParam("userDetail")) {
-            this.props.getNotification(this.props.navigation.getParam("userDetail").to);
-        } else {
-            this.props.getNotification(this.props.uid)
-        }
-    }
-
     render() {
         return (
             <View style={{ flex: 1 }} >

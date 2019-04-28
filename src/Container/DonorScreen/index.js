@@ -9,8 +9,22 @@ import Loader from '../../Components/activityIndicator';
 
 const DonorScreen = (props) => {
     const donor = props.navigation.getParam("donor");
+    const donorsRequestList = props.navigation.getParam("donorsRequestList");
     let AuthUser = { name: props.name, uid: props.uid };
-    // console.log(requestSendTo.length, requestSendTo,  'lllllllllllllll')
+    var pendingStatus;
+    if (donorsRequestList.length !== 0) {
+        donorsRequestList.forEach(e => {
+            if (e.donorUid === donor.uid) {
+                if (e.accept) {
+                    pendingStatus = true
+                } else {
+                    pendingStatus = false
+                }
+            }
+        })
+    } else {
+        pendingStatus = undefined
+    }
     return (
         <View style={{ flex: 1 }} >
             <Header style={{ backgroundColor: "#bb0a1e" }} >
@@ -57,24 +71,9 @@ const DonorScreen = (props) => {
                             <Text style={styles.tab2} >{donor.address}</Text>
                         </View>
                         <View>
-                            {/* {
-                        requestSendTo.length !== 0 ?
-                            requestSendTo.map(v => (
-                                v.uid === donor.uid && v.pendingStatus === false ?
-                                    <Button key={v.uid} block rounded style={[styles.btn, { backgroundColor: '#f1c232' }]} >
-                                        <Text style={styles.btnTxt} >Pending Request</Text>
-                                    </Button> : v.uid === donor.uid && v.pendingStatus === true ?
-                                        <Button key={v.uid} block rounded style={[styles.btn, { backgroundColor: '#5bb85d' }]} >
-                                            <Text style={styles.btnTxt} >Request Accepted</Text>
-                                        </Button> :
-                                        <Button key={v.uid} block rounded style={styles.btn} onPress={() => props.handleAcceptBtnDetails(userUid, props.navigation, donor, props.name)} >
-                                            <Text style={styles.btnTxt} >Request For Blood</Text>
-                                        </Button>
-                            )) : */}
-                            <Button block rounded style={styles.btn} onPress={() => props.handleAcceptBtnDetails(props.navigation, donor, AuthUser)} >
-                                <Text style={styles.btnTxt} >Request For Blood</Text>
+                            <Button block rounded style={[styles.btn, { backgroundColor: pendingStatus ? '#5bb85d' : pendingStatus === undefined ? '#bb0a1e' : '#f1c232' }]}  onPress={() => pendingStatus === undefined && props.handleAcceptBtnDetails(props.navigation, donor, AuthUser)} >
+                                <Text style={styles.btnTxt} >{pendingStatus ? 'Request Accepted' : pendingStatus === undefined ? 'Request For Blood' : 'Pending Request'}</Text>
                             </Button>
-                            {/* } */}
                         </View>
                     </View>
                 </Content>

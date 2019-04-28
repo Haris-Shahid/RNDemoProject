@@ -25,7 +25,7 @@ class Dashboard extends Component {
 
     async componentDidMount() {
         await this.props.GetDonors(this.props.uid);
-        // this.props.getNotification(this.props.uid)
+        this.props.getNotification(this.props.uid)
         const { selected } = this.state;
         if (selected === 'all') {
             this.setState({
@@ -37,7 +37,7 @@ class Dashboard extends Component {
     }
     _handleNotification(n) {
         if (n.origin === "selected") {
-            this.props.navigation.navigate('Notifications', { userDetail: n.data });
+            this.props.navigation.navigate('Notifications');
         }
     }
     componentWillReceiveProps(nextProps) {
@@ -46,14 +46,7 @@ class Dashboard extends Component {
         })
         if (nextProps.donorsRequestList) {
             this.setState({ donorsRequestList: nextProps.donorsRequestList })
-            //     // nextProps.userList.map((v, i) => {
-            //     //     if (v.requestSendTo && v.uid === this.props.uid) {
-            //     //         this.setState({ requestSendTo: v.requestSendTo })
-        }
-        //     // })
-        // }
-        // console.log(nextProps.rqsendTo, 'rqsendto')
-        // this.props.GetDonors(this.props.uid)
+         }
     }
 
     static navigationOptions = {
@@ -126,7 +119,7 @@ class Dashboard extends Component {
                                                 )
                                             }
                                             return (
-                                                <TouchableOpacity onPress={() => this.props.navigation.navigate('donorScreen', { donor: d })} key={i} >
+                                                <TouchableOpacity onPress={() => this.props.navigation.navigate('donorScreen', { donor: d, donorsRequestList: this.state.donorsRequestList })} key={i} >
                                                     <nb.Card>
                                                         <nb.CardItem style={{ flexDirection: 'row' }} >
                                                             <View style={{ flex: 1 }} >
@@ -158,9 +151,7 @@ class Dashboard extends Component {
                             </nb.CardItem>
                         </nb.Card>
                     </View>
-
                 </nb.Content>
-
                 {this.props.isLoading && <Loader />}
             </View>
         )
@@ -168,7 +159,6 @@ class Dashboard extends Component {
 }
 
 const mapStateToProps = (state) => {
-    // console.log(state.DonorReducer, '//////////////////////')
     return {
         isLoading: state.DonorReducer.isLoading,
         userList: state.DonorReducer.userList,
@@ -182,7 +172,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         GetDonors: (uid) => dispatch(DonorMiddleware.GetDonors(uid)),
-        // getNotification: (uid) => dispatch(PushNotificationMiddleware.getNotification(uid)),
+        getNotification: (uid) => dispatch(PushNotificationMiddleware.getNotification(uid)),
     }
 }
 

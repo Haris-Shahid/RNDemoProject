@@ -1,7 +1,7 @@
 import * as firebase from 'firebase';
 import { Permissions, Notifications } from 'expo';
-import { GET_NOTIFICATIONS, UPDATE_NOTIFICATIONS } from '../constant';
 import DonorActions from '../Actions/DonorActions';
+import NotificationAction from '../Actions/NotificationAction';
 
 export default class PushNotificationMiddleware {
     static PushNotificationPermission(uid) {
@@ -25,65 +25,81 @@ export default class PushNotificationMiddleware {
     static handleAcceptBtnDetails(nav, donor, authUser) {
         return (dispatch) => {
             dispatch(DonorActions.isLoadingUser())
-                firebase.database().ref(`/user/${authUser.uid}`).once('value', (snap) => {
-                    if (snap.val().donorsRequestList === null || !snap.val().donorsRequestList ) {
-                        let donorsRequestList = [{ accept: false, donorUid: donor.uid, cancel: false }]
-                        firebase.database().ref(`/user/${authUser.uid}`).update({ donorsRequestList });
-                        firebase.database().ref(`/user/${donor.uid}`).update({ requestList: [{ requestUserUid: authUser.uid }] });
-                    } else {
-                        let donorsRequestList = snap.val().donorsRequestList;
-                        var donorflag = false;
-                        donorsRequestList.map(d => {
-                            if(d.donorUid  ===  donor.uid ){
-                                donorflag = true;
-                            }
-                        })
-                        if(!donorflag){
-                            donorsRequestList.push({ accept: false, donorUid: donor.uid, cancel: false  })
-                        }
-                        firebase.database().ref(`/user/${authUser.uid}/donorsRequestList`).set(donorsRequestList);
-                        firebase.database().ref(`/user/${donor.uid}`).once('value', ( snap ) => {
-                            if(snap.val().requestList === null || !snap.val().requestList ){
-                                firebase.database().ref(`/user/${donor.uid}`).update({ requestList: [{ requestUserUid: authUser.uid }] });
-                            }else{
-                                let requestList = snap.val().requestList;
-                                var requestflag = false;
-                                requestList.map(r => {
-                                    if(r.requestUserUid === authUser.uid ){
-                                        requestflag = true;
-                                    }
-                                })
-                                if(!requestflag){
-                                    requestList.push({ requestUserUid: authUser.uid })
+            firebase.database().ref(`/user/${authUser.uid}`).once('value', (snap) => {
+                if (snap.val().donorsRequestList === null || !snap.val().donorsRequestList) {
+                    let donorsRequestList = [{ accept: false, donorUid: donor.uid, cancel: false }]
+                    firebase.database().ref(`/user/${authUser.uid}`).update({ donorsRequestList });
+                    firebase.database().ref(`/user/${donor.uid}`).once('value', (snap) => {
+                        if (snap.val().requestList) {
+                            let requestList1 = snap.val().requestList;
+                            var requestflag1 = false;
+                            requestList1.map(r => {
+                                if (r.requestUserUid === authUser.uid) {
+                                    requestflag1 = true;
                                 }
-                                firebase.database().ref(`/user/${donor.uid}/requestList`).set(requestList);
+                            })
+                            if (!requestflag1) {
+                                requestList1.push({ requestUserUid: authUser.uid })
                             }
-                        })
-                    }
-                    let response = fetch('https://exp.host/--/api/v2/push/send', {
-                        method: 'POST',
-                        headers: {
-                            Accept: 'application/json',
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            to: donor.mobToken,
-                            sound: 'default',
-                            title: 'Request for a Blood',
-                            body: `${authUser.name} need your help`,
-                            data: {
-                                from: authUser.uid,
-                                to: donor.uid,
-                                message: `Need your Blood...`,
-                                requestSenderDetails: snap.val()
-                            }
-                        })
+                            firebase.database().ref(`/user/${donor.uid}/requestList`).set(requestList1);
+                        } else {
+                            firebase.database().ref(`/user/${donor.uid}`).update({ requestList: [{ requestUserUid: authUser.uid }] });
+                        }
                     })
-                    response.then(() => {         
-                        dispatch(DonorActions.RequestSend())
-                        nav.goBack()
-                    }).catch((e) => alert(e))    
+                } else {
+                    let donorsRequestList = snap.val().donorsRequestList;
+                    var donorflag = false;
+                    donorsRequestList.map(d => {
+                        if (d.donorUid === donor.uid) {
+                            donorflag = true;
+                        }
+                    })
+                    if (!donorflag) {
+                        donorsRequestList.push({ accept: false, donorUid: donor.uid, cancel: false })
+                    }
+                    firebase.database().ref(`/user/${authUser.uid}/donorsRequestList`).set(donorsRequestList);
+                    firebase.database().ref(`/user/${donor.uid}`).once('value', (snap) => {
+                        if (snap.val().requestList === null || !snap.val().requestList) {
+                            firebase.database().ref(`/user/${donor.uid}`).update({ requestList: [{ requestUserUid: authUser.uid }] });
+                        } else {
+                            let requestList = snap.val().requestList;
+                            var requestflag = false;
+                            requestList.map(r => {
+                                if (r.requestUserUid === authUser.uid) {
+                                    requestflag = true;
+                                }
+                            })
+                            if (!requestflag) {
+                                requestList.push({ requestUserUid: authUser.uid })
+                            }
+                            firebase.database().ref(`/user/${donor.uid}/requestList`).set(requestList);
+                        }
+                    })
+                }
+                let response = fetch('https://exp.host/--/api/v2/push/send', {
+                    method: 'POST',
+                    headers: {
+                        Accept: 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        to: donor.mobToken,
+                        sound: 'default',
+                        title: 'Request for a Blood',
+                        body: `${authUser.name} need your help`,
+                        data: {
+                            from: authUser.uid,
+                            to: donor.uid,
+                            message: `Need your Blood...`,
+                            requestSenderDetails: snap.val()
+                        }
+                    })
                 })
+                response.then(() => {
+                    dispatch(DonorActions.RequestSend())
+                    nav.goBack()
+                }).catch((e) => alert(e))
+            })
         }
     }
 
@@ -91,16 +107,15 @@ export default class PushNotificationMiddleware {
         return dispatch => {
             firebase.database().ref(`/user/${uid}/`).on('value', snap => {
                 let notifications = [];
-                if (snap.val().notificationDetails) {
-                    snap.val().notificationDetails.map(v => {
-                        firebase.database().ref(`/user/${v.uid}/`).on('value', snap => {
+                if (snap.val().requestList) {
+                    snap.val().requestList.map(v => {
+                        firebase.database().ref(`/user/${v.requestUserUid}/`).on('value', snap => {
                             notifications.push(snap.val())
                         })
                     })
-                    dispatch({
-                        type: GET_NOTIFICATIONS,
-                        notifications: notifications
-                    })
+                    dispatch(NotificationAction.getNotification(notifications))
+                } else {
+                    dispatch(NotificationAction.emptyNotification())
                 }
             })
         }
@@ -114,32 +129,28 @@ export default class PushNotificationMiddleware {
                     notificationArray.splice(i, 1)
                 }
             })
-            firebase.database().ref(`/user/${uid}/`).on('value', snap => {
-                let notification = snap.val().notificationDetails;
+            dispatch(NotificationAction.updateNotification(notificationArray))
+            firebase.database().ref(`/user/${uid}/`).once('value', snap => {
+                let notification = snap.val().requestList;
                 if (notification) {
                     notification.map((v, i) => {
-                        if (v.uid === d.uid) {
+                        if (v.requestUserUid === d.uid) {
                             notification.splice(i, 1)
                         }
                     })
-                    firebase.database().ref(`/user/${uid}/notificationDetails`).set(notification)
+                    firebase.database().ref(`/user/${uid}/requestList`).set(notification)
                 }
-                firebase.database().ref(`/user/${d.uid}/`).on('value', snap => {
-                    let donorNotification = snap.val().requestSendTo;
+                firebase.database().ref(`/user/${d.uid}/`).once('value', snap => {
+                    let donorNotification = snap.val().donorsRequestList;
                     if (donorNotification) {
                         donorNotification.map((v, i) => {
-                            if (v.uid === uid) {
+                            if (v.donorUid === uid) {
                                 donorNotification.splice(i, 1)
                             }
                         })
-                        firebase.database().ref(`/user/${d.uid}/requestSendTo`).set(donorNotification)
+                        firebase.database().ref(`/user/${d.uid}/donorsRequestList`).set(donorNotification)
                     }
                 })
-            })
-            console.log(notificationArray, '//////////////////////')
-            dispatch({
-                type: UPDATE_NOTIFICATIONS,
-                notifications: notificationArray
             })
         }
     }
