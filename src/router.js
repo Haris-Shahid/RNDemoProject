@@ -15,6 +15,7 @@ import DonorForm from './Container/DonorForm';
 import CustomDrawerComponent from './Components/customDrawerComponent';
 import AuthLoader from './Components/authLoader';
 import DonorScreen from './Container/DonorScreen';
+import ChatScreen from './Container/Chat';
 
 const AuthScreen = createStackNavigator({
     loginScreen: {
@@ -47,13 +48,14 @@ const AppDrawNavigator = createDrawerNavigator({
 
 const HomeScreen = createStackNavigator({
     dashboard: AppDrawNavigator,
-    donorScreen: DonorScreen
+    donorScreen: DonorScreen,
+    ChatScreen: ChatScreen
 },{
      headerMode: 'none'
 })
 
 const Screens = createSwitchNavigator({
-    AuthLoading: { screen: AuthLoader },
+    AuthLoading: { screen: ChatScreen },
     Auth: { screen: AuthScreen },
     homeScreen: { screen: HomeScreen }
 },{
