@@ -55,7 +55,7 @@ const HomeScreen = createStackNavigator({
 })
 
 const Screens = createSwitchNavigator({
-    AuthLoading: { screen: ChatScreen },
+    AuthLoading: { screen: AuthLoader },
     Auth: { screen: AuthScreen },
     homeScreen: { screen: HomeScreen }
 },{

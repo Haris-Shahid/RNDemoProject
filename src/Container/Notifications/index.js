@@ -51,7 +51,7 @@ class Notifications extends Component {
                                                 </View>
                                             </nb.CardItem>
                                             <nb.CardItem>
-                                                <nb.Button style={{ width: '100%', backgroundColor: '#bb0a1e' }} block rounded >
+                                                <nb.Button onPress={() => this.props.navigation.navigate('ChatScreen', { chatUser: v })} style={{ width: '100%', backgroundColor: '#bb0a1e' }} block rounded >
                                                     <Ionicons name='ios-chatbubbles' color='#fff' style={{ fontSize: moderateScale(25) }} />
                                                     <Text style={{ color: '#fff', marginLeft: 15 }} >Contact Him</Text>
                                                 </nb.Button>

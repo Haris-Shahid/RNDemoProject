@@ -3,15 +3,20 @@ import { View, StyleSheet, Text, TextInput, StatusBar, TouchableOpacity, ScrollV
 import { Container, Content, Input, Item, Header, Left, Body, Icon, Right } from 'native-base';
 import { verticalScale, moderateScale, scale } from '../../Constants/scalingFunction';
 import { Ionicons } from '@expo/vector-icons';
+import {styles} from './style';
+import { connect } from "react-redux";
+import { MessageMiddleware } from '../../Store/Middlewares';
 
-const { width, height } = Dimensions.get('window')
+// const { width, height } = Dimensions.get('window')
 
 class ChatScreen extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            height: null,
             message: '',
+            name: '',
+            uid: '',
+            profileImage: ''
         }
     }
 
@@ -20,9 +25,27 @@ class ChatScreen extends Component {
             this.setState({ height, })
         }
     }
+    
+componentWillMount(){
+    if(this.props.navigation.getParam("chatUser")){
+        let chatUser = this.props.navigation.getParam("chatUser");
+        this.setState({
+            name: chatUser.name,
+            uid: chatUser.uid,
+            profileImage: chatUser.profileImage,
+            mobToken: chatUser.mobToken
+        })
+    }
+}
 
     formSubmit() {
-
+        let message = {
+            receiverUid: this.state.uid,
+            senderUid: this.props.uid,
+            message: this.state.message,
+            timeStamp: new Date()
+        }
+        this.props.handleMessages(message, this.props.name, this.state.mobToken)
     }
 
     render() {
@@ -31,19 +54,19 @@ class ChatScreen extends Component {
                 <StatusBar hidden={true} />
                 <Header style={{ backgroundColor: "#bb0a1e" }} >
                     <Left>
-                        <TouchableOpacity onPress={() => props.navigation.goBack()} >
+                        <TouchableOpacity onPress={() => this.props.navigation.goBack()} >
                             <Icon name='ios-arrow-back' style={{ color: '#fff' }} />
                         </TouchableOpacity>
                     </Left>
                     <Body style={{ flexDirection: 'row' }} >
                         <View style={styles.profileIconCont} >
                             {
-                                this.props.profileImage == '' || !this.props.profileImage ?
+                                this.state.profileImage == '' || !this.state.profileImage ?
                                     <Ionicons name='ios-person' style={styles.profileIcon} /> :
-                                    <Image source={{ uri: this.props.profileImage }} style={styles.profileImage} />
+                                    <Image source={{ uri: this.state.profileImage }} style={styles.profileImage} />
                             }
                         </View>
-                        <Text style={styles.title}>Donor Details</Text>
+                        <Text style={styles.title}>{this.state.name}</Text>
                     </Body>
                     <Right>
                         <TouchableOpacity>
@@ -60,20 +83,20 @@ class ChatScreen extends Component {
                             <Icon name='md-camera' />
                         </TouchableOpacity>
                     </View>
-                    <TouchableOpacity style={[styles.sendIconCont, { backgroundColor: this.state.message || this.state.message !== '' ? '#bb0a1e' : 'rgba(0,0,0,0.6)' }]} >
+                    <TouchableOpacity onPress={() => this.formSubmit()} style={[styles.sendIconCont, { backgroundColor: this.state.message || this.state.message !== '' ? '#bb0a1e' : 'rgba(0,0,0,0.6)' }]} >
                         <Icon name='md-send' style={{ color: '#fff' }} />
                     </TouchableOpacity>
                 </View>
-                <ScrollView contentContainerStyle={{ flex: 1, paddingHorizontal: scale(10), paddingVertical: verticalScale(10) }} >
-                    <View style={{ width: '70%', backgroundColor: 'blue', marginVertical: verticalScale(10), borderRadius: scale(10), padding: moderateScale(10) }} >
-                            <Text style={{color: '#fff', fontSize: moderateScale(18)}} >Hello World</Text>
+                <ScrollView style={styles.scrollViewCont} >
+                    <View style={styles.message} >
+                            <Text style={styles.messageTxt} >Hello World</Text>
                             <Text style={{color: '#fff', fontSize: moderateScale(13), position: 'absolute', right: 10, bottom: 10}} >3 : 45 PM</Text>
                     </View>
                     <View style={{ maxWidth: '70%', backgroundColor: 'blue', marginVertical: verticalScale(10), borderRadius: scale(10), padding: moderateScale(10) }} >
                             <Text style={{color: '#fff', fontSize: moderateScale(18)}} >Hello World how are you all ? here is something new</Text>
                             <Text style={{color: '#fff', fontSize: moderateScale(13), textAlign: 'right', marginTop: verticalScale(5) }} >3 : 45 PM</Text>
                     </View>
-                    <View style={{ maxWidth: '70%', backgroundColor: '#bb0a1e', marginVertical: verticalScale(10), borderRadius: scale(10), padding: moderateScale(10), alignSelf: 'flex-end' }} >
+                    <View style={[styles.message, styles.rightTxt]} >
                             <Text style={{color: '#fff', fontSize: moderateScale(18)}} >Hello World how are you all ? here is something new</Text>
                             <Text style={{color: '#fff', fontSize: moderateScale(13), textAlign: 'right'}} >3 : 45 PM</Text>
                     </View>
@@ -83,65 +106,20 @@ class ChatScreen extends Component {
     }
 }
 
-const styles = StyleSheet.create({
-    title: {
-        color: '#fff',
-        fontSize: moderateScale(20),
-        marginLeft: scale(10)
-    },
-    profileIconCont: {
-        backgroundColor: 'rgba(255,255,255,0.5)',
-        borderRadius: 50,
-        justifyContent: 'center',
-        alignItems: 'center',
-        width: verticalScale(30),
-        height: verticalScale(30),
-        overflow: 'hidden'
-    },
-    profileIcon: {
-        color: 'rgba(255,255,255,0.8)',
-        fontSize: moderateScale(18)
-    },
-    profileImage: {
-        width: '100%',
-        height: '100%',
-        borderRadius: 50
-    },
-    inputMainContainer: {
-        flexDirection: 'row',
-        width: '90%',
-        alignSelf: 'center',
-        alignItems: 'flex-end',
-        justifyContent: 'space-between',
-        marginVertical: verticalScale(20)
-    },
-    inputContainer: {
-        borderColor: 'rgba(0,0,0,0.7)',
-        width: '85%',
-        borderRadius: 20,
-        paddingVertical: verticalScale(10),
-        paddingLeft: scale(10),
-        overflow: 'hidden',
-        alignSelf: 'center',
-        borderWidth: 1,
-        flexDirection: 'row'
-    },
-    inputField: {
-        color: '#bb0a1e',
-        fontSize: moderateScale(18),
-    },
-    cameraIconCont: {
-        flex: 1,
-        justifyContent: 'flex-end',
-        alignItems: 'center',
-    },
-    sendIconCont: {
-        height: verticalScale(50),
-        width: verticalScale(50),
-        borderRadius: 50,
-        justifyContent: 'center',
-        alignItems: 'center'
-    }
-})
+const mapStateToProps = (state) => {
+    return {
+        profileImage: state.AuthReducer.profileImage,
+        name: state.AuthReducer.name,
+        uid: state.AuthReducer.uid,
+    };
+}
 
-export default ChatScreen;
+const mapDispatchToProps = (dispatch) => {
+    return {
+        handleMessages: (message, name, token) => dispatch(MessageMiddleware.handleMessages(message, name, token)),
+        getNotification: (uid) => dispatch(PushNotificationMiddleware.getNotification(uid)),
+    }
+}
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(ChatScreen);
