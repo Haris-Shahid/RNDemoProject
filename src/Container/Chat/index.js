@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, StyleSheet, Text, TextInput, StatusBar, TouchableOpacity, ScrollView, Dimensions, KeyboardAvoidingView, Keyboard, Animated } from 'react-native'
+import { View, StyleSheet, Text, TextInput, StatusBar, TouchableOpacity, ScrollView, Image, Dimensions, KeyboardAvoidingView, Keyboard, Animated } from 'react-native'
 import { Container, Content, Input, Item, Header, Left, Body, Icon, Right } from 'native-base';
 import { verticalScale, moderateScale, scale } from '../../Constants/scalingFunction';
 import { Ionicons } from '@expo/vector-icons';
@@ -39,11 +39,12 @@ componentWillMount(){
 }
 
     formSubmit() {
+        let time = new Date()
         let message = {
             receiverUid: this.state.uid,
             senderUid: this.props.uid,
             message: this.state.message,
-            timeStamp: new Date()
+            timeStamp:  String(time)
         }
         this.props.handleMessages(message, this.props.name, this.state.mobToken)
     }

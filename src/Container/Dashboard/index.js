@@ -5,11 +5,10 @@ import * as nb from 'native-base';
 import CustomHeader from '../../Components/header';
 import { Ionicons } from '@expo/vector-icons';
 import { styles } from './style';
-import { DonorMiddleware } from '../../Store/Middlewares';
 import Loader from '../../Components/activityIndicator';
 import { Notifications } from 'expo';
 import Badge from './badge';
-import { PushNotificationMiddleware } from '../../Store/Middlewares';
+import { PushNotificationMiddleware, MessageMiddleware , DonorMiddleware} from '../../Store/Middlewares';
 
 class Dashboard extends Component {
     constructor(props) {
@@ -26,6 +25,7 @@ class Dashboard extends Component {
     async componentDidMount() {
         await this.props.GetDonors(this.props.uid);
         this.props.getNotification(this.props.uid)
+        this.props.getChat(this.props.uid)
         const { selected } = this.state;
         if (selected === 'all') {
             this.setState({
@@ -173,6 +173,7 @@ const mapDispatchToProps = (dispatch) => {
     return {
         GetDonors: (uid) => dispatch(DonorMiddleware.GetDonors(uid)),
         getNotification: (uid) => dispatch(PushNotificationMiddleware.getNotification(uid)),
+        getChat: (uid) => dispatch(MessageMiddleware.getChat(uid)),
     }
 }
 

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { View,  Image, StatusBar, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Image, StatusBar, StyleSheet, TouchableOpacity } from 'react-native';
 import { connect } from "react-redux"
-import { Header, Left, Right, Icon, Body, List, ListItem, Thumbnail, Content,Text } from 'native-base';
+import { Header, Left, Right, Icon, Body, List, ListItem, Thumbnail, Content, Text } from 'native-base';
 import { Ionicons } from '@expo/vector-icons';
 import { verticalScale, scale, moderateScale } from '../../Constants/scalingFunction';
 import CustomHeader from '../../Components/header';
@@ -10,9 +10,7 @@ class Inbox extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            name: '',
-            imageUrl: '',
-
+            chatWith: []
         }
     }
 
@@ -22,6 +20,44 @@ class Inbox extends Component {
         )
     }
 
+    componentWillMount() {
+        this.handleChat(this.props.chat)
+    }
+
+    handleChat(chat) {
+        let chatwith = [];
+        chat.map(v => {
+            if (chatwith.length === 0) {
+                let chat = {
+                    chatWith: v.chatWith,
+                    message: [v.chat]
+                }
+                chatwith.push(chat)
+            } else {
+                chatwith.forEach(e => {
+                    if (e.chatWith.uid === v.chatWith.uid) {
+                        e.message.push(v.chat)
+                    } else {
+                        let chat = {
+                            chatWith: v.chatWith,
+                            message: [v.chat]
+                        }
+                        chatwith.push(chat)
+                    }
+                })
+            }
+        })
+        this.setState({
+            chatWith: chatwith
+        })
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.chat) {
+            this.handleChat(nextProps.chat)
+        }
+    }
+
     render() {
         return (
             <View style={{ flex: 1 }} >
@@ -29,26 +65,37 @@ class Inbox extends Component {
                 <CustomHeader name='Inbox' profileImage={this.props.profileImage} menuIcon={() => this.props.navigation.openDrawer()} />
                 <Content>
                     <List>
-                        <ListItem avatar>
-                        <TouchableOpacity>
-                            <Left>
-                            <View style={styles.profileIconCont} >
-                                    {
-                                        this.props.profileImage == '' || !this.props.profileImage ?
-                                            <Ionicons name='ios-person' style={styles.profileIcon} /> :
-                                            <Image source={{ uri: this.props.profileImage }} style={styles.profileImage} />
-                                    }
-                                </View>
-                            </Left>
-                            <Body>
-                                <Text>Kumar Pratik</Text>
-                                <Text note>Doing what you like will always keep you happy . .</Text>
-                            </Body>
-                            <Right>
-                                <Text note>3:43 pm</Text>
-                            </Right>
-                            </TouchableOpacity>
-                        </ListItem>
+                        {
+                            this.state.chatWith.length !== 0 ? 
+                            this.state.chatWith.map((v, i) => {
+                                let time = Number(v.message[0].timeStamp)
+                                time.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })
+                                console.log(time )
+                                return (
+                                    <TouchableOpacity key={i} >
+                                        <ListItem avatar>
+                                            <Left>
+                                                <View style={styles.profileIconCont} >
+                                                    {
+                                                        v.chatWithprofileImage == '' || !v.chatWith.profileImage ?
+                                                            <Ionicons name='ios-person' style={styles.profileIcon} /> :
+                                                            <Image source={{ uri: v.chatWith.profileImage }} style={styles.profileImage} />
+                                                    }
+                                                </View>
+                                            </Left>
+                                            <Body>
+                                                <Text>{v.chatWith.name}</Text>
+                                                <Text note>{v.message[0].message}</Text>
+                                            </Body>
+                                            <Right>
+                                                <Text note>{time}</Text>
+                                            </Right>
+                                        </ListItem>
+                                    </TouchableOpacity>
+                                )
+                            }) : 
+                            <Text style={{ textAlign: 'center', marginVertical: verticalScale(20), marginHorizontal: scale(10) }} note >There is no message yet.</Text>
+                        }
                     </List>
                 </Content>
             </View>
@@ -79,9 +126,8 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state) => {
     return {
-        isLoading: state.AuthReducer.isLoading,
-        validation: state.AuthReducer.validation,
-        route: state.AuthReducer.route,
+        chat: state.ChatReducer.chat,
+        profileImage: state.AuthReducer.profileImage,
     };
 }
 
