@@ -3,9 +3,10 @@ import { View, StyleSheet, Text, TextInput, StatusBar, TouchableOpacity, ScrollV
 import { Container, Content, Input, Item, Header, Left, Body, Icon, Right } from 'native-base';
 import { verticalScale, moderateScale, scale } from '../../Constants/scalingFunction';
 import { Ionicons } from '@expo/vector-icons';
-import {styles} from './style';
+import { styles } from './style';
 import { connect } from "react-redux";
 import { MessageMiddleware } from '../../Store/Middlewares';
+import moment from "moment";
 
 // const { width, height } = Dimensions.get('window')
 
@@ -16,7 +17,8 @@ class ChatScreen extends Component {
             message: '',
             name: '',
             uid: '',
-            profileImage: ''
+            profileImage: '',
+            message: []
         }
     }
 
@@ -25,28 +27,30 @@ class ChatScreen extends Component {
             this.setState({ height, })
         }
     }
-    
-componentWillMount(){
-    if(this.props.navigation.getParam("chatUser")){
-        let chatUser = this.props.navigation.getParam("chatUser");
-        this.setState({
-            name: chatUser.name,
-            uid: chatUser.uid,
-            profileImage: chatUser.profileImage,
-            mobToken: chatUser.mobToken
-        })
+
+    componentWillMount() {
+        if (this.props.navigation.getParam("chatUser")) {
+            let chatUser = this.props.navigation.getParam("chatUser");
+            this.setState({
+                name: chatUser.name,
+                uid: chatUser.uid,
+                profileImage: chatUser.profileImage,
+                mobToken: chatUser.mobToken
+            })
+        }
     }
-}
 
     formSubmit() {
-        let time = new Date()
         let message = {
             receiverUid: this.state.uid,
             senderUid: this.props.uid,
             message: this.state.message,
-            timeStamp:  String(time)
+            timeStamp: new Date().getTime()
         }
         this.props.handleMessages(message, this.props.name, this.state.mobToken)
+        this.setState({
+            message: ''
+        })
     }
 
     render() {
@@ -78,7 +82,7 @@ componentWillMount(){
                 <View style={styles.inputMainContainer} >
                     <View style={styles.inputContainer} >
                         <View style={{ flex: 4, }} >
-                            <TextInput selectionColor='#bb0a1e' onSubmitEditing={() => this.formSubmit()} returnKeyType="send" placeholder='Type a message' placeholderTextColor='rgba(0, 0, 0, 0.5)' style={[styles.inputField, { height: this.state.height }]} onChangeText={message => this.setState({ message })} multiline={true} onContentSizeChange={(e) => this.updateSize(e.nativeEvent.contentSize.height)} />
+                            <TextInput value={this.state.message} selectionColor='#bb0a1e' onSubmitEditing={() => this.formSubmit()} returnKeyType="send" placeholder='Type a message' placeholderTextColor='rgba(0, 0, 0, 0.5)' style={[styles.inputField, { height: this.state.height }]} onChangeText={message => this.setState({ message })} multiline={true} onContentSizeChange={(e) => this.updateSize(e.nativeEvent.contentSize.height)} />
                         </View>
                         <TouchableOpacity style={styles.cameraIconCont}>
                             <Icon name='md-camera' />
@@ -89,18 +93,27 @@ componentWillMount(){
                     </TouchableOpacity>
                 </View>
                 <ScrollView style={styles.scrollViewCont} >
-                    <View style={styles.message} >
-                            <Text style={styles.messageTxt} >Hello World</Text>
-                            <Text style={{color: '#fff', fontSize: moderateScale(13), position: 'absolute', right: 10, bottom: 10}} >3 : 45 PM</Text>
-                    </View>
-                    <View style={{ maxWidth: '70%', backgroundColor: 'blue', marginVertical: verticalScale(10), borderRadius: scale(10), padding: moderateScale(10) }} >
-                            <Text style={{color: '#fff', fontSize: moderateScale(18)}} >Hello World how are you all ? here is something new</Text>
-                            <Text style={{color: '#fff', fontSize: moderateScale(13), textAlign: 'right', marginTop: verticalScale(5) }} >3 : 45 PM</Text>
-                    </View>
-                    <View style={[styles.message, styles.rightTxt]} >
-                            <Text style={{color: '#fff', fontSize: moderateScale(18)}} >Hello World how are you all ? here is something new</Text>
-                            <Text style={{color: '#fff', fontSize: moderateScale(13), textAlign: 'right'}} >3 : 45 PM</Text>
-                    </View>
+                    {
+                        this.props.message.map(v => {
+                            if (v.chat.senderUid === this.props.uid && v.chat.receiverUid === this.state.uid) {
+                                let messageStyle = v.chat.message.length < 16 ? styles.timeTxt1 : styles.timeTxt2
+                                return (
+                                    <View style={[styles.message, styles.rightTxt]} >
+                                        <Text style={styles.messageTxt} >{v.chat.message}</Text>
+                                        <Text style={[styles.timeTxt, messageStyle]} >{moment(v.chat.timeStamp).format('hh:mm A')}</Text>
+                                    </View>
+                                )
+                            } else if (v.chat.senderUid === this.state.uid && v.chat.receiverUid === this.props.uid) {
+                                let messageStyle = v.chat.message.length < 16 ? styles.timeTxt1 : styles.timeTxt2
+                                return (
+                                    <View style={styles.message} >
+                                        <Text style={styles.messageTxt} >{v.chat.message}</Text>
+                                        <Text style={[styles.timeTxt, messageStyle]} >{moment(v.chat.timeStamp).format('hh:mm A')}</Text>
+                                    </View>
+                                )
+                            }
+                        })
+                    }
                 </ScrollView>
             </View>
         )
@@ -112,6 +125,7 @@ const mapStateToProps = (state) => {
         profileImage: state.AuthReducer.profileImage,
         name: state.AuthReducer.name,
         uid: state.AuthReducer.uid,
+        message: state.ChatReducer.chat
     };
 }
 

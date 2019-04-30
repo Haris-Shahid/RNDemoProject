@@ -60,23 +60,36 @@ export const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center'
     },
-    scrollViewCont: { 
-        paddingHorizontal: scale(10), 
-        paddingVertical: verticalScale(10) 
+    scrollViewCont: {
+        paddingHorizontal: scale(10),
+        paddingVertical: verticalScale(10)
     },
-    message: { 
-        width: '70%', 
-        backgroundColor: 'blue', 
-        marginVertical: verticalScale(10), 
-        borderRadius: scale(10), 
-        padding: moderateScale(10) 
+    message: {
+        width: '70%',
+        backgroundColor: 'blue',
+        marginVertical: verticalScale(10),
+        borderRadius: scale(10),
+        padding: moderateScale(10)
     },
     messageTxt: {
         color: '#fff',
-         fontSize: moderateScale(18)
-        },
-        rightTxt: { 
-            alignSelf: 'flex-end',
-             backgroundColor: '#bb0a1e'
-            }
+        fontSize: moderateScale(18)
+    },
+    rightTxt: {
+        alignSelf: 'flex-end',
+        backgroundColor: '#bb0a1e'
+    },
+    timeTxt: {
+        color: '#fff',
+        fontSize: moderateScale(13),
+    },
+    timeTxt1: {
+        position: 'absolute',
+        right: 10,
+        bottom: 10
+    },
+    timeTxt2: {
+        textAlign: 'right',
+        marginTop: verticalScale(5)
+    }
 })

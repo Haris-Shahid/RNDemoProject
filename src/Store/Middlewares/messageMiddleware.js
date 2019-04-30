@@ -5,7 +5,6 @@ import ChatAction from '../Actions/ChatAction';
 export default class MessageMiddleware {
     static handleMessages(message, name, token) {
         return dispatch => {
-            console.log(message)
             firebase.database().ref('/chat').once('value', snap => {
                 if (snap.val()) {
                     let chatArr = snap.val();
@@ -32,13 +31,13 @@ export default class MessageMiddleware {
                             firebase.database().ref(`/user/${v.receiverUid}`).once('value', snap => {
                                 chatDetails.chatWith = snap.val()
                             })
-                            chatArr.push(chatDetails)
+                            chatArr.unshift(chatDetails)
                         } else if (v.receiverUid === uid) {
                             chatDetails.chat = v
                             firebase.database().ref(`/user/${v.senderUid}`).once('value', snap => {
                                 chatDetails.chatWith = snap.val()
                             })
-                            chatArr.push(chatDetails)
+                            chatArr.unshift(chatDetails)
                         }
                     })
                 }

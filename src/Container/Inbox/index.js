@@ -5,6 +5,8 @@ import { Header, Left, Right, Icon, Body, List, ListItem, Thumbnail, Content, Te
 import { Ionicons } from '@expo/vector-icons';
 import { verticalScale, scale, moderateScale } from '../../Constants/scalingFunction';
 import CustomHeader from '../../Components/header';
+import moment from "moment";
+import { styles } from './styles';
 
 class Inbox extends Component {
     constructor(props) {
@@ -26,31 +28,25 @@ class Inbox extends Component {
 
     handleChat(chat) {
         let chatwith = [];
-        chat.map(v => {
-            if (chatwith.length === 0) {
-                let chat = {
-                    chatWith: v.chatWith,
-                    message: [v.chat]
-                }
-                chatwith.push(chat)
-            } else {
-                chatwith.forEach(e => {
-                    if (e.chatWith.uid === v.chatWith.uid) {
-                        e.message.push(v.chat)
-                    } else {
-                        let chat = {
-                            chatWith: v.chatWith,
-                            message: [v.chat]
-                        }
-                        chatwith.push(chat)
-                    }
-                })
+        let data = this.getUnique(chat);
+        data.map(v => {
+            let chat = {
+                user: v.chatWith
             }
+            chatwith.push(chat)
         })
         this.setState({
             chatWith: chatwith
         })
     }
+
+    getUnique(arr) {
+        const unique = arr.map(e => e.chatWith.uid)
+            .map((e, i, final) => final.indexOf(e) === i && i)
+            .filter(e => arr[e]).map(e => arr[e]);
+        return unique;
+    }
+
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.chat) {
@@ -66,35 +62,31 @@ class Inbox extends Component {
                 <Content>
                     <List>
                         {
-                            this.state.chatWith.length !== 0 ? 
-                            this.state.chatWith.map((v, i) => {
-                                let time = Number(v.message[0].timeStamp)
-                                time.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })
-                                console.log(time )
-                                return (
-                                    <TouchableOpacity key={i} >
-                                        <ListItem avatar>
+                            this.state.chatWith.length !== 0 ?
+                                this.state.chatWith.map((v, i) => {
+                                    // let time = v.message[0].timeStamp
+                                    return (
+                                        <ListItem onPress={() => this.props.navigation.navigate('ChatScreen', { chatUser: v.user })} key={i} avatar>
                                             <Left>
                                                 <View style={styles.profileIconCont} >
                                                     {
-                                                        v.chatWithprofileImage == '' || !v.chatWith.profileImage ?
+                                                        v.user.profileImage == '' || !v.user.profileImage ?
                                                             <Ionicons name='ios-person' style={styles.profileIcon} /> :
-                                                            <Image source={{ uri: v.chatWith.profileImage }} style={styles.profileImage} />
+                                                            <Image source={{ uri: v.user.profileImage }} style={styles.profileImage} />
                                                     }
                                                 </View>
                                             </Left>
                                             <Body>
-                                                <Text>{v.chatWith.name}</Text>
-                                                <Text note>{v.message[0].message}</Text>
+                                                <Text>{v.user.name}</Text>
+                                                {/* <Text note>{v.message[0].message}</Text> */}
                                             </Body>
                                             <Right>
-                                                <Text note>{time}</Text>
+                                                {/* <Text note>{moment(time).format('hh:mm A')}</Text> */}
                                             </Right>
                                         </ListItem>
-                                    </TouchableOpacity>
-                                )
-                            }) : 
-                            <Text style={{ textAlign: 'center', marginVertical: verticalScale(20), marginHorizontal: scale(10) }} note >There is no message yet.</Text>
+                                    )
+                                }) :
+                                <Text style={styles.noteTxt} note >There is no message yet.</Text>
                         }
                     </List>
                 </Content>
@@ -102,27 +94,6 @@ class Inbox extends Component {
         )
     }
 }
-
-const styles = StyleSheet.create({
-    profileIconCont: {
-        backgroundColor: 'rgba(0,0,0,0.5)',
-        borderRadius: 50,
-        justifyContent: 'center',
-        alignItems: 'center',
-        width: verticalScale(50),
-        height: verticalScale(50),
-        overflow: 'hidden'
-    },
-    profileIcon: {
-        color: 'rgba(255,255,255,0.8)',
-        fontSize: moderateScale(25)
-    },
-    profileImage: {
-        width: '100%',
-        height: '100%',
-        borderRadius: 50
-    },
-})
 
 const mapStateToProps = (state) => {
     return {
