@@ -9,7 +9,8 @@ export const styles = StyleSheet.create({
     bgImage: {
         width: null,
         height: null,
-        flex: 1
+        flex: 1,
+        opacity: 0.5,
     },
     childContainer: {
         position: 'absolute',
@@ -17,14 +18,13 @@ export const styles = StyleSheet.create({
         width: '100%',
     },
     logoContainer: {
-        height: verticalScale(170),
+        height: verticalScale(150),
         width: '100%',
         justifyContent: 'center',
-        paddingTop: verticalScale(50),
         alignItems: 'center'
     },
     profileIconCont: {
-        backgroundColor: '#4c4c4c',
+        backgroundColor: 'rgba(0,0,0,0.8)',
         borderRadius: 50,
         justifyContent: 'center',
         alignItems: 'center',
@@ -33,7 +33,7 @@ export const styles = StyleSheet.create({
         overflow: 'hidden'
     },
     profileIcon: {
-        color: 'rgba(0,0,0,0.5)',
+        color: 'rgba(255,255,255,0.5)',
         fontSize: moderateScale(50)
     },
     profileIconAdd: {
@@ -44,7 +44,7 @@ export const styles = StyleSheet.create({
         right: moderateScale(4)
     },
     logoText1: {
-        color: '#ff6c2c',
+        color: '#bb0a1e',
         fontSize: moderateScale(40),
         fontFamily: "rentuck",
     },
@@ -58,14 +58,17 @@ export const styles = StyleSheet.create({
         alignSelf: 'center',
         alignItems: 'center',
         borderRadius: scale(5),
-        paddingVertical: verticalScale(30)
+        paddingVertical: verticalScale(30),
+        backgroundColor: 'rgba(255,255,255,0.5)',
+        borderRadius: scale(10)
     },
     inputCont: {
         width: '90%',
-        marginVertical: verticalScale(10)
+        marginVertical: verticalScale(10),
+        borderBottomColor: 'rgba(0,0,0,0.5)',
     },
     inputIcon: {
-        color: '#fff',
+        color: '#000',
         fontSize: moderateScale(25),
     },
     inputField: {
@@ -74,34 +77,15 @@ export const styles = StyleSheet.create({
         marginLeft: scale(10)
     },
     btn: {
-        backgroundColor: '#ff6c2c',
-        marginVertical: verticalScale(20)
+        backgroundColor: '#bb0a1e',
+        width: '90%',
+        marginVertical: verticalScale(20),
+        alignSelf: 'center',
     },
     btnTxt: {
         color: '#fff',
         fontSize: moderateScale(17),
         fontWeight: 'bold'
-    },
-    radioBtn: {
-        color: '#ff6c2c',
-        fontSize: moderateScale(25)
-    },
-    radioTxt: {
-        color: '#fff',
-        fontSize: moderateScale(18),
-        marginLeft: scale(5)
-    },
-    radioBtnCont: {
-        width: '100%',
-        height: verticalScale(30),
-        flexDirection: 'row',
-        width: '90%',
-        alignSelf: 'center'
-    },
-    radioBtnChildCont: {
-        flex: 1,
-        flexDirection: 'row',
-        alignItems: 'center'
     },
     orTxt: {
         height: verticalScale(30),
@@ -118,8 +102,29 @@ export const styles = StyleSheet.create({
         marginLeft: scale(5)
     },
     errorTxt: {
-        fontSize: moderateScale(20), 
-        color: '#ff0000', 
-        marginTop : verticalScale(10)
+        fontSize: moderateScale(17),
+        width: '90%',
+        textAlign: 'center',
+        color: '#bb0a1e',
+        marginTop: verticalScale(10)
+    },
+    fgpasswordTitle: {
+        color: '#000',
+        fontSize: moderateScale(25),
+        textAlign: 'center'
+    },
+    fgpassInst: {
+        color: 'rgba(0,0,0,0.5)',
+        fontSize: moderateScale(18),
+        marginHorizontal: scale(10),
+        textAlign: 'center'
+    },
+    forgotPCont: {
+        width: '90%',
+        alignSelf: 'center'
+    },
+    forgotPText: {
+        textAlign: 'right',
+        fontSize: moderateScale(18)
     }
 })
