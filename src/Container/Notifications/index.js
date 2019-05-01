@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Image, StatusBar, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
+import { View, Text, Image, StatusBar } from 'react-native';
 import { connect } from "react-redux"
 import * as nb from 'native-base';
 import { Ionicons } from '@expo/vector-icons';
@@ -8,7 +8,6 @@ import CustomHeader from '../../Components/header';
 import { styles } from './style';
 import { PushNotificationMiddleware } from '../../Store/Middlewares';
 
-const { height } = Dimensions.get('window')
 class Notifications extends Component {
     constructor(props) {
         super(props);

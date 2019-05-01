@@ -157,7 +157,6 @@ export default class PushNotificationMiddleware {
 
     static handleAcceptNotification(v, uid) {
         return dispatch => {
-            console.log(v, uid)
             let donorRequestList = v.donorsRequestList;
             donorRequestList.forEach(e => {
                 if (e.donorUid === uid) {
@@ -173,6 +172,7 @@ export default class PushNotificationMiddleware {
                     }
                 })
                 firebase.database().ref(`/user/${uid}/requestList`).set(requestList);
+                firebase.database().ref(`/user/${uid}`).update({ disableTimer: new Date().getTime() });
             })
         }
     }

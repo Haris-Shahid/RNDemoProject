@@ -1,6 +1,7 @@
 import DonorActions from '../Actions/DonorActions';
 import * as firebase from 'firebase';
 import PushNotificationMiddleware from './pushNotificationMiddleware';
+import moment from "moment";
 
 export default class DonorMiddleware {
     static submitDonorDetails(obj, uid, nav) {
@@ -30,6 +31,11 @@ export default class DonorMiddleware {
                     }
                     if (snap.val()[key].bloodDonor) {
                         donors.push(snap.val()[key])
+                    }
+                    if (snap.val()[key].disableTimer) {
+                        if (moment(snap.val()[key].disableTimer).fromNow(true) == '40 days') {
+                            firebase.database().ref(`/user/${key}/disableTimer`).remove();
+                        }
                     }
                 }
                 dispatch(DonorActions.getAllDonors(donors))

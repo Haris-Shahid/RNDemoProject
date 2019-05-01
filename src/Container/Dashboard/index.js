@@ -8,7 +8,7 @@ import { styles } from './style';
 import Loader from '../../Components/activityIndicator';
 import { Notifications } from 'expo';
 import Badge from './badge';
-import { PushNotificationMiddleware, MessageMiddleware , DonorMiddleware} from '../../Store/Middlewares';
+import { PushNotificationMiddleware, MessageMiddleware, DonorMiddleware } from '../../Store/Middlewares';
 
 class Dashboard extends Component {
     constructor(props) {
@@ -46,7 +46,7 @@ class Dashboard extends Component {
         })
         if (nextProps.donorsRequestList) {
             this.setState({ donorsRequestList: nextProps.donorsRequestList })
-         }
+        }
     }
 
     static navigationOptions = {
@@ -116,6 +116,47 @@ class Dashboard extends Component {
                                                             </View>
                                                         </nb.CardItem>
                                                     </nb.Card>
+                                                )
+                                            }
+                                            if (d.disableTimer) {
+                                                var disableStatus;
+                                                if (this.state.donorsRequestList.length !== 0) {
+                                                    this.state.donorsRequestList.forEach(e => {
+                                                        if (e.donorUid === d.uid) {
+                                                            if (e.accept) {
+                                                                disableStatus = true
+                                                            } else {
+                                                                disableStatus = true
+                                                            }
+                                                        }
+                                                    })
+                                                } else {
+                                                    disableStatus = false
+                                                }
+                                                return (
+                                                    <TouchableOpacity onPress={() => disableStatus && this.props.navigation.navigate('donorScreen', { donor: d, donorsRequestList: this.state.donorsRequestList })} key={i} >
+                                                        <nb.Card style={{ opacity: disableStatus ? 1 : 0.5 }} >
+                                                            <nb.CardItem style={{ flexDirection: 'row' }} >
+                                                                <View style={{ flex: 1 }} >
+                                                                    <View style={styles.profileIconCont} >
+                                                                        {
+                                                                            d.profileImage == '' || !d.profileImage ?
+                                                                                <Ionicons name='ios-person' style={styles.profileIcon} /> :
+                                                                                <Image source={{ uri: d.profileImage }} style={styles.userProfile} />
+                                                                        }
+                                                                    </View>
+                                                                </View>
+                                                                <View style={styles.userName} >
+                                                                    <Text>{d.name}</Text>
+                                                                </View>
+                                                                <View style={styles.acBtnCont}>
+                                                                    <View style={[styles.btn, { backgroundColor: disableStatus ? '#5bb85d' : '#bb0a1e' }]} >
+                                                                        <Text style={[styles.btnTxt, { color: '#fff' }]} >{disableStatus ? 'ACCEPTED' : 'AWAY'}</Text>
+                                                                    </View>
+                                                                </View>
+                                                            </nb.CardItem>
+                                                        </nb.Card>
+                                                    </TouchableOpacity>
                                                 )
                                             }
                                             return (
