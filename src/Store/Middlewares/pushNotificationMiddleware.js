@@ -27,7 +27,7 @@ export default class PushNotificationMiddleware {
             dispatch(DonorActions.isLoadingUser())
             firebase.database().ref(`/user/${authUser.uid}`).once('value', (snap) => {
                 if (snap.val().donorsRequestList === null || !snap.val().donorsRequestList) {
-                    let donorsRequestList = [{ accept: false, donorUid: donor.uid, cancel: false }]
+                    let donorsRequestList = [{ accept: false, donorUid: donor.uid }]
                     firebase.database().ref(`/user/${authUser.uid}`).update({ donorsRequestList });
                     firebase.database().ref(`/user/${donor.uid}`).once('value', (snap) => {
                         if (snap.val().requestList) {
@@ -55,7 +55,7 @@ export default class PushNotificationMiddleware {
                         }
                     })
                     if (!donorflag) {
-                        donorsRequestList.push({ accept: false, donorUid: donor.uid, cancel: false })
+                        donorsRequestList.push({ accept: false, donorUid: donor.uid })
                     }
                     firebase.database().ref(`/user/${authUser.uid}/donorsRequestList`).set(donorsRequestList);
                     firebase.database().ref(`/user/${donor.uid}`).once('value', (snap) => {
@@ -151,6 +151,28 @@ export default class PushNotificationMiddleware {
                         firebase.database().ref(`/user/${d.uid}/donorsRequestList`).set(donorNotification)
                     }
                 })
+            })
+        }
+    }
+
+    static handleAcceptNotification(v, uid) {
+        return dispatch => {
+            console.log(v, uid)
+            let donorRequestList = v.donorsRequestList;
+            donorRequestList.forEach(e => {
+                if (e.donorUid === uid) {
+                    e.accept = true
+                }
+            });
+            firebase.database().ref(`/user/${v.uid}/donorsRequestList`).set(donorRequestList);
+            firebase.database().ref(`/user/${uid}/requestList`).once('value', snap => {
+                let requestList = [];
+                snap.val().map(e => {
+                    if (e.requestUserUid !== v.uid) {
+                        requestList.push({ requestUserUid: e.requestUserUid })
+                    }
+                })
+                firebase.database().ref(`/user/${uid}/requestList`).set(requestList);
             })
         }
     }
