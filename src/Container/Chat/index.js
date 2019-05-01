@@ -73,11 +73,6 @@ class ChatScreen extends Component {
                         </View>
                         <Text style={styles.title}>{this.state.name}</Text>
                     </Body>
-                    <Right>
-                        <TouchableOpacity>
-                            <Icon name='md-more' style={{ color: '#fff' }} />
-                        </TouchableOpacity>
-                    </Right>
                 </Header>
                 <View style={styles.inputMainContainer} >
                     <View style={styles.inputContainer} >
