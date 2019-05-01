@@ -28,12 +28,19 @@ class Inbox extends Component {
 
     handleChat(chat) {
         let chatwith = [];
-        let data = this.getUnique(chat);
-        data.map(v => {
-            let chat = {
-                user: v.chatWith
-            }
+        let uniqueChat = this.getUnique(chat);
+        uniqueChat.map(v => {
+            let chat = { chatWith: v.chatWith }
             chatwith.push(chat)
+        })
+        chatwith.forEach(v => {
+            chat.forEach(j => {
+                if (!v.message && v.chatWith.uid === j.chatWith.uid) {
+                    v.message = [j.chat]
+                } else if (v.message && v.chatWith.uid === j.chatWith.uid) {
+                    v.message.push(j.chat)
+                }
+            })
         })
         this.setState({
             chatWith: chatwith
@@ -64,24 +71,24 @@ class Inbox extends Component {
                         {
                             this.state.chatWith.length !== 0 ?
                                 this.state.chatWith.map((v, i) => {
-                                    // let time = v.message[0].timeStamp
+                                    let time = v.message[0].timeStamp
                                     return (
-                                        <ListItem onPress={() => this.props.navigation.navigate('ChatScreen', { chatUser: v.user })} key={i} avatar>
+                                        <ListItem onPress={() => this.props.navigation.navigate('ChatScreen', { chatUser: v.chatWith })} key={i} avatar>
                                             <Left>
                                                 <View style={styles.profileIconCont} >
                                                     {
-                                                        v.user.profileImage == '' || !v.user.profileImage ?
+                                                        v.chatWith.profileImage == '' || !v.chatWith.profileImage ?
                                                             <Ionicons name='ios-person' style={styles.profileIcon} /> :
-                                                            <Image source={{ uri: v.user.profileImage }} style={styles.profileImage} />
+                                                            <Image source={{ uri: v.chatWith.profileImage }} style={styles.profileImage} />
                                                     }
                                                 </View>
                                             </Left>
                                             <Body>
-                                                <Text>{v.user.name}</Text>
-                                                {/* <Text note>{v.message[0].message}</Text> */}
+                                                <Text>{v.chatWith.name}</Text>
+                                                <Text note>{v.message[0].message.length > 40 ? `${v.message[0].message.slice(0, 40)}...` : v.message[0].message}</Text>
                                             </Body>
                                             <Right>
-                                                {/* <Text note>{moment(time).format('hh:mm A')}</Text> */}
+                                                <Text note>{moment(time).format('hh:mm A')}</Text>
                                             </Right>
                                         </ListItem>
                                     )

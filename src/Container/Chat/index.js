@@ -81,7 +81,7 @@ class ChatScreen extends Component {
                 </Header>
                 <View style={styles.inputMainContainer} >
                     <View style={styles.inputContainer} >
-                        <View style={{ flex: 4, }} >
+                        <View style={{ flex: 3.8, }} >
                             <TextInput value={this.state.message} selectionColor='#bb0a1e' onSubmitEditing={() => this.formSubmit()} returnKeyType="send" placeholder='Type a message' placeholderTextColor='rgba(0, 0, 0, 0.5)' style={[styles.inputField, { height: this.state.height }]} onChangeText={message => this.setState({ message })} multiline={true} onContentSizeChange={(e) => this.updateSize(e.nativeEvent.contentSize.height)} />
                         </View>
                         <TouchableOpacity style={styles.cameraIconCont}>

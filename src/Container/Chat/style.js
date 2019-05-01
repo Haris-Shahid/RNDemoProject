@@ -58,7 +58,8 @@ export const styles = StyleSheet.create({
         width: verticalScale(50),
         borderRadius: 50,
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
+        alignSelf: 'flex-end',
     },
     scrollViewCont: {
         paddingHorizontal: scale(10),
