@@ -33,8 +33,21 @@ export default class DonorMiddleware {
                         donors.push(snap.val()[key])
                     }
                     if (snap.val()[key].disableTimer) {
-                        if (moment(snap.val()[key].disableTimer).fromNow(true) == '40 days') {
+                        if (moment(snap.val()[key].disableTimer).fromNow(true) == '5 minutes') {
                             firebase.database().ref(`/user/${key}/disableTimer`).remove();
+                            firebase.database().ref('/user/').once('value', snap => {
+                                for (let a in snap.val()) {
+                                    if (snap.val()[a].donorsRequestList) {
+                                        let donorsRequestList = snap.val()[a].donorsRequestList;
+                                        donorsRequestList.map((v, i) => {
+                                            if (v.donorUid === key && v.accept === true) {
+                                                donorsRequestList.splice(i, 1)
+                                                firebase.database().ref(`/user/${snap.val()[a].uid}/donorsRequestList`).set(donorsRequestList)
+                                            }
+                                        })
+                                    }
+                                }
+                            })
                         }
                     }
                 }
