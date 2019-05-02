@@ -35,7 +35,7 @@ export const styles = StyleSheet.create({
     },
     inputContainer: {
         borderColor: 'rgba(0,0,0,0.7)',
-        width: '85%',
+        width: '80%',
         borderRadius: 20,
         paddingVertical: verticalScale(10),
         paddingLeft: scale(10),
@@ -48,11 +48,11 @@ export const styles = StyleSheet.create({
         color: '#bb0a1e',
         fontSize: moderateScale(18),
     },
-    cameraIconCont: {
-        flex: 1,
-        justifyContent: 'flex-end',
-        alignItems: 'center',
-    },
+    // cameraIconCont: {
+    //     flex: 1,
+    //     justifyContent: 'flex-end',
+    //     alignItems: 'center',
+    // },
     sendIconCont: {
         height: verticalScale(50),
         width: verticalScale(50),

@@ -172,8 +172,10 @@ export default class PushNotificationMiddleware {
                         requestList.push({ requestUserUid: e.requestUserUid })
                     }
                 })
+                let futureDate = new Date();
+               let newDate = futureDate.setDate(futureDate.getDate() + 40);
                 firebase.database().ref(`/user/${uid}/requestList`).set(requestList);
-                firebase.database().ref(`/user/${uid}`).update({ disableTimer: new Date().getTime() });
+                firebase.database().ref(`/user/${uid}`).update({ disableTimer: newDate });
             })
         }
     }

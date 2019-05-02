@@ -33,7 +33,8 @@ export default class DonorMiddleware {
                         donors.push(snap.val()[key])
                     }
                     if (snap.val()[key].disableTimer) {
-                        if (moment(snap.val()[key].disableTimer).fromNow(true) == '5 minutes') {
+                        let newDate = new Date().getTime();
+                        if (snap.val()[key].disableTimer <= newDate) {
                             firebase.database().ref(`/user/${key}/disableTimer`).remove();
                             firebase.database().ref('/user/').once('value', snap => {
                                 for (let a in snap.val()) {
