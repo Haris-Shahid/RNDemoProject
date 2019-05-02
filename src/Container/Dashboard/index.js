@@ -102,22 +102,24 @@ class Dashboard extends Component {
                                             this.state.filterdDonors.map((d, i) => {
                                                 if (this.props.uid === d.uid) {
                                                     return (
-                                                        <nb.Card key={i} >
-                                                            <nb.CardItem style={{ flexDirection: 'row' }} >
-                                                                <View style={{ flex: 1 }} >
-                                                                    <View style={styles.profileIconCont} >
-                                                                        {
-                                                                            d.profileImage == '' || !d.profileImage ?
-                                                                                <Ionicons name='ios-person' style={styles.profileIcon} /> :
-                                                                                <Image source={{ uri: d.profileImage }} style={styles.userProfile} />
-                                                                        }
+                                                        <TouchableOpacity key={i} onPress={() => this.props.navigation.navigate('Profile', { donor: d })} >
+                                                            <nb.Card>
+                                                                <nb.CardItem style={{ flexDirection: 'row' }} >
+                                                                    <View style={{ flex: 1 }} >
+                                                                        <View style={styles.profileIconCont} >
+                                                                            {
+                                                                                d.profileImage == '' || !d.profileImage ?
+                                                                                    <Ionicons name='ios-person' style={styles.profileIcon} /> :
+                                                                                    <Image source={{ uri: d.profileImage }} style={styles.userProfile} />
+                                                                            }
+                                                                        </View>
                                                                     </View>
-                                                                </View>
-                                                                <View style={styles.userName} >
-                                                                    <Text>{d.name}</Text>
-                                                                </View>
-                                                            </nb.CardItem>
-                                                        </nb.Card>
+                                                                    <View style={styles.userName} >
+                                                                        <Text>{d.name}</Text>
+                                                                    </View>
+                                                                </nb.CardItem>
+                                                            </nb.Card>
+                                                        </TouchableOpacity>
                                                     )
                                                 }
                                                 if (d.disableTimer) {

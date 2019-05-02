@@ -1,18 +1,16 @@
 import React, { Component } from 'react';
 import { View, Text, Image, StatusBar, StyleSheet, TouchableOpacity } from 'react-native';
 import { connect } from "react-redux"
-import { Header, Left, Right, Icon, Body } from 'native-base';
+import { Icon, Card, CardItem } from 'native-base';
 import { Ionicons } from '@expo/vector-icons';
 import { verticalScale, scale, moderateScale } from '../../Constants/scalingFunction';
+import CustomHeader from "../../Components/header";
+import { styles } from './style';
 
 class Profile extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            name: '',
-            imageUrl: '',
-
-        }
+        this.state = {}
     }
 
     static navigationOptions = {
@@ -22,59 +20,64 @@ class Profile extends Component {
     }
 
     render() {
+        const user = this.props.userDetail;
         return (
             <View style={{ flex: 1 }} >
                 <StatusBar hidden={true} />
-                <Header style={{ backgroundColor: "#bb0a1e" }} >
-                    <Left>
-                        <TouchableOpacity onPress={() => this.props.navigation.openDrawer()} >
-                            <Icon name='md-menu' style={{ color: '#fff' }} />
-                        </TouchableOpacity>
-                    </Left>
-                    <Body>
-                        <Text style={styles.headerTxt} >Hello</Text>
-                    </Body>
-                    <Right>
-                        <View style={styles.profileIconCont} >
-                            <Ionicons name='ios-person' style={styles.profileIcon} />
+                <CustomHeader name='Your Profile' profileImage={user.profileImage} menuIcon={() => this.props.navigation.openDrawer()} />
+                <Card style={styles.cardCont} >
+                    <CardItem>
+                        <View style={styles.logoContainer} >
+                            <View style={styles.profileIconCont} >
+                                {
+                                    user.profileImage === "" ?
+                                        <Ionicons name='ios-person' style={styles.profileIcon} /> :
+                                        <Image source={{ uri: user.profileImage }} style={styles.profileImage} />
+                                }
+                            </View>
                         </View>
-                    </Right>
-                </Header>
-                <Text>Profile</Text>
-                {/* <Image source={{uri: this.state.imageUrl}} style={{width: 150, height: 150, borderRadius: 50, marginVertical: 20}} />
-                <Text>
-                    {this.state.name}
-                </Text> */}
+                    </CardItem>
+                    <CardItem style={{ flexDirection: 'row' }} >
+                        <View style={{ flex: 0.5 }} ><Text style={styles.headTxt} >Name:</Text></View>
+                        <View style={{ flex: 1 }} ><Text style={[styles.bodyTxt]} >{user.name}</Text></View>
+                    </CardItem>
+                    <CardItem style={{ flexDirection: 'row' }} >
+                        <View style={{ flex: 0.5 }} ><Text style={styles.headTxt} >Blood Group:</Text></View>
+                        <View style={{ flex: 1 }} ><Text style={[styles.bodyTxt, { color: '#bb0a1e', textAlign: user.group ? 'left' : 'center' }]} >{user.group ? user.group : '-'}</Text></View>
+                    </CardItem>
+                    <CardItem style={{ flexDirection: 'row' }} >
+                        <View style={{ flex: 0.5 }} ><Text style={styles.headTxt} >Email:</Text></View>
+                        <View style={{ flex: 1 }} ><Text style={[styles.bodyTxt, { textAlign: user.email ? 'left' : 'center' }]} >{user.email ? user.email : '-'}</Text></View>
+                    </CardItem>
+                    <CardItem style={{ flexDirection: 'row' }} >
+                        <View style={{ flex: 0.5 }} ><Text style={styles.headTxt} >Contact:</Text></View>
+                        <View style={{ flex: 1 }} ><Text style={[styles.bodyTxt, { textAlign: user.contact ? 'left' : 'center' }]} >{user.contact ? user.contact : '-'}</Text></View>
+                    </CardItem>
+                    <CardItem style={{ flexDirection: 'row' }} >
+                        <View style={{ flex: 0.5 }} ><Text style={styles.headTxt} >Gender:</Text></View>
+                        <View style={{ flex: 1 }} ><Text style={[styles.bodyTxt, { textAlign: user.gender ? 'left' : 'center' }]} >{user.gender ? user.gender : '-'}</Text></View>
+                    </CardItem>
+                    <CardItem style={{ flexDirection: 'row' }} >
+                        <View style={{ flex: 0.5 }} ><Text style={styles.headTxt} >Address:</Text></View>
+                        <View style={{ flex: 1 }} ><Text style={[styles.bodyTxt, { textAlign: user.address ? 'left' : 'center' }]} >{user.address ? user.address : '-'}</Text></View>
+                    </CardItem>
+                    <CardItem style={{ flexDirection: 'row' }} >
+                        <View style={{ flex: 0.5 }} ><Text style={styles.headTxt} >City:</Text></View>
+                        <View style={{ flex: 1 }} ><Text style={[styles.bodyTxt, { textAlign: user.city ? 'left' : 'center' }]} >{user.city ? user.city : '-'}</Text></View>
+                    </CardItem>
+                </Card>
             </View>
         )
     }
 }
 
-const styles = StyleSheet.create({
-    profileIconCont: {
-        backgroundColor: 'rgba(255,255,255,0.5)',
-        borderRadius: 50,
-        justifyContent: 'center',
-        alignItems: 'center',
-        width: verticalScale(30),
-        height: verticalScale(30),
-        overflow: 'hidden'
-    },
-    profileIcon: {
-        color: 'rgba(255,255,255,0.8)',
-        fontSize: moderateScale(18)
-    },
-    headerTxt: {
-        color: '#fff',
-        fontSize: 20
-    },
-})
-
 const mapStateToProps = (state) => {
     return {
-        isLoading: state.AuthReducer.isLoading,
-        validation: state.AuthReducer.validation,
-        route: state.AuthReducer.route,
+        profileImage: state.AuthReducer.profileImage,
+        name: state.AuthReducer.name,
+        email: state.AuthReducer.email,
+        uid: state.AuthReducer.uid,
+        userDetail: state.AuthReducer.userDetail
     };
 }
 

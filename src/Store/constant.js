@@ -1,5 +1,6 @@
 export const AUTH_START = "AUTH_START";
 export const REGISTER_SUCCESSFULL = "REGISTER_SUCCESSFULL";
+export const USER_DETAIL = 'USER_DETAIL';
 
 export const AUTH_FAILED = "AUTH_FAILED";
 

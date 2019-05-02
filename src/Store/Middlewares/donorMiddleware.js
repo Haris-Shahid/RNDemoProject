@@ -1,7 +1,7 @@
 import DonorActions from '../Actions/DonorActions';
 import * as firebase from 'firebase';
 import PushNotificationMiddleware from './pushNotificationMiddleware';
-import moment from "moment";
+import AuthActions from '../Actions/AuthActions';
 
 export default class DonorMiddleware {
     static submitDonorDetails(obj, uid, nav) {
@@ -53,6 +53,9 @@ export default class DonorMiddleware {
                     }
                 }
                 dispatch(DonorActions.getAllDonors(donors))
+                firebase.database().ref(`/user/${uid}/`).on('value', snap => {
+                    dispatch(AuthActions.userDetail(snap.val()))
+                })
             });
         }
     }

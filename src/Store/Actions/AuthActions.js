@@ -10,7 +10,8 @@ import {
     FB_USER_LOGIN,
     FORGET_PASSWORD,
     SIGN_OUT,
-    RECOVER_DATA
+    RECOVER_DATA,
+    USER_DETAIL
 } from '../constant'
 
 
@@ -84,6 +85,12 @@ export default class AuthActions {
     static recoverUserData(user){
         return {
             type: RECOVER_DATA,
+            user
+        }
+    }
+    static userDetail(user){
+        return {
+            type: USER_DETAIL,
             user
         }
     }
