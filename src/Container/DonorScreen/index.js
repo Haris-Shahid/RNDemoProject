@@ -1,6 +1,6 @@
 import React from 'react'
-import { View, Image, Text, TouchableOpacity } from 'react-native';
-import { Header, Left, Icon, Body, Content, Button } from 'native-base';
+import { View, Image, Text, TouchableOpacity, Platform } from 'react-native';
+import { Header, Left, Icon, Body, Content, Button, Right } from 'native-base';
 import { styles } from './style';
 import { Ionicons } from '@expo/vector-icons';
 import { connect } from 'react-redux';
@@ -27,7 +27,7 @@ const DonorScreen = (props) => {
     }
     return (
         <View style={{ flex: 1 }} >
-            <Header style={{ backgroundColor: "#bb0a1e" }} >
+            <Header style={{ backgroundColor: "#bb0a1e", paddingBottom: Platform.OS === 'android' ? 0 : verticalScale(15) }} >
                 <Left>
                     <TouchableOpacity onPress={() => props.navigation.goBack()} >
                         <Icon name='ios-arrow-back' style={{ color: '#fff' }} />
@@ -36,6 +36,7 @@ const DonorScreen = (props) => {
                 <Body>
                     <Text style={styles.title}>Donor Details</Text>
                 </Body>
+                <Right><View /></Right>
             </Header>
             <View style={{ flex: 1 }} >
                 <Content>
@@ -71,7 +72,7 @@ const DonorScreen = (props) => {
                             <Text style={styles.tab2} >{donor.address}</Text>
                         </View>
                         <View>
-                            <Button block rounded style={[styles.btn, { backgroundColor: pendingStatus ? '#5bb85d' : pendingStatus === undefined ? '#bb0a1e' : '#f1c232' }]}  onPress={() => pendingStatus === undefined && props.handleAcceptBtnDetails(props.navigation, donor, AuthUser)} >
+                            <Button block rounded style={[styles.btn, { backgroundColor: pendingStatus ? '#5bb85d' : pendingStatus === undefined ? '#bb0a1e' : '#f1c232' }]} onPress={() => pendingStatus === undefined && props.handleAcceptBtnDetails(props.navigation, donor, AuthUser)} >
                                 <Text style={styles.btnTxt} >{pendingStatus ? 'Request Accepted' : pendingStatus === undefined ? 'Request For Blood' : 'Pending Request'}</Text>
                             </Button>
                         </View>

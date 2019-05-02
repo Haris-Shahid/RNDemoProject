@@ -2,35 +2,42 @@ import AuthActions from '../Actions/AuthActions';
 import * as firebase from 'firebase';
 import { ImagePicker } from 'expo';
 import { AsyncStorage } from 'react-native';
+import { Permissions, Camera } from 'expo';
 
 export default class AuthMiddleware {
 
     static UploadImage() {
         return async (dispatch) => {
             dispatch(AuthActions.imageUploading())
-            let result = await ImagePicker.launchImageLibraryAsync({
-                allowsEditing: true,
-                aspect: [4, 4],
-                base64: true
-            });
-            if (!result.cancelled) {
-                const blob = await new Promise((resolve, reject) => {
-                    const xhr = new XMLHttpRequest();
-                    xhr.onload = function () {
-                        resolve(xhr.response);
-                    };
-                    xhr.onerror = function (e) {
-                        reject(new TypeError('Network request failed'));
-                    };
-                    xhr.responseType = 'blob';
-                    xhr.open('GET', result.uri, true);
-                    xhr.send(null);
+            const cameraP = await Permissions.askAsync(Permissions.CAMERA);
+            const carmeraRollP = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+            if (carmeraRollP.status === 'granted') {
+                let result = await ImagePicker.launchImageLibraryAsync({
+                    allowsEditing: true,
+                    aspect: [4, 4],
+                    base64: true
                 });
-                const ref = firebase.storage().ref('user/' + result.uri)
-                const snapshot = await ref.put(blob);
-                blob.close();
-                let url = await snapshot.ref.getDownloadURL();
-                dispatch(AuthActions.imageUploaded(url))
+                if (!result.cancelled) {
+                    const blob = await new Promise((resolve, reject) => {
+                        const xhr = new XMLHttpRequest();
+                        xhr.onload = function () {
+                            resolve(xhr.response);
+                        };
+                        xhr.onerror = function (e) {
+                            reject(new TypeError('Network request failed'));
+                        };
+                        xhr.responseType = 'blob';
+                        xhr.open('GET', result.uri, true);
+                        xhr.send(null);
+                    });
+                    const ref = firebase.storage().ref('user/' + result.uri)
+                    const snapshot = await ref.put(blob);
+                    blob.close();
+                    let url = await snapshot.ref.getDownloadURL();
+                    dispatch(AuthActions.imageUploaded(url))
+                } else {
+                    dispatch(AuthActions.imageUploadingFailed())
+                }
             } else {
                 dispatch(AuthActions.imageUploadingFailed())
             }

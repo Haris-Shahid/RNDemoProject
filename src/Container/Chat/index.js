@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, StyleSheet, Text, TextInput, StatusBar, TouchableOpacity, ScrollView, Image, Dimensions, KeyboardAvoidingView, Keyboard, Animated } from 'react-native'
+import { View, StyleSheet, Text, TextInput, StatusBar, TouchableOpacity, ScrollView, Image, Platform, Dimensions, KeyboardAvoidingView, Keyboard, Animated } from 'react-native'
 import { Container, Content, Input, Item, Header, Left, Body, Icon, Right } from 'native-base';
 import { verticalScale, moderateScale, scale } from '../../Constants/scalingFunction';
 import { Ionicons } from '@expo/vector-icons';
@@ -18,7 +18,7 @@ class ChatScreen extends Component {
             name: '',
             uid: '',
             profileImage: '',
-            message: []
+            messages: []
         }
     }
 
@@ -57,7 +57,7 @@ class ChatScreen extends Component {
         return (
             <View style={{ flex: 1 }} >
                 <StatusBar hidden={true} />
-                <Header style={{ backgroundColor: "#bb0a1e" }} >
+                <Header style={{ backgroundColor: "#bb0a1e", paddingBottom: Platform.OS === 'android' ? 0 : verticalScale(15) }} >
                     <Left>
                         <TouchableOpacity onPress={() => this.props.navigation.goBack()} >
                             <Icon name='ios-arrow-back' style={{ color: '#fff' }} />
@@ -73,6 +73,7 @@ class ChatScreen extends Component {
                         </View>
                         <Text style={styles.title}>{this.state.name}</Text>
                     </Body>
+                    <Right><View /></Right>
                 </Header>
                 <View style={styles.inputMainContainer} >
                     <View style={styles.inputContainer} >
@@ -89,11 +90,11 @@ class ChatScreen extends Component {
                 </View>
                 <ScrollView style={styles.scrollViewCont} >
                     {
-                        this.props.message.map(v => {
+                        this.props.messages.map((v, i) => {
                             if (v.chat.senderUid === this.props.uid && v.chat.receiverUid === this.state.uid) {
                                 let messageStyle = v.chat.message.length < 16 ? styles.timeTxt1 : styles.timeTxt2
                                 return (
-                                    <View style={[styles.message, styles.rightTxt]} >
+                                    <View key={i} style={[styles.message, styles.rightTxt]} >
                                         <Text style={styles.messageTxt} >{v.chat.message}</Text>
                                         <Text style={[styles.timeTxt, messageStyle]} >{moment(v.chat.timeStamp).format('hh:mm A')}</Text>
                                     </View>
@@ -101,7 +102,7 @@ class ChatScreen extends Component {
                             } else if (v.chat.senderUid === this.state.uid && v.chat.receiverUid === this.props.uid) {
                                 let messageStyle = v.chat.message.length < 16 ? styles.timeTxt1 : styles.timeTxt2
                                 return (
-                                    <View style={styles.message} >
+                                    <View key={i} style={styles.message} >
                                         <Text style={styles.messageTxt} >{v.chat.message}</Text>
                                         <Text style={[styles.timeTxt, messageStyle]} >{moment(v.chat.timeStamp).format('hh:mm A')}</Text>
                                     </View>
@@ -120,7 +121,7 @@ const mapStateToProps = (state) => {
         profileImage: state.AuthReducer.profileImage,
         name: state.AuthReducer.name,
         uid: state.AuthReducer.uid,
-        message: state.ChatReducer.chat
+        messages: state.ChatReducer.chat
     };
 }
 

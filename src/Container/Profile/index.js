@@ -15,11 +15,11 @@ class Profile extends Component {
         }
     }
 
-static navigationOptions = {
-    drawerIcon: ({tintColor}) => (
-        <Icon name='md-person' style={{color: tintColor, fontSize: 24}} />
-    )
-}
+    static navigationOptions = {
+        drawerIcon: ({ tintColor }) => (
+            <Icon name='md-person' style={{ color: tintColor, fontSize: 24 }} />
+        )
+    }
 
     render() {
         return (
@@ -28,7 +28,7 @@ static navigationOptions = {
                 <Header style={{ backgroundColor: "#bb0a1e" }} >
                     <Left>
                         <TouchableOpacity onPress={() => this.props.navigation.openDrawer()} >
-                            <Icon name='md-menu' style={{color: '#fff'}} />
+                            <Icon name='md-menu' style={{ color: '#fff' }} />
                         </TouchableOpacity>
                     </Left>
                     <Body>
@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
         fontSize: moderateScale(18)
     },
     headerTxt: {
-        color: '#fff', 
+        color: '#fff',
         fontSize: 20
     },
 })

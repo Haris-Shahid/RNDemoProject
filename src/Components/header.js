@@ -1,12 +1,12 @@
 import React from 'react';
-import { TouchableOpacity, StyleSheet, Image, View, Text } from 'react-native';
+import { TouchableOpacity, StyleSheet, Image, View, Text, Platform } from 'react-native';
 import { Header, Left, Body, Right, Icon } from 'native-base';
 import { verticalScale, moderateScale } from '../Constants/scalingFunction';
 import { Ionicons } from '@expo/vector-icons';
 
 const CustomHeader = (props) => {
     return (
-        <Header style={{ backgroundColor: "#bb0a1e" }} >
+        <Header style={{ backgroundColor: "#bb0a1e", paddingBottom: Platform.OS === 'android' ?  0  : verticalScale(15)  }} >
             <Left>
                 <TouchableOpacity onPress={() => props.menuIcon()} >
                     <Icon name='md-menu' style={{ color: '#fff' }} />
