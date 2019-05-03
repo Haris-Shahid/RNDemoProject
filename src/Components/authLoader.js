@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, AsyncStorage, StyleSheet, Image } from 'react-native';
+import { View, AsyncStorage, StyleSheet, Image, ActivityIndicator } from 'react-native';
 import AuthActions from '../Store/Actions/AuthActions'
 import { connect } from 'react-redux';
 
@@ -21,7 +21,8 @@ class AuthLoader extends React.Component {
     render() {
         return (
             <View style={styles.container} >
-                <Image source={require('../../assets/images/splash.png')} style={{ width: '100%', height: '100%' }} resizeMode='cover' />
+              <ActivityIndicator animating={true} size='large' color="#bb0a1e" />
+                {/* <Image source={require('../../assets/images/splash.png')} style={{ width: '100%', height: '100%' }} resizeMode='cover' /> */}
             </View >
         )
     }
@@ -31,6 +32,8 @@ class AuthLoader extends React.Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center'
     }
 })
 

@@ -9,6 +9,10 @@
       "ios",
       "android"
     ],
+    "splash": {
+        "image": "./assets/images/splash.png",
+        "resizeMode": "cover"
+      },
     "version": "1.0.0",
     "orientation": "portrait",
     "facebookScheme": "fb367448257053758",
