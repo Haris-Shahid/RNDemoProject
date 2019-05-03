@@ -23,13 +23,16 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
-    },
-    "ios": {
+      "supportsTablet": true,
       "bundleIdentifier": "com.yourcompany.app"
     },
     "android": {
-      "package": "com.yourcompany.app"
+      "package": "com.yourcompany.app",
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyDQTgJofYEtp7ZgaJNM_8ZAmOAeK4_uftc "
+        }
+      }
     }
   }
 }

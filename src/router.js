@@ -16,6 +16,7 @@ import CustomDrawerComponent from './Components/customDrawerComponent';
 import AuthLoader from './Components/authLoader';
 import DonorScreen from './Container/DonorScreen';
 import ChatScreen from './Container/Chat';
+import MapScreen from './Container/Map';
 
 const AuthScreen = createStackNavigator({
     loginScreen: {
@@ -49,13 +50,14 @@ const AppDrawNavigator = createDrawerNavigator({
 const HomeScreen = createStackNavigator({
     dashboard: AppDrawNavigator,
     donorScreen: DonorScreen,
-    ChatScreen: ChatScreen
+    ChatScreen: ChatScreen,
+    MapScreen: MapScreen,
 },{
      headerMode: 'none'
 })
 
 const Screens = createSwitchNavigator({
-    AuthLoading: { screen: AuthLoader },
+    AuthLoading: { screen: MapScreen },
     Auth: { screen: AuthScreen },
     homeScreen: { screen: HomeScreen }
 },{
