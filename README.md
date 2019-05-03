@@ -1,7 +1,4 @@
-# RNDemoProject
-### first apk testing apk link https://expo.io/artifacts/4566c69b-066d-4fbc-9442-1633ec49607c
-Published
-Your URL is
+app link
 
 https://exp.host/@harisshahid01/blood-bank
 
@@ -14,6 +11,6 @@ You can check the queue length at
 
 You can monitor the build at
 
- https://expo.io/builds/a4675cba-8814-43af-a268-7c31993dc9e4
+ https://expo.io/builds/2ccf2b1e-5304-4394-9afe-fbab775afbc8
 
-Successfully built standalone app: https://expo.io/artifacts/4566c69b-066d-4fbc-9442-1633ec49607c
+Successfully built standalone app: https://expo.io/artifacts/a6191dc0-52e8-40dc-b65e-dcce55c75e7f
