@@ -12,8 +12,8 @@ export const styles = StyleSheet.create({
         borderRadius: 50,
         justifyContent: 'center',
         alignItems: 'center',
-        width: verticalScale(30),
-        height: verticalScale(30),
+        width: verticalScale(35),
+        height: verticalScale(35),
         overflow: 'hidden'
     },
     profileIcon: {
@@ -35,12 +35,10 @@ export const styles = StyleSheet.create({
     },
     inputContainer: {
         borderColor: 'rgba(0,0,0,0.7)',
-        width: '80%',
         borderRadius: 20,
         paddingVertical: verticalScale(10),
         paddingLeft: scale(10),
         overflow: 'hidden',
-        alignSelf: 'center',
         borderWidth: 1,
         flexDirection: 'row'
     },
@@ -54,12 +52,12 @@ export const styles = StyleSheet.create({
     //     alignItems: 'center',
     // },
     sendIconCont: {
-        height: verticalScale(50),
-        width: verticalScale(50),
+        height: scale(45),
+        width: scale(45),
         borderRadius: 50,
+        marginLeft: scale(5),
         justifyContent: 'center',
         alignItems: 'center',
-        alignSelf: 'flex-end',
     },
     scrollViewCont: {
         paddingHorizontal: scale(10),

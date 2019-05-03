@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { View, Text, StatusBar, Image } from 'react-native';
-import { Font } from 'expo';
 import { Content, Item, Input, Button } from 'native-base';
 import { Ionicons } from '@expo/vector-icons';
 import { styles } from './style';
@@ -9,24 +8,18 @@ import Loader from '../../Components/activityIndicator';
 import { AuthMiddleware } from '../../Store/Middlewares';
 import AuthActions from '../../Store/Actions/AuthActions';
 import CustomModal from '../../Components/customModal';
+import { scale } from '../../Constants/scalingFunction';
 
 class ForgetPassword extends Component {
     constructor() {
         super();
         this.state = {
-            fontLoaded: false,
-            email: 'harisshahid00@gmail.com',
+            email: '',
         }
     }
 
-    async componentDidMount() {
-        this.props.reset();
-        await Font.loadAsync({
-            'rentuck': require('../../../assets/fonts/Rentuck.ttf'),
-        });
-        this.setState({
-            fontLoaded: true
-        })
+     componentDidMount() {
+        this.props.reset();    
     }
 
     formSubmit() {
@@ -57,13 +50,10 @@ class ForgetPassword extends Component {
         return (
             <View style={styles.container}>
                 <StatusBar hidden={true} />
-                <Image source={require('../../../assets/images/bgImage.png')} style={styles.bgImage} />
-                <View style={styles.childContainer} >
-                    <Content>
-                        <View style={styles.logoContainer} >
-                            {this.state.fontLoaded && <Text style={styles.logoText1} >BLOOD</Text>}
-                            {this.state.fontLoaded && <Text style={styles.logoText2} >BANK</Text>}
-                        </View>
+                     <Content>
+                     <View style={[styles.logoContainer]} >
+                        <Image style={{ height: scale(77), width: scale(80) }} source={require('../../../assets/images/screenLogo.png')} />
+                    </View>
                         <View style={styles.formContainer} >
                             <Text style={styles.fgpasswordTitle} >Forgot Your Password</Text>
                             <Text style={styles.fgpassInst} >Enter your email below to receive your password reset instructions</Text>
@@ -81,7 +71,6 @@ class ForgetPassword extends Component {
                         </View>
                     </Content>
                     {this.props.isLoading && <Loader />}
-                </View>
                 <CustomModal title='Please check your email to reset your password' visible={this.props.navigateRoute} handleModal={() => this.handleModal()} />
             </View>
         )

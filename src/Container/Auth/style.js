@@ -4,18 +4,7 @@ import { verticalScale, scale, moderateScale } from '../../Constants/scalingFunc
 export const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#000',
-    },
-    bgImage: {
-        width: null,
-        height: null,
-        flex: 1,
-        opacity: 0.5,
-    },
-    childContainer: {
-        position: 'absolute',
-        height: '100%',
-        width: '100%',
+        backgroundColor: '#fff',
     },
     logoContainer: {
         height: verticalScale(150),
@@ -38,29 +27,19 @@ export const styles = StyleSheet.create({
     },
     profileIconAdd: {
         color: '#fff',
-        fontSize: moderateScale(25),
+        backgroundColor: '#000',
+        fontSize: scale(25),
+        paddingHorizontal: scale(5),
+        borderRadius: 50,
+        overflow: 'hidden',
         position: 'absolute',
         bottom: 0,
-        right: moderateScale(4)
-    },
-    logoText1: {
-        color: '#bb0a1e',
-        fontSize: moderateScale(40),
-        fontFamily: "rentuck",
-    },
-    logoText2: {
-        color: '#fff',
-        fontSize: moderateScale(25),
-        fontFamily: "rentuck",
+        right: scale(4)
     },
     formContainer: {
-        width: '85%',
-        alignSelf: 'center',
+        width: '100%',
         alignItems: 'center',
-        borderRadius: scale(5),
-        paddingVertical: verticalScale(30),
-        backgroundColor: 'rgba(255,255,255,0.5)',
-        borderRadius: scale(10)
+        paddingVertical: verticalScale(20),
     },
     inputCont: {
         width: '90%',
@@ -72,14 +51,14 @@ export const styles = StyleSheet.create({
         fontSize: moderateScale(25),
     },
     inputField: {
-        color: '#fff',
+        color: '#000',
         fontSize: moderateScale(20),
         marginLeft: scale(10)
     },
     btn: {
-        backgroundColor: '#bb0a1e',
+        backgroundColor: '#ec2024',
         width: '90%',
-        marginVertical: verticalScale(20),
+        marginVertical: verticalScale(10),
         alignSelf: 'center',
     },
     btnTxt: {
@@ -88,24 +67,27 @@ export const styles = StyleSheet.create({
         fontWeight: 'bold'
     },
     orTxt: {
-        height: verticalScale(30),
         justifyContent: 'center',
         alignItems: 'center',
         width: '100%'
     },
     signUpText: {
         flexDirection: 'row',
-        marginTop: verticalScale(10)
     },
     signUp: {
-        color: '#fff',
-        marginLeft: scale(5)
+        color: '#000',
+        marginLeft: scale(5),
+        fontSize: moderateScale(16)
+    },
+    signUpText1: {
+         color: '#000' ,
+         fontSize: moderateScale(16)
     },
     errorTxt: {
         fontSize: moderateScale(17),
         width: '90%',
         textAlign: 'center',
-        color: '#bb0a1e',
+        color: '#ec2024',
         marginTop: verticalScale(10)
     },
     fgpasswordTitle: {

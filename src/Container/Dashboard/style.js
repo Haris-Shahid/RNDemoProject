@@ -4,22 +4,27 @@ import { verticalScale, scale, moderateScale } from '../../Constants/scalingFunc
 const { height } = Dimensions.get('window')
 
 export const styles = StyleSheet.create({
-    formCont: {
-        width: '90%',
+    childCont: {
+        width: '95%',
         alignSelf: 'center',
-        height: height - verticalScale(70)
+        flex: 1,
     },
     formTitle: {
-        fontSize: moderateScale(20),
+        fontSize: scale(18),
         marginVertical: verticalScale(15)
     },
     form: {
-        borderWidth: 1,
+        borderBottomWidth: 1,
         borderColor: '#bb0a1e',
-        borderRadius: scale(10)
     },
     mainCardCont: {
-        height: height - verticalScale(200)
+        height: '95%'
+    },
+    scrollCont: {
+        flex: 1,
+        width: '95%',
+        alignSelf: 'center',
+        paddingBottom: scale(10)
     },
     profileIconCont: {
         backgroundColor: 'rgba(0,0,0,0.5)',
@@ -45,7 +50,7 @@ export const styles = StyleSheet.create({
         justifyContent: 'center'
     },
     acBtnCont: {
-        flex: 1.2,
+        flex: 1.5,
         height: verticalScale(40),
         justifyContent: 'center'
     },

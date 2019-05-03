@@ -44,9 +44,8 @@ export const styles = StyleSheet.create({
         alignItems: 'center'
     },
     form: {
-        borderWidth: 1,
-        width: '70%',
-        borderRadius: scale(10),
+        borderBottomWidth: 1,
+        width: '60%',
         borderColor: '#bb0a1e'
     },
     btn: {

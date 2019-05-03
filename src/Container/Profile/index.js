@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { View, Text, Image, StatusBar, StyleSheet, TouchableOpacity } from 'react-native';
 import { connect } from "react-redux"
-import { Icon, Card, CardItem } from 'native-base';
+import { Icon, Card, CardItem, Content } from 'native-base';
 import { Ionicons } from '@expo/vector-icons';
 import { verticalScale, scale, moderateScale } from '../../Constants/scalingFunction';
 import CustomHeader from "../../Components/header";
@@ -25,7 +25,8 @@ class Profile extends Component {
             <View style={{ flex: 1 }} >
                 <StatusBar hidden={true} />
                 <CustomHeader name='Your Profile' profileImage={user.profileImage} menuIcon={() => this.props.navigation.openDrawer()} />
-                <Card style={styles.cardCont} >
+               <Content>
+               <Card style={styles.cardCont} >
                     <CardItem>
                         <View style={styles.logoContainer} >
                             <View style={styles.profileIconCont} >
@@ -66,6 +67,7 @@ class Profile extends Component {
                         <View style={{ flex: 1 }} ><Text style={[styles.bodyTxt, { textAlign: user.city ? 'left' : 'center' }]} >{user.city ? user.city : '-'}</Text></View>
                     </CardItem>
                 </Card>
+               </Content>
             </View>
         )
     }

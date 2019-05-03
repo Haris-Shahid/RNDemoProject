@@ -8,7 +8,7 @@ import { connect } from "react-redux";
 import { MessageMiddleware } from '../../Store/Middlewares';
 import moment from "moment";
 
-// const { width, height } = Dimensions.get('window')
+const { width, height } = Dimensions.get('window')
 
 class ChatScreen extends Component {
     constructor(props) {
@@ -76,17 +76,17 @@ class ChatScreen extends Component {
                     <Right><View /></Right>
                 </Header>
                 <View style={styles.inputMainContainer} >
-                    <View style={styles.inputContainer} >
+                    <View style={[styles.inputContainer, { width: '85%' }]} >
                         <View style={{ flex: 1, }} >
-                            <TextInput value={this.state.message} selectionColor='#bb0a1e' onSubmitEditing={() => this.formSubmit()} returnKeyType="send" placeholder='Type a message' placeholderTextColor='rgba(0, 0, 0, 0.5)' style={[styles.inputField, { height: this.state.height }]} onChangeText={message => this.setState({ message })} multiline={true} onContentSizeChange={(e) => this.updateSize(e.nativeEvent.contentSize.height)} />
+                            <TextInput value={this.state.message} selectionColor='#bb0a1e' onSubmitEditing={() => this.state.message || this.state.message !== '' ? this.formSubmit() : null} returnKeyType="send" placeholder='Type a message' placeholderTextColor='rgba(0, 0, 0, 0.5)' style={[styles.inputField, { height: this.state.height }]} onChangeText={message => this.setState({ message })} multiline={true} onContentSizeChange={(e) => this.updateSize(e.nativeEvent.contentSize.height)} />
                         </View>
                         {/* <TouchableOpacity style={styles.cameraIconCont}>
                             <Icon name='md-camera' />
                         </TouchableOpacity> */}
                     </View>
-                    <TouchableOpacity onPress={() => this.formSubmit()} style={[styles.sendIconCont, { backgroundColor: this.state.message || this.state.message !== '' ? '#bb0a1e' : 'rgba(0,0,0,0.6)' }]} >
-                        <Icon name='md-send' style={{ color: '#fff' }} />
-                    </TouchableOpacity>
+                        <TouchableOpacity onPress={() => this.state.message || this.state.message !== '' ? this.formSubmit() : null} style={[styles.sendIconCont, { backgroundColor: this.state.message || this.state.message !== '' ? '#bb0a1e' : 'rgba(0,0,0,0.6)' }]} >
+                            <Icon name='md-send' style={{ color: '#fff', fontSize: scale(20) }} />
+                        </TouchableOpacity>
                 </View>
                 <ScrollView style={styles.scrollViewCont} >
                     {

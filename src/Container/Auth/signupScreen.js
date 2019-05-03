@@ -5,7 +5,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { styles } from './style';
 import { connect } from "react-redux"
 import Loader from '../../Components/activityIndicator';
-import { scale } from '../../Constants/scalingFunction';
+import { scale, moderateScale, verticalScale } from '../../Constants/scalingFunction';
 import { AuthMiddleware } from '../../Store/Middlewares';
 import AuthActions from '../../Store/Actions/AuthActions';
 import CustomModal from '../../Components/customModal';
@@ -66,55 +66,52 @@ class SignUpScreen extends Component {
         return (
             <View style={styles.container}>
                 <StatusBar hidden={true} />
-                <Image source={require('../../../assets/images/bgImage.png')} style={styles.bgImage} />
-                <View style={styles.childContainer} >
-                    <Content>
-                        <View style={styles.logoContainer} >
-                            <TouchableOpacity onPress={() => this.props.UploadImage()} >
-                                <View style={styles.profileIconCont} >
-                                    {
-                                        this.props.profileImageLoading ?
-                                            <ActivityIndicator animating={true} size='small' color="rgba(255,255,255,0.5)" /> :
-                                            this.props.profileImage === "" ?
-                                                <Ionicons name='ios-person' style={styles.profileIcon} />
-                                                :
-                                                <Image source={{ uri: this.props.profileImage }} style={{ width: '100%', height: '100%' }} />
-                                    }
-                                </View>
-                                <Ionicons name='ios-add-circle' style={styles.profileIconAdd} />
-                            </TouchableOpacity>
-                        </View>
-                        <View style={styles.formContainer} >
-                            <Item style={styles.inputCont} >
-                                <Ionicons style={styles.inputIcon} name='ios-person' />
-                                <Input ref="1" selectionColor='#bb0a1e' onSubmitEditing={() => this.refs.email._root.focus()} returnKeyType="next" onChangeText={(text) => this.handleInput('name', text)} placeholder='Your Name' placeholderTextColor='rgba(100, 100, 100, 0.5)' style={styles.inputField} />
-                            </Item>
-                            <Item style={styles.inputCont} >
-                                <Ionicons style={styles.inputIcon} name='ios-mail' />
-                                <Input ref='email' selectionColor='#bb0a1e' keyboardType="email-address" onSubmitEditing={() => this.refs.password._root.focus()} returnKeyType='next' autoCapitalize="none" autoCorrect={false} onChangeText={(text) => this.handleInput('email', text)} placeholder='Email' placeholderTextColor='rgba(100, 100, 100, 0.5)' style={styles.inputField} />
-                            </Item>
-                            <Item style={styles.inputCont} >
-                                <Ionicons style={styles.inputIcon} name='md-lock' />
-                                <Input ref='password' selectionColor='#bb0a1e' onSubmitEditing={() => this.refs.resetPassword._root.focus()} returnKeyType='next' onChangeText={(text) => this.handleInput('password', text)} placeholder='Password' secureTextEntry={true} placeholderTextColor='rgba(100, 100, 100, 0.5)' style={styles.inputField} />
-                            </Item>
-                            <Item style={styles.inputCont} >
-                                <Ionicons style={styles.inputIcon} name='md-lock' />
-                                <Input ref='resetPassword' selectionColor='#bb0a1e' onSubmitEditing={() => this.formSubmit()} returnKeyType='done' onChangeText={(text) => this.handleInput('retypePassword', text)} placeholder='Retype Password' secureTextEntry={true} placeholderTextColor='rgba(100, 100, 100, 0.5)' style={styles.inputField} />
-                            </Item>
-                            {(this.state.validation !== null || this.state.validation !== 'null') && <Text style={styles.errorTxt} >{this.state.validation}</Text>}
-                            <Button onPress={() => this.formSubmit()} style={styles.btn} block >
-                                <Text style={styles.btnTxt} >SIGN UP</Text>
-                            </Button>
-                        </View>
-                        <View style={[styles.orTxt, styles.signUpText]} >
-                            <Text style={{ color: '#fff' }} >Already have an Account?</Text>
-                            <TouchableOpacity onPress={() => this.props.navigation.goBack()} >
-                                <Text style={styles.signUp} >LOGIN NOW</Text>
-                            </TouchableOpacity>
-                        </View>
-                    </Content>
-                    {this.props.isLoading && <Loader />}
-                </View>
+                <Content>
+                    <View style={[styles.logoContainer, , {   height: verticalScale(120),    justifyContent: 'flex-end' }]} >
+                        <TouchableOpacity onPress={() => this.props.UploadImage()} >
+                            <View style={styles.profileIconCont} >
+                                {
+                                    this.props.profileImageLoading ?
+                                        <ActivityIndicator animating={true} size='small' color="rgba(255,255,255,0.5)" /> :
+                                        this.props.profileImage === "" ?
+                                            <Ionicons name='ios-person' style={styles.profileIcon} />
+                                            :
+                                            <Image source={{ uri: this.props.profileImage }} style={{ width: '100%', height: '100%' }} />
+                                }
+                            </View>
+                            <Ionicons name='md-add' style={styles.profileIconAdd} />
+                        </TouchableOpacity>
+                    </View>
+                    <View style={[styles.formContainer, {paddingTop: 0}]} >
+                        <Item style={styles.inputCont} >
+                            <Ionicons style={styles.inputIcon} name='ios-person' />
+                            <Input ref="1" selectionColor='#bb0a1e' onSubmitEditing={() => this.refs.email._root.focus()} returnKeyType="next" onChangeText={(text) => this.handleInput('name', text)} placeholder='Your Name' placeholderTextColor='rgba(100, 100, 100, 0.5)' style={styles.inputField} />
+                        </Item>
+                        <Item style={styles.inputCont} >
+                            <Ionicons style={styles.inputIcon} name='ios-mail' />
+                            <Input ref='email' selectionColor='#bb0a1e' keyboardType="email-address" onSubmitEditing={() => this.refs.password._root.focus()} returnKeyType='next' autoCapitalize="none" autoCorrect={false} onChangeText={(text) => this.handleInput('email', text)} placeholder='Email' placeholderTextColor='rgba(100, 100, 100, 0.5)' style={styles.inputField} />
+                        </Item>
+                        <Item style={styles.inputCont} >
+                            <Ionicons style={styles.inputIcon} name='md-lock' />
+                            <Input ref='password' selectionColor='#bb0a1e' onSubmitEditing={() => this.refs.resetPassword._root.focus()} returnKeyType='next' onChangeText={(text) => this.handleInput('password', text)} placeholder='Password' secureTextEntry={true} placeholderTextColor='rgba(100, 100, 100, 0.5)' style={styles.inputField} />
+                        </Item>
+                        <Item style={styles.inputCont} >
+                            <Ionicons style={styles.inputIcon} name='md-lock' />
+                            <Input ref='resetPassword' selectionColor='#bb0a1e' onSubmitEditing={() => this.formSubmit()} returnKeyType='done' onChangeText={(text) => this.handleInput('retypePassword', text)} placeholder='Retype Password' secureTextEntry={true} placeholderTextColor='rgba(100, 100, 100, 0.5)' style={styles.inputField} />
+                        </Item>
+                        {(this.state.validation !== null || this.state.validation !== 'null') && <Text style={styles.errorTxt} >{this.state.validation}</Text>}
+                        <Button onPress={() => this.formSubmit()} style={styles.btn} block >
+                            <Text style={styles.btnTxt} >SIGN UP</Text>
+                        </Button>
+                    </View>
+                    <View style={[styles.orTxt, styles.signUpText]} >
+                        <Text style={styles.signUpText1} >Already have an Account?</Text>
+                        <TouchableOpacity onPress={() => this.props.navigation.goBack()} >
+                            <Text style={styles.signUp} >LOGIN NOW</Text>
+                        </TouchableOpacity>
+                    </View>
+                </Content>
+                {this.props.isLoading && <Loader />}
                 <CustomModal title='Registration Completed Successfully' visible={this.props.navigateRoute} handleModal={() => this.handleModal()} />
             </View>
         )
