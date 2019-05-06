@@ -9,6 +9,7 @@
   "dependencies": {
     "expo": "^32.0.0",
     "firebase": "^5.9.3",
+    "haversine": "^1.1.1",
     "moment": "^2.24.0",
     "native-base": "^2.12.1",
     "react": "16.5.0",

@@ -75,6 +75,12 @@ const DonorScreen = (props) => {
                             <Button block rounded style={[styles.btn, { backgroundColor: pendingStatus ? '#5bb85d' : pendingStatus === undefined ? '#bb0a1e' : '#f1c232' }]} onPress={() => pendingStatus === undefined && props.handleAcceptBtnDetails(props.navigation, donor, AuthUser)} >
                                 <Text style={styles.btnTxt} >{pendingStatus ? 'Request Accepted' : pendingStatus === undefined ? 'Request For Blood' : 'Pending Request'}</Text>
                             </Button>
+                            {
+                                pendingStatus ?
+                                    <Button block rounded style={[styles.btn, { backgroundColor: '#bb0a1e' }]} onPress={() => props.navigation.navigate('MapScreen', { donor: donor })} >
+                                        <Text style={styles.btnTxt} >Locate Him</Text>
+                                    </Button> : null
+                            }
                         </View>
                     </View>
                 </Content>
