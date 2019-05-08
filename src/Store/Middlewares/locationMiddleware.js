@@ -8,12 +8,17 @@ export default class LocationMiddleware {
         return async dispatch => {
             let { status } = await Permissions.askAsync(Permissions.LOCATION);
             if (status === 'granted') {
-                let location = await Location.getCurrentPositionAsync({ enableHighAccuracy: true });
-                let region = {
-                    latitude: location.coords.latitude,
-                    longitude: location.coords.longitude
-                }
-                firebase.database().ref(`/user/${uid}`).update({ location: region })
+                navigator.geolocation.watchPosition(
+                    (position) => {
+                        let region = {
+                            latitude: position.coords.latitude,
+                            longitude: position.coords.longitude,
+                        }
+                        firebase.database().ref(`/user/${uid}`).update({ location: region })
+                    },
+                    (error) => alert(error.message),
+                    { enableHighAccuracy: true, timeout: 20000, maximumAge: 0, distanceFilter: 1 },
+                );
             }
         }
     }
