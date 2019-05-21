@@ -7,6 +7,8 @@
     "eject": "expo eject"
   },
   "dependencies": {
+    "@mapbox/polyline": "^1.1.0",
+    "@mapbox/react-native-mapbox-gl": "https://github.com/nitaliano/react-native-mapbox-gl#master",
     "expo": "^32.0.0",
     "firebase": "^5.9.3",
     "haversine": "^1.1.1",

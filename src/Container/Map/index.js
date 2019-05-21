@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, Dimensions, TouchableOpacity, Platform } from '
 import { MapView, Permissions, Location } from 'expo';
 import { Header, Left, Right, Body, Icon, Button } from 'native-base';
 import { verticalScale, moderateScale, scale } from '../../Constants/scalingFunction';
-
+import Polyline from '@mapbox/polyline';
 const { width, height } = Dimensions.get('window');
 
 const ASPECT_RATIO = width / height;
@@ -78,37 +78,53 @@ class MapScreen extends Component {
 
     handleGetDirection() {
         const { donorLocation, userRegion } = this.state;
-        const source = {
-            latitude: userRegion.latitude,
-            location: userRegion.longitude
-        }
-        const destination = {
-            latitude: donorLocation.latitude,
-            longitude: donorLocation.longitude
-        }
-        this.getDirections(source, destination)
-    }
-    async getDirections(startLoc, destinationLoc) {
+        const mode = 'driving';
+
+        const point = "kjmvC}jfxK]b@^`@vCrCsNjR}DrFw@tAmCdHqC`HqA|CcOvRQNQDM?E^CvBJr@D@VNJNF\\?VKXQPWHUAYKS[EO]Wg@UcCk@iHgB}@OoAIgC@w@A_BNkEb@oBT{BVoBPi@BoC\\eAHk@HQF_PnBaAN{@LABGDG@Q?iBFaCPuCVoHj@wDRgG\\eH`@iG\\e@P}@LoB^YJEDGLC^T|@l@zAjBrDHLMNuDtFoDnFsAzBiGzIw@fA@ZNdA"
         try {
-            const resp = await fetch(`https://maps.googleapis.com/maps/api/directions/json?origin=${startLoc.latitude},${startLoc.longitude}&destination=${destinationLoc.latitude},${destinationLoc.longitude}&mode=navigate&key=AIzaSyDQTgJofYEtp7ZgaJNM_8ZAmOAeK4_uftc`);
-            const respJson = await resp.json();
-            const points = MapView.Polyline.decode(respJson.routes[0].overview_polyline.points);
-            const coords = points.map((point, index) => {
+            // let resp = await fetch(`https://maps.googleapis.com/maps/api/directions/json?origin=${ startLoc }&destination=${ destinationLoc }`)
+            // let respJson = await resp.json();
+            let points = Polyline.decode(point);
+            // let points = Polyline.decode(respJson.routes[0].overview_polyline.points);
+            let coords = points.map((point, index) => {
                 return {
                     latitude: point[0],
-                    longitude: point[1],
-                };
-            });
-            const newCoords = [...this.state.coordinates, coords]
-            this.setState({ coordinates: newCoords });
-            return coords;
+                    longitude: point[1]
+                }
+            })
+            this.setState({ coordinates: coords })
         } catch (error) {
-            alert(error);
+            alert(error)
         }
+
+        // const origin = `${userRegion.latitude} ${userRegion.longitude}`;
+        // const destination = `${donorLocation.latitude} ${donorLocation.longitude}`;
+        // const APIKEY = 'AIzaSyDQTgJofYEtp7ZgaJNM_8ZAmOAeK4_uftc';
+        // const APIKEY = 'AIzaSyDD9VHVK_eVmAK8nwHWBCVVB-gbxA6RTdI';
+        // const url = `https://maps.googleapis.com/maps/api/directions/json?origin=${origin}&destination=${destination}&key=${APIKEY}&mode=${mode}`;
+        // const AccessToken = 'pk.eyJ1IjoiaGFyaXNzaGFoaWQiLCJhIjoiY2p2ZzdzbThzMDRqYzQzbW16NzV2NmR1YiJ9.5Zl82w0SfNvy_cQ5hkPGzw';
+        // const url = `https://api.mapbox.com/directions/v5/mapbox/${mode}/${userRegion.latitude},${userRegion.longitude};${donorLocation.latitude},${donorLocation.longitude}?geometries=geojson&access_token=${AccessToken}`;
+        // fetch(url)
+        //     .then(response => response.json())
+        //     .then(responseJson => {
+        //         let coordinates = [];
+        //         responseJson.routes[0].geometry.coordinates.map(v => {
+        //             coordinates.push({
+        //                 latitude: v[0],
+        //                 longitude: v[1]
+        //             })
+        //         })
+        //         this.setState({
+        //             coordinates
+        //         })
+        //     }).catch(e => alert(e));
+
     }
 
+
     render() {
-        const { region, donorLocation, onUserLocation, userRegion } = this.state;
+        const { region, donorLocation, onUserLocation, coordinates, userRegion } = this.state;
+        console.log(coordinates, '///////////////')
         return (
             <View style={{ flex: 1 }} >
                 <Header style={{ backgroundColor: "#bb0a1e", paddingBottom: Platform.OS === 'android' ? 0 : verticalScale(15) }} >
@@ -128,15 +144,20 @@ class MapScreen extends Component {
                     ref={map => this.map = map}
                     showsUserLocation={true}
                     style={{ flex: 1 }} >
-                    <MapView.Marker coordinate={donorLocation} />
-                    {
-                        this.state.coordinates.length !== 0 ?
-                            this.state.coordinates.map((coords, i) => {
-                                return (
-                                    <MapView.Polyline index={i} key={i} coordinates={coords} strokeWidth={2} strokeColor="blue" />
-                                )
-                            }) : null
-                    }
+                    <MapView.Polyline
+                        coordinates={coordinates}
+                        strokeWidth={5}
+                        strokeColor="red" />
+                    {/* <MapView.Polyline
+                        coordinates={coordinates}
+                        strokeWidth={10}
+                        strokeColor="#00a8ff"
+                        lineCap="round"
+                    /> */}
+                    {/* <MapView.Marker coordinate={donorLocation} /> */}
+                    {/* {
+                        coordinates.length !== 0 && <MapView.Polyline coordinates={coordinates} strokeWidth={2} strokeColor="blue" />
+                    } */}
                 </MapView>
                 <TouchableOpacity style={styles.navigateBtn} onPress={() => this.handleGetDirection()} >
                     <Text style={{ color: '#000', fontSize: 18 }} >Navigate</Text>
@@ -188,5 +209,19 @@ const styles = StyleSheet.create({
         color: '#000'
     }
 })
+
+function decode(t, e) {
+    for (var n, o, u = 0, l = 0, r = 0, d = [], h = 0, i = 0, a = null, c = Math.pow(10, e || 5); u < t.length;) {
+        a = null, h = 0, i = 0;
+        do a = t.charCodeAt(u++) - 63, i |= (31 & a) << h, h += 5;
+        while (a >= 32); n = 1 & i ? ~(i >> 1) : i >> 1, h = i = 0;
+        do a = t.charCodeAt(u++) - 63, i |= (31 & a) << h, h += 5;
+        while (a >= 32); o = 1 & i ? ~(i >> 1) : i >> 1, l += n, r += o, d.push([l / c, r / c])
+    }
+    return d = d.map(function (t) {
+        return { latitude: t[0], longitude: t[1] }
+    })
+}
+
 
 export default MapScreen;

@@ -9,7 +9,6 @@ export default class PushNotificationMiddleware {
             const { status: existingStatus } = await Permissions.getAsync(
                 Permissions.NOTIFICATIONS
             );
-
             let finalStatus = existingStatus;
             if (existingStatus !== 'granted') {
                 const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
@@ -173,7 +172,7 @@ export default class PushNotificationMiddleware {
                     }
                 })
                 let futureDate = new Date();
-               let newDate = futureDate.setDate(futureDate.getDate() + 40);
+                let newDate = futureDate.setDate(futureDate.getDate() + 40);
                 firebase.database().ref(`/user/${uid}/requestList`).set(requestList);
                 firebase.database().ref(`/user/${uid}`).update({ disableTimer: newDate });
             })
