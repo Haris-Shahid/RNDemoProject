@@ -9,7 +9,6 @@ import Loader from '../../Components/activityIndicator';
 import { Notifications } from 'expo';
 import Badge from './badge';
 import { PushNotificationMiddleware, MessageMiddleware, DonorMiddleware, LocationMiddleware } from '../../Store/Middlewares';
-import moment from 'moment';
 
 class Dashboard extends Component {
     constructor(props) {
