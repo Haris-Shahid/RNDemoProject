@@ -36,7 +36,7 @@ class MapScreen extends Component {
     }
 
     getUserLocation() {
-        navigator.geolocation.watchPosition(
+       this.watchLocation = navigator.geolocation.watchPosition(
             (position) => {
                 let userRegion = {
                     latitude: position.coords.latitude,
@@ -51,6 +51,9 @@ class MapScreen extends Component {
         );
     }
 
+componentWillUnmount(){
+    navigator.geolocation.clearWatch(this.watchLocation);
+}
 
     getDonorLocation() {
         const { location } = this.props.navigation.getParam("donor");
