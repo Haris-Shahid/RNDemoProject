@@ -10,9 +10,9 @@
       "android"
     ],
     "splash": {
-        "image": "./assets/images/splash.png",
-        "resizeMode": "cover"
-      },
+      "image": "./assets/images/splash.png",
+      "resizeMode": "cover"
+    },
     "version": "1.0.0",
     "orientation": "portrait",
     "facebookScheme": "fb367448257053758",
@@ -24,13 +24,16 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.yourcompany.app"
+      "bundleIdentifier": "com.devtech.bloodbank",
+      "config": {
+        "googleMapsApiKey": "AIzaSyBOLuNQDWdaJKo5UoNNk0WBfQgNFpAEgzY"
+      }
     },
     "android": {
-      "package": "com.yourcompany.app",
+      "package": "com.devtech.bloodbank",
       "config": {
         "googleMaps": {
-          "apiKey": "AIzaSyDQTgJofYEtp7ZgaJNM_8ZAmOAeK4_uftc "
+          "apiKey": "AIzaSyC9ALYte9WAoTaM10wvwcNW2eIBALIE5nU"
         }
       }
     }

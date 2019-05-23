@@ -147,6 +147,7 @@ componentWillUnmount(){
                 </Header>
                 <MapView
                     onPanDrag={(e) => this.handleRegionChange(e)}
+                    provider="google"
                     initialRegion={region}
                     showsCompass={true}
                     ref={map => this.map = map}
