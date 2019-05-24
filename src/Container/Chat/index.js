@@ -84,7 +84,7 @@ class ChatScreen extends Component {
                             <Icon name='md-camera' />
                         </TouchableOpacity> */}
                     </View>
-                        <TouchableOpacity onPress={() => this.state.message || this.state.message !== '' ? this.formSubmit() : null} style={[styles.sendIconCont, { backgroundColor: this.state.message || this.state.message !== '' ? '#bb0a1e' : 'rgba(0,0,0,0.6)' }]} >
+                        <TouchableOpacity onPress={() => this.state.message || this.state.message !== '' ? this.formSubmit() : null} style={[styles.sendIconCont, { backgroundColor: this.state.message || this.state.message !== '' ? '#bb0a1e' : '#39604c' }]} >
                             <Icon name='md-send' style={{ color: '#fff', fontSize: scale(20) }} />
                         </TouchableOpacity>
                 </View>

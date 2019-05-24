@@ -10,7 +10,7 @@ export const styles = StyleSheet.create({
         flex: 1,
     },
     formTitle: {
-        fontSize: scale(18),
+        fontSize: moderateScale(18),
         marginVertical: verticalScale(15)
     },
     form: {
@@ -49,6 +49,9 @@ export const styles = StyleSheet.create({
         height: verticalScale(40),
         justifyContent: 'center'
     },
+    userNameTxt: {
+        fontSize: moderateScale(16)
+    },
     acBtnCont: {
         flex: 1.5,
         height: verticalScale(40),
@@ -62,6 +65,6 @@ export const styles = StyleSheet.create({
     },
     btnTxt: {
         color: '#fff',
-        fontSize: 10,
+        fontSize: moderateScale(10),
     }
 })

@@ -53,10 +53,12 @@ export const styles = StyleSheet.create({
         alignSelf: "center",
         backgroundColor: '#bb0a1e',
         justifyContent: 'center',
+        height: verticalScale(40),
         marginBottom: verticalScale(15)
     },
     btnTxt: {
-        color: '#fff'
+        color: '#fff',
+        fontSize: moderateScale(16)
     },
     profileImage: {
         width: '100%',

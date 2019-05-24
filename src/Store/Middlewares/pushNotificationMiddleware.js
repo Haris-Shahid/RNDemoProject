@@ -82,14 +82,15 @@ export default class PushNotificationMiddleware {
                         Accept: 'application/json',
                         'Content-Type': 'application/json'
                     },
+                    sound: 'default',
                     body: JSON.stringify({
                         to: donor.mobToken,
-                        sound: 'default',
                         title: 'Request for a Blood',
                         body: `${authUser.name} need your help`,
                         data: {
                             from: authUser.uid,
                             to: donor.uid,
+                            dueTo: 'Blood Request',
                             message: `Need your Blood...`,
                             requestSenderDetails: snap.val()
                         }
@@ -163,17 +164,25 @@ export default class PushNotificationMiddleware {
                     e.accept = true
                 }
             });
-            firebase.database().ref(`/user/${v.uid}/donorsRequestList`).set(donorRequestList);
             firebase.database().ref(`/user/${uid}/requestList`).once('value', snap => {
-                let requestList = [];
                 snap.val().map(e => {
                     if (e.requestUserUid !== v.uid) {
-                        requestList.push({ requestUserUid: e.requestUserUid })
+                        firebase.database().ref(`/user/${e.requestUserUid}/donorsRequestList/`).once('value', v => {
+                            let donorsRequestList1 = []
+                            v.val().map(d => {
+                                if (d.donorUid !== uid) {
+                                    donorsRequestList1.push(d)
+                                }
+                            })
+                            firebase.database().ref(`/user/${e.requestUserUid}/donorsRequestList`).set(donorsRequestList1)
+                        })
+                    } else {
+                        firebase.database().ref(`/user/${e.requestUserUid}/donorsRequestList`).set(donorRequestList);
                     }
+                    firebase.database().ref(`/user/${uid}/requestList`).remove();
                 })
                 let futureDate = new Date();
                 let newDate = futureDate.setDate(futureDate.getDate() + 40);
-                firebase.database().ref(`/user/${uid}/requestList`).set(requestList);
                 firebase.database().ref(`/user/${uid}`).update({ disableTimer: newDate });
             })
         }

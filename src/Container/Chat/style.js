@@ -34,7 +34,7 @@ export const styles = StyleSheet.create({
         marginVertical: verticalScale(20)
     },
     inputContainer: {
-        borderColor: 'rgba(0,0,0,0.7)',
+        borderColor: '#39604c',
         borderRadius: 20,
         paddingVertical: verticalScale(10),
         paddingLeft: scale(10),
@@ -65,7 +65,7 @@ export const styles = StyleSheet.create({
     },
     message: {
         width: '70%',
-        backgroundColor: 'blue',
+        backgroundColor: '#39604c',
         marginVertical: verticalScale(10),
         borderRadius: scale(10),
         padding: moderateScale(10)
@@ -76,7 +76,7 @@ export const styles = StyleSheet.create({
     },
     rightTxt: {
         alignSelf: 'flex-end',
-        backgroundColor: '#bb0a1e'
+        backgroundColor: 'rgb(236,32,36)'
     },
     timeTxt: {
         color: '#fff',

@@ -57,13 +57,14 @@ export const styles = StyleSheet.create({
     },
     btn: {
         backgroundColor: '#ec2024',
+        height: verticalScale(40),
         width: '90%',
         marginVertical: verticalScale(10),
         alignSelf: 'center',
     },
     btnTxt: {
         color: '#fff',
-        fontSize: moderateScale(17),
+        fontSize: moderateScale(16),
         fontWeight: 'bold'
     },
     orTxt: {
@@ -80,8 +81,8 @@ export const styles = StyleSheet.create({
         fontSize: moderateScale(16)
     },
     signUpText1: {
-         color: '#000' ,
-         fontSize: moderateScale(16)
+        color: '#000',
+        fontSize: moderateScale(16)
     },
     errorTxt: {
         fontSize: moderateScale(17),

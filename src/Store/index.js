@@ -8,7 +8,7 @@ const Store = createStore(RootReducer,
     applyMiddleware(
         thunk,
         // logger
-    )
+    ),
 );
 
 export default Store;

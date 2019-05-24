@@ -6,7 +6,7 @@ import { Ionicons } from '@expo/vector-icons';
 
 const CustomHeader = (props) => {
     return (
-        <Header style={{ backgroundColor: "#bb0a1e", paddingBottom: Platform.OS === 'android' ?  0  : verticalScale(15)  }} >
+        <Header style={{ backgroundColor: "#bb0a1e", paddingBottom: Platform.OS === 'android' ? 0 : verticalScale(15) }} >
             <Left>
                 <TouchableOpacity onPress={() => props.menuIcon()} >
                     <Icon name='md-menu' style={{ color: '#fff' }} />
@@ -16,13 +16,13 @@ const CustomHeader = (props) => {
                 <Text style={styles.headerTxt} >{props.name}</Text>
             </Body>
             <Right>
-                <View style={styles.profileIconCont} >
+                <TouchableOpacity style={styles.profileIconCont} onPress={() => props.navigate ? props.navigate() : null} >
                     {
                         props.profileImage == '' || !props.profileImage ?
                             <Ionicons name='ios-person' style={styles.profileIcon} /> :
                             <Image source={{ uri: props.profileImage }} style={styles.profileImage} />
                     }
-                </View>
+                </TouchableOpacity>
             </Right>
         </Header>
     )

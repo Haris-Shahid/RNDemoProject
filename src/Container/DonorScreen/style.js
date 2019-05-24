@@ -42,29 +42,32 @@ export const styles = StyleSheet.create({
     tab1: {
         color: '#000',
         fontWeight: 'bold',
+        fontSize: moderateScale(16),
         flex: 1
     },
     tab2: {
         color: '#000',
         flex: 1.5,
-        fontSize: moderateScale(18),
+        fontSize: moderateScale(17),
     },
     bloodGroupTxt: {
         color: '#bb0a1e',
         flex: 1,
-        fontSize: moderateScale(22)
+        fontSize: moderateScale(20)
     },
     donorNameTxt: {
         textAlign: 'center',
-        fontSize: moderateScale(25),
+        fontSize: moderateScale(23),
         color: '#bb0a1e'
     },
     btn: {
         marginTop: verticalScale(10),
         justifyContent: 'center',
         alignItems: 'center',
+        height: verticalScale(40)
     },
     btnTxt: {
         color: '#fff',
+        fontSize: moderateScale(16)
     }
 })

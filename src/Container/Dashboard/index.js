@@ -38,7 +38,9 @@ class Dashboard extends Component {
     }
     _handleNotification(n) {
         if (n.origin === "selected") {
-            this.props.navigation.navigate('Notifications');
+            if (n.data.dueTo === "Blood Request") {
+                this.props.navigation.navigate('Notifications');
+            }
         }
     }
     componentWillReceiveProps(nextProps) {
@@ -74,13 +76,13 @@ class Dashboard extends Component {
         return (
             <View style={{ flex: 1 }} >
                 <StatusBar hidden={true} />
-                <CustomHeader name={this.props.name} profileImage={this.props.profileImage} menuIcon={() => this.props.navigation.openDrawer()} />
+                <CustomHeader name={this.props.name} profileImage={this.props.profileImage} menuIcon={() => this.props.navigation.openDrawer()} navigate={() => this.props.navigation.navigate('Profile')} />
                 {this.props.isLoading ? <Loader /> :
                     <View style={styles.childCont} >
                         <View>
                             <Text style={styles.formTitle} >Seacrh donor by their blood group</Text>
                             <nb.Form style={styles.form} >
-                                <nb.Picker onValueChange={value => this.onValueChange(value)} selectedValue={this.state.selected}>
+                                <nb.Picker mode="dropdown" onValueChange={value => this.onValueChange(value)} selectedValue={this.state.selected}>
                                     <nb.Item color='#bb0a1e' label="All" value="all" />
                                     <nb.Item color='#bb0a1e' label="A+" value="A+" />
                                     <nb.Item color='#bb0a1e' label="AB+" value="AB+" />
@@ -103,27 +105,7 @@ class Dashboard extends Component {
                                         {this.state.filterdDonors.length !== 0 ?
                                             this.state.filterdDonors.map((d, i) => {
                                                 if (this.props.uid === d.uid) {
-                                                    return (
-                                                        <TouchableOpacity key={i} onPress={() => this.props.navigation.navigate('Profile', { donor: d })} >
-                                                            <nb.Card>
-                                                                <nb.CardItem style={{ flexDirection: 'row' }} >
-                                                                    <View style={{ flex: 1 }} >
-                                                                        <View style={styles.profileIconCont} >
-                                                                            {
-                                                                                d.profileImage == '' || !d.profileImage ?
-                                                                                    <Ionicons name='ios-person' style={styles.profileIcon} /> :
-                                                                                    <Image source={{ uri: d.profileImage }} style={styles.userProfile} />
-                                                                            }
-                                                                        </View>
-                                                                    </View>
-                                                                    <View style={styles.userName} >
-                                                                        <Text>{d.name}</Text>
-                                                                    </View>
-                                                                    <View style={{ flex: 1.5 }} ></View>
-                                                                </nb.CardItem>
-                                                            </nb.Card>
-                                                        </TouchableOpacity>
-                                                    )
+                                                    return null;
                                                 }
                                                 if (d.disableTimer) {
                                                     var disableStatus;
@@ -154,7 +136,7 @@ class Dashboard extends Component {
                                                                         </View>
                                                                     </View>
                                                                     <View style={styles.userName} >
-                                                                        <Text>{d.name}</Text>
+                                                                        <Text style={styles.userNameTxt} >{d.name}</Text>
                                                                     </View>
                                                                     <View style={styles.acBtnCont}>
                                                                         <View style={[styles.btn, { backgroundColor: disableStatus ? '#5bb85d' : '#bb0a1e' }]} >
@@ -180,7 +162,7 @@ class Dashboard extends Component {
                                                                     </View>
                                                                 </View>
                                                                 <View style={styles.userName} >
-                                                                    <Text>{d.name}</Text>
+                                                                    <Text style={styles.userNameTxt} >{d.name}</Text>
                                                                 </View>
                                                                 <Badge donorUid={d.uid} donorsRequestList={this.state.donorsRequestList} />
                                                             </nb.CardItem>
