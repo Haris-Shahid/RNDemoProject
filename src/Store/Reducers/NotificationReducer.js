@@ -8,7 +8,7 @@ export default function notificationReducer(state = initialState, action) {
     switch (action.type) {
 
         case GET_NOTIFICATIONS:
-            return state = { ...state, notifications: action.notifications }
+            return state = { ...state, notifications: [...action.notifications] }
 
         case UPDATE_NOTIFICATIONS:
             return state = { ...state, notifications: action.notifications }
