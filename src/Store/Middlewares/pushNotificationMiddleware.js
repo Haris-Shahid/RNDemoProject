@@ -156,7 +156,7 @@ export default class PushNotificationMiddleware {
         }
     }
 
-    static handleAcceptNotification(v, uid) {
+    static handleAcceptNotification(v, uid, auth) {
         return dispatch => {
             let donorRequestList = v.donorsRequestList;
             donorRequestList.forEach(e => {
@@ -164,6 +164,27 @@ export default class PushNotificationMiddleware {
                     e.accept = true
                 }
             });
+            let response = fetch('https://exp.host/--/api/v2/push/send', {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                sound: 'default',
+                body: JSON.stringify({
+                    to: v.mobToken,
+                    title: 'Blood Request Accepted',
+                    body: `${auth.name} accept your blood request`,
+                    data: {
+                        dueTo: 'Accept Request',
+                        message: `${auth.name} accept your blood request`,
+                        acceptedUser: auth
+                    }
+                })
+            })
+            response.then(() => {
+                // if notification send
+            }).catch((e) => alert(e))
             firebase.database().ref(`/user/${uid}/requestList`).once('value', snap => {
                 snap.val().map(e => {
                     if (e.requestUserUid !== v.uid) {

@@ -69,5 +69,20 @@ export const styles = StyleSheet.create({
     btnTxt: {
         color: '#fff',
         fontSize: moderateScale(16)
+    },
+    reviewsCont: {
+        flexDirection: 'row',
+        width: '80%',
+        alignSelf: 'center',
+        marginVertical: verticalScale(10)
+    },
+    reviewCount: {
+        fontSize: moderateScale(18),
+        fontWeight: 'bold'
+    },
+    seeReview: {
+        fontSize: moderateScale(18),
+        fontWeight: 'bold',
+        color: '#bb0a1e'
     }
 })

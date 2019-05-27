@@ -66,5 +66,74 @@ export const styles = StyleSheet.create({
     btnTxt: {
         color: '#fff',
         fontSize: moderateScale(10),
+    },
+    donorIconCont: {
+        backgroundColor: 'rgba(0,0,0,0.8)',
+        borderRadius: 50,
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: verticalScale(60),
+        height: verticalScale(60),
+        alignSelf: 'center',
+        marginVertical: verticalScale(15),
+        overflow: 'hidden'
+    },
+    donorIcon: {
+        color: 'rgba(255,255,255,0.5)',
+        fontSize: moderateScale(30)
+    },
+    donorImage: {
+        width: '100%',
+        height: '100%',
+        borderRadius: 50
+    },
+    inputField: {
+        width: '90%',
+        alignSelf: 'center',
+        borderWidth: 1,
+        borderRadius: 10,
+        marginBottom: verticalScale(10),
+        color: '#000',
+        fontSize: moderateScale(16),
+        paddingVertical: verticalScale(10),
+        paddingHorizontal: scale(10)
+    },
+    modalHead: {
+        textAlign: 'center',
+        fontSize: moderateScale(16),
+        fontWeight: 'bold',
+        marginTop: verticalScale(10)
+    },
+    modalName: {
+        textAlign: 'center',
+        fontSize: moderateScale(17)
+    },
+    separater: {
+        width: '100%',
+        borderBottomColor: '#eee',
+        borderBottomWidth: StyleSheet.hairlineWidth,
+        marginVertical: verticalScale(10),
+    },
+    starTxt: {
+        textAlign: 'center',
+        fontSize: moderateScale(15),
+        color: '#9d9d9d',
+        marginBottom: verticalScale(10)
+    },
+    starCont: {
+        width: '70%',
+        alignSelf: 'center'
+    },
+    btn1: {
+        marginBottom: verticalScale(10),
+        justifyContent: 'center',
+        width: '90%',
+        alignSelf: 'center',
+        alignItems: 'center',
+        height: verticalScale(40)
+    },
+    btn1Txt: {
+        color: '#fff',
+        fontSize: moderateScale(16)
     }
 })

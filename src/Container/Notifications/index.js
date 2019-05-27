@@ -59,7 +59,7 @@ class Notifications extends Component {
                                                 <nb.Button style={styles.cBtn} onPress={() => this.props.cancelNotification(v, this.props.uid, this.props.notifications)} >
                                                     <Text style={{ color: '#bb0a1e' }} >Cancel</Text>
                                                 </nb.Button>
-                                                <nb.Button onPress={() => this.props.handleAcceptNotification(v, this.props.uid)} style={styles.aBtn} >
+                                                <nb.Button onPress={() => this.props.handleAcceptNotification(v, this.props.uid, this.props.auth)} style={styles.aBtn} >
                                                     <Text style={{ color: '#fff' }} >Accept</Text>
                                                 </nb.Button>
                                             </nb.CardItem>
@@ -82,6 +82,7 @@ const mapStateToProps = (state) => {
         profileImage: state.AuthReducer.profileImage,
         name: state.AuthReducer.name,
         uid: state.AuthReducer.uid,
+        auth: state.AuthReducer,
         notifications: state.notificationReducer.notifications,
     };
 }
@@ -90,7 +91,7 @@ const mapDispatchToProps = (dispatch) => {
     return {
         getNotification: (uid) => dispatch(PushNotificationMiddleware.getNotification(uid)),
         cancelNotification: (d, uid, notification) => dispatch(PushNotificationMiddleware.cancelNotification(d, uid, notification)),
-        handleAcceptNotification: (v, uid) => dispatch(PushNotificationMiddleware.handleAcceptNotification(v, uid)),
+        handleAcceptNotification: (v, uid, a) => dispatch(PushNotificationMiddleware.handleAcceptNotification(v, uid, a)),
     }
 }
 

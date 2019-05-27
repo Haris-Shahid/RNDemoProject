@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Image, Text, StatusBar, TouchableOpacity, ScrollView, Dimensions } from 'react-native';
+import { View, Image, Text, StatusBar, TouchableOpacity, ScrollView, Dimensions, StyleSheet } from 'react-native';
 import { connect } from "react-redux"
 import * as nb from 'native-base';
 import CustomHeader from '../../Components/header';
@@ -8,7 +8,9 @@ import { styles } from './style';
 import Loader from '../../Components/activityIndicator';
 import { Notifications } from 'expo';
 import Badge from './badge';
-import { PushNotificationMiddleware, MessageMiddleware, DonorMiddleware, LocationMiddleware } from '../../Store/Middlewares';
+import { PushNotificationMiddleware, MessageMiddleware, DonorMiddleware, LocationMiddleware, ReviewMiddleware } from '../../Store/Middlewares';
+import Modal from "react-native-modal";
+import ModalView from './modalView';
 
 class Dashboard extends Component {
     constructor(props) {
@@ -18,7 +20,12 @@ class Dashboard extends Component {
             imageUrl: '',
             selected: 'all',
             filterdDonors: [],
-            donorsRequestList: []
+            donorsRequestList: [],
+            acceptDonor: { acceptedUser: { name: 'he', profileImage: '' } },
+            starCount: 3.5,
+            review: '',
+            showModal: false,
+            validateReview: false
         }
     }
 
@@ -40,6 +47,8 @@ class Dashboard extends Component {
         if (n.origin === "selected") {
             if (n.data.dueTo === "Blood Request") {
                 this.props.navigation.navigate('Notifications');
+            } else if (n.data.dueTo === "Accept Request") {
+                this.setState({ showModal: true, acceptDonor: n.data })
             }
         }
     }
@@ -71,8 +80,24 @@ class Dashboard extends Component {
             this.setState({ filterdDonors, selected: value })
 
         }
-    };
+    }
+
+    reviewSubmit() {
+        if (this.state.review === "" || this.state.review === " ") {
+            this.setState({ validateReview: true })
+        } else {
+            let review = {
+                review: this.state.review,
+                stars: this.state.starCount,
+                from: this.props.uid,
+                timeStamp: new Date().getTime()
+            }
+            this.props.handleReview(review, this.state.acceptDonor.acceptedUser.uid)
+            this.setState({ showModal: false })
+        }
+    }
     render() {
+        const { acceptDonor, starCount, showModal, validateReview } = this.state;
         return (
             <View style={{ flex: 1 }} >
                 <StatusBar hidden={true} />
@@ -183,6 +208,9 @@ class Dashboard extends Component {
                         </View>
                     </View>
                 }
+                <Modal isVisible={showModal}>
+                    <ModalView validateReview={validateReview} reviewSubmit={() => this.reviewSubmit()} donorDetails={acceptDonor} starCount={starCount} onStarRatingPress={starCount => this.setState({ starCount })} handleReviewTxt={(text => this.setState({ review: text, validateReview: false }))} />
+                </Modal>
             </View>
         )
     }
@@ -204,6 +232,7 @@ const mapDispatchToProps = (dispatch) => {
         GetDonors: (uid) => dispatch(DonorMiddleware.GetDonors(uid)),
         getNotification: (uid) => dispatch(PushNotificationMiddleware.getNotification(uid)),
         getChat: (uid) => dispatch(MessageMiddleware.getChat(uid)),
+        handleReview: (r, dUid) => dispatch(ReviewMiddleware.handleReview(r, dUid)),
         getUserLocation: (uid) => dispatch(LocationMiddleware.getUserLocation(uid)),
     }
 }
