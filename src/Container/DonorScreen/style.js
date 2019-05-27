@@ -77,12 +77,26 @@ export const styles = StyleSheet.create({
         marginVertical: verticalScale(10)
     },
     reviewCount: {
-        fontSize: moderateScale(18),
+        fontSize: moderateScale(16),
         fontWeight: 'bold'
     },
     seeReview: {
-        fontSize: moderateScale(18),
+        fontSize: moderateScale(16),
         fontWeight: 'bold',
         color: '#bb0a1e'
+    },
+    starCont: {
+        flex: 2,
+        flexDirection: 'row',
+        alignItems: 'center'
+    },
+    starIcon: {
+        color: '#fe9605',
+        fontSize: moderateScale(16)
+    },
+    starTxt: {
+        color: '#fe9605',
+        fontSize: moderateScale(16),
+        marginHorizontal: scale(5)
     }
 })

@@ -90,6 +90,8 @@ class Dashboard extends Component {
                 review: this.state.review,
                 stars: this.state.starCount,
                 from: this.props.uid,
+                name: this.props.name,
+                profileImage: this.props.profileImage,
                 timeStamp: new Date().getTime()
             }
             this.props.handleReview(review, this.state.acceptDonor.acceptedUser.uid)

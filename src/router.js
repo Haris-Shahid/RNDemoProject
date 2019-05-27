@@ -17,6 +17,7 @@ import AuthLoader from './Components/authLoader';
 import DonorScreen from './Container/DonorScreen';
 import ChatScreen from './Container/Chat';
 import MapScreen from './Container/Map';
+import ReviewScreen from './Container/Review';
 
 const AuthScreen = createStackNavigator({
     loginScreen: {
@@ -37,14 +38,14 @@ const AppDrawNavigator = createDrawerNavigator({
     Inbox: Inbox,
     Notifications: Notifications,
     Profile: Profile,
-    'Become a Donor' : DonorForm
-},{
-    contentComponent: CustomDrawerComponent,
-    drawerWidth: Dimensions.get('window').width - 100,
-    contentOptions: {
-        activeTintColor: '#bb0a1e'
-    },
-}
+    'Become a Donor': DonorForm
+}, {
+        contentComponent: CustomDrawerComponent,
+        drawerWidth: Dimensions.get('window').width - 100,
+        contentOptions: {
+            activeTintColor: '#bb0a1e'
+        },
+    }
 )
 
 const HomeScreen = createStackNavigator({
@@ -52,17 +53,18 @@ const HomeScreen = createStackNavigator({
     donorScreen: DonorScreen,
     ChatScreen: ChatScreen,
     MapScreen: MapScreen,
-},{
-     headerMode: 'none'
-})
+    ReviewScreen: ReviewScreen
+}, {
+        headerMode: 'none'
+    })
 
 const Screens = createSwitchNavigator({
     AuthLoading: { screen: AuthLoader },
     Auth: { screen: AuthScreen },
     homeScreen: { screen: HomeScreen }
-},{
-    initialRouteName: 'AuthLoading'
-}
+}, {
+        initialRouteName: 'AuthLoading'
+    }
 )
 
 const Routers = createAppContainer(Screens)

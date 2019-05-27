@@ -11,9 +11,25 @@ class DonorScreen extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            modalVisible: false,
+            averageReview: 0
         }
     }
+
+    componentWillMount() {
+        const donor = this.props.navigation.getParam("donor");
+        let totalReview = 0;
+        if (donor.reviews) {
+            donor.reviews.forEach(v => {
+                totalReview += v.stars
+            })
+            let averageReview = totalReview / donor.reviews.length
+            if (Number.isInteger(averageReview)) {
+                averageReview = `${averageReview}.0`
+            }
+            this.setState({ averageReview })
+        }
+    }
+
     render() {
         const donor = this.props.navigation.getParam("donor");
         let reviewsLength = donor.reviews ? donor.reviews.length : 0;
@@ -35,26 +51,6 @@ class DonorScreen extends React.Component {
         }
         return (
             <View style={{ flex: 1 }} >
-                <Modal animationType="slide"
-                    backdropColor={'white'}
-                    backdropOpacity={1}
-                    transparent={false}
-                    style={{ margin: 0, alignItems: undefined, justifyContent: undefined, backgroundColor: '#fff' }}
-                    visible={this.state.modalVisible} >
-                    <View style={{ backgroundColor: '#fff' }} >
-                        <Header style={{ backgroundColor: "#bb0a1e", paddingBottom: Platform.OS === 'android' ? 0 : verticalScale(15) }} >
-                            <Left>
-                                <TouchableOpacity onPress={() => this.setState({ modalVisible: false })} >
-                                    <Icon name='ios-arrow-back' style={{ color: '#fff' }} />
-                                </TouchableOpacity>
-                            </Left>
-                            <Body>
-                                <Text style={styles.title}>{reviewsLength} Reviews</Text>
-                            </Body>
-                            <Right><View /></Right>
-                        </Header>
-                    </View>
-                </Modal>
                 <Header style={{ backgroundColor: "#bb0a1e", paddingBottom: Platform.OS === 'android' ? 0 : verticalScale(15) }} >
                     <Left>
                         <TouchableOpacity onPress={() => this.props.navigation.goBack()} >
@@ -100,7 +96,7 @@ class DonorScreen extends React.Component {
                                 <Text style={styles.tab2} >{donor.address}</Text>
                             </View>
                             <View>
-                                <Button block rounded style={[styles.btn, { backgroundColor: pendingStatus ? '#5bb85d' : pendingStatus === undefined ? '#bb0a1e' : '#f1c232' }]} onPress={() => pendingStatus === undefined && props.handleAcceptBtnDetails(props.navigation, donor, AuthUser)} >
+                                <Button block rounded style={[styles.btn, { backgroundColor: pendingStatus ? '#5bb85d' : pendingStatus === undefined ? '#bb0a1e' : '#f1c232' }]} onPress={() => pendingStatus === undefined && this.props.handleAcceptBtnDetails(this.props.navigation, donor, AuthUser)} >
                                     <Text style={styles.btnTxt} >{pendingStatus ? 'Request Accepted' : pendingStatus === undefined ? 'Request For Blood' : 'Pending Request'}</Text>
                                 </Button>
                                 {
@@ -111,16 +107,18 @@ class DonorScreen extends React.Component {
                                 }
                             </View>
                         </View>
-                        <View style={styles.reviewsCont} >
-                            <View style={{ flex: 1 }} >
-                                <Text style={styles.reviewCount} >{reviewsLength} Reviews</Text>
-                            </View>
-                            {
-                                reviewsLength !== 0 && <TouchableOpacity onPress={() => this.setState({ modalVisible: true })} style={{ flex: 1, alignItems: 'flex-end' }} >
+                        {reviewsLength !== 0 &&
+                            <View style={styles.reviewsCont} >
+                                <View style={styles.starCont} >
+                                    <Ionicons name="ios-star" style={styles.starIcon} />
+                                    <Text style={styles.starTxt} >{this.state.averageReview}</Text>
+                                    <Text style={styles.reviewCount} >({reviewsLength}) Reviews</Text>
+                                </View>
+                                <TouchableOpacity onPress={() => this.props.navigation.navigate('ReviewScreen', { length: reviewsLength, reviews: donor.reviews })} style={{ flex: 1, alignItems: 'flex-end' }} >
                                     <Text style={styles.seeReview} >SEE ALL</Text>
                                 </TouchableOpacity>
-                            }
-                        </View>
+                            </View>
+                        }
                     </Content>
                 </View>
                 {this.props.isLoading && <Loader />}
