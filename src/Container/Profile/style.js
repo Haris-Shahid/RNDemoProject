@@ -27,8 +27,8 @@ export const styles = StyleSheet.create({
         borderRadius: 50
     },
     cardCont: {
-        width: '90%', 
-        alignSelf: 'center', 
+        width: '90%',
+        alignSelf: 'center',
         marginTop: verticalScale(20)
     },
     headTxt: {
@@ -38,5 +38,34 @@ export const styles = StyleSheet.create({
     bodyTxt: {
         fontSize: moderateScale(17),
         color: '#909090'
+    },
+    reviewsCont: {
+        flexDirection: 'row',
+        width: '80%',
+        alignSelf: 'center',
+        marginVertical: verticalScale(10)
+    },
+    reviewCount: {
+        fontSize: moderateScale(16),
+        fontWeight: 'bold'
+    },
+    seeReview: {
+        fontSize: moderateScale(16),
+        fontWeight: 'bold',
+        color: '#bb0a1e'
+    },
+    starCont: {
+        flex: 2,
+        flexDirection: 'row',
+        alignItems: 'center'
+    },
+    starIcon: {
+        color: '#fe9605',
+        fontSize: moderateScale(16)
+    },
+    starTxt: {
+        color: '#fe9605',
+        fontSize: moderateScale(16),
+        marginHorizontal: scale(5)
     }
 }) 

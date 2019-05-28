@@ -101,7 +101,7 @@ class DonorScreen extends React.Component {
                                 </Button>
                                 {
                                     pendingStatus ?
-                                        <Button block rounded style={[styles.btn, { backgroundColor: '#bb0a1e' }]} onPress={() => props.navigation.navigate('MapScreen', { donor: donor })} >
+                                        <Button block rounded style={[styles.btn, { backgroundColor: '#bb0a1e' }]} onPress={() => this.props.navigation.navigate('MapScreen', { donor: donor })} >
                                             <Text style={styles.btnTxt} >Locate Him</Text>
                                         </Button> : null
                                 }
