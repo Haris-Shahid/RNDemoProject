@@ -18,6 +18,7 @@ import DonorScreen from './Container/DonorScreen';
 import ChatScreen from './Container/Chat';
 import MapScreen from './Container/Map';
 import ReviewScreen from './Container/Review';
+import HistoryScreen from './Container/history';
 
 const AuthScreen = createStackNavigator({
     loginScreen: {
@@ -38,6 +39,7 @@ const AppDrawNavigator = createDrawerNavigator({
     Inbox: Inbox,
     Notifications: Notifications,
     Profile: Profile,
+    History: HistoryScreen,
     'Become a Donor': DonorForm
 }, {
         contentComponent: CustomDrawerComponent,

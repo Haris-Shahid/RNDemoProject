@@ -26,7 +26,7 @@ class DonorScreen extends React.Component {
             if (Number.isInteger(averageReview)) {
                 averageReview = `${averageReview}.0`
             }
-            this.setState({ averageReview })
+            this.setState({ averageReview: Number(averageReview).toFixed(1) })
         }
     }
 
