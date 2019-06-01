@@ -1,13 +1,16 @@
-import { StyleSheet } from 'react-native';
-import { scale, verticalScale } from '../../Constants/scalingFunction';
+import { StyleSheet, Platform } from 'react-native';
+import { scale, verticalScale, moderateScale } from '../../Constants/scalingFunction';
 
 export const styles = StyleSheet.create({
     mainCont: {
         flex: 1
     },
-    note: {
-        textAlign: 'center',
-        marginVertical: verticalScale(20),
-        marginHorizontal: scale(10)
+    header: {
+        backgroundColor: "#bb0a1e",
+        paddingBottom: Platform.OS === 'android' ? 0 : verticalScale(15)
+    },
+    title: {
+        color: '#fff',
+        fontSize: moderateScale(20)
     },
 })

@@ -107,6 +107,11 @@ class DonorScreen extends React.Component {
                                 }
                             </View>
                         </View>
+                        {
+                            donor.history && <TouchableOpacity onPress={() => this.props.navigation.navigate('History', { donorHistory: donor })} style={{ width: '80%', alignSelf: 'center', alignItems: 'center', marginTop: 10 }} >
+                                <Text style={[styles.seeReview]} >Show History</Text>
+                            </TouchableOpacity>
+                        }
                         {reviewsLength !== 0 &&
                             <View style={styles.reviewsCont} >
                                 <View style={styles.starCont} >

@@ -36,7 +36,7 @@ class Profile extends Component {
 
     render() {
         const user = this.props.userDetail;
-        let reviewsLength = this.props.userDetail.reviews && this.props.userDetail.reviews.length;
+        let reviewsLength = user.reviews && user.reviews.length;
         return (
             <View style={{ flex: 1 }} >
                 <StatusBar hidden={true} />
@@ -83,7 +83,12 @@ class Profile extends Component {
                             <View style={{ flex: 1 }} ><Text style={[styles.bodyTxt, { textAlign: user.city ? 'left' : 'center' }]} >{user.city ? user.city : '-'}</Text></View>
                         </CardItem>
                     </Card>
-                    {this.props.userDetail.reviews &&
+                    {
+                        user.history && <TouchableOpacity onPress={() => this.props.navigation.navigate('History', { donorHistory: user })} style={{ width: '80%', alignSelf: 'center', alignItems: 'center', marginTop: 10 }} >
+                            <Text style={[styles.seeReview]} >Show History</Text>
+                        </TouchableOpacity>
+                    }
+                    {user.reviews &&
                         <View style={styles.reviewsCont} >
                             <View style={styles.starCont} >
                                 <Ionicons name="ios-star" style={styles.starIcon} />

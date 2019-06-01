@@ -39,7 +39,6 @@ const AppDrawNavigator = createDrawerNavigator({
     Inbox: Inbox,
     Notifications: Notifications,
     Profile: Profile,
-    History: HistoryScreen,
     'Become a Donor': DonorForm
 }, {
         contentComponent: CustomDrawerComponent,
@@ -55,6 +54,7 @@ const HomeScreen = createStackNavigator({
     donorScreen: DonorScreen,
     ChatScreen: ChatScreen,
     MapScreen: MapScreen,
+    History: HistoryScreen,
     ReviewScreen: ReviewScreen
 }, {
         headerMode: 'none'
