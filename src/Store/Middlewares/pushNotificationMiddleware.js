@@ -182,6 +182,16 @@ export default class PushNotificationMiddleware {
                     }
                 })
             })
+            firebase.database().ref(`/user/${uid}`).once('value', snap => {
+                let historyObj = { name: v.name, profileImage: v.profileImage, timeStamp: new Date().getTime(), uid: v.uid }
+                if (snap.val().history) {
+                    let historyArr = snap.val().history;
+                    historyArr.push(historyObj)
+                    firebase.database().ref(`/user/${uid}/history`).set(historyArr);
+                } else {
+                    firebase.database().ref(`/user/${uid}`).update({ history: [historyObj] });
+                }
+            })
             response.then(() => {
                 // if notification send
             }).catch((e) => alert(e))
